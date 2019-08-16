@@ -6,7 +6,10 @@
   "scripts": {
     "test": "nyc --reporter=html --reporter=text mocha",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "start": "node index.js"
+    "start": "node index.js",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
   "repository": {
     "type": "git",
@@ -23,11 +26,19 @@
     "express-handlebars": "^3.1.0",
     "express-session": "^1.16.2",
     "pg": "^7.11.0",
-    "supertest": "^4.0.2"
+    "supertest": "^4.0.2",
+    "core-js": "^2.6.5",
+    "vue": "^2.6.10"
   },
   "devDependencies": {
     "coveralls": "^3.0.5",
     "eslint": "^6.0.1",
+    "@vue/cli-plugin-babel": "^3.10.0",
+    "@vue/cli-plugin-eslint": "^3.10.0",
+    "@vue/cli-service": "^3.10.0",
+    "babel-eslint": "^10.0.1",
+    "eslint-plugin-vue": "^5.0.0",
+    "vue-template-compiler": "^2.6.10",
     "eslint-config-standard": "^13.0.1",
     "eslint-plugin-import": "^2.18.1",
     "eslint-plugin-node": "^9.1.0",
@@ -40,5 +51,28 @@
   "bugs": {
     "url": "https://github.com/dyllanhope/Hangman-App-VueJS/issues"
   },
-  "homepage": "https://github.com/dyllanhope/Hangman-App-VueJS#readme"
+  "homepage": "https://github.com/dyllanhope/Hangman-App-VueJS#readme",
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "rules": {},
+    "parserOptions": {
+      "parser": "babel-eslint"
+    }
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
 }
