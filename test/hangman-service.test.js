@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 'use strict';
 const assert = require('assert');
 const HangmanService = require('../hangman-service');
@@ -18,6 +17,7 @@ const pool = new Pool({
 });
 
 describe('Testing hangman game', () => {
+    // eslint-disable-next-line no-undef
     beforeEach(async () => {
         // clean the tables before each test run
         await pool.query('delete from word_list;');
@@ -71,27 +71,39 @@ describe('Testing hangman game', () => {
                 'car',
                 'plane'
             ]);
-            const list = await hangmanInstance.listOfWordSize(5);
+            const list = await hangmanInstance.listWordOfSize(5);
             assert.strict.deepEqual(list, [
                 { id: 1, word: 'house', word_length: 5 },
                 { id: 3, word: 'plane', word_length: 5 }
             ]);
         });
-        it('Should return a list of words with the new word added', async () => {
+        it('Should return a message that the word added successfully', async () => {
             const hangmanInstance = HangmanService(pool);
             await hangmanInstance.reloadData([
                 'house',
                 'car',
                 'plane'
             ]);
-            await hangmanInstance.addNewWord('school');
+            const message = await hangmanInstance.addNewWord('motorbike');
             const list = await hangmanInstance.allWords();
+
+            assert.strict.deepEqual(message, 'success');
             assert.strict.deepEqual(list, [
                 { id: 1, word: 'house', word_length: 5 },
                 { id: 2, word: 'car', word_length: 3 },
                 { id: 3, word: 'plane', word_length: 5 },
-                { id: 4, word: 'school', word_length: 6 }
+                { id: 4, word: 'motorbike', word_length: 9 }
             ]);
+        });
+        it('Should return an error message that the word already exists', async () => {
+            const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.reloadData([
+                'house',
+                'car',
+                'plane'
+            ]);
+            const message = await hangmanInstance.addNewWord('car');
+            assert.strict.deepEqual(message, 'This word already exists in our database');
         });
         it("Should return a list of words, the new word shouldn't add as it already exists", async () => {
             const hangmanInstance = HangmanService(pool);
@@ -161,6 +173,7 @@ describe('Testing hangman game', () => {
     });
 });
 
+// eslint-disable-next-line no-undef
 after(() => {
     pool.end();
 });
