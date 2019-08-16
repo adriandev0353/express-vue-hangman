@@ -17,14 +17,150 @@ const pool = new Pool({
     ssl: useSSL
 });
 
-describe('Testing waiter shifts manager', function () {
-    beforeEach(async function () {
+describe('Testing hangman game', () => {
+    beforeEach(async () => {
         // clean the tables before each test run
-        await pool.query('delete from shifts;');
-        await pool.query('delete from waiter;');
+        await pool.query('delete from word_list;');
+        await pool.query('delete from user_data;');
+    });
+    describe('testing database manipulation', () => {
+        it('Should return a list of 3 words with their id and length', async () => {
+            const hangmanInstance = HangmanService(pool);
+
+            await hangmanInstance.reloadData([
+                'house',
+                'car',
+                'plane'
+            ]);
+
+            assert.strict.deepEqual(await hangmanInstance.allWords(), [
+                { id: 1, word: 'house', word_length: 5 },
+                { id: 2, word: 'car', word_length: 3 },
+                { id: 3, word: 'plane', word_length: 5 }
+            ]);
+        });
+        it('Should return a list of 3 words with their id and length, clearing previous data', async () => {
+            const hangmanInstance = HangmanService(pool);
+
+            for (let x = 0; x < 4; x++) {
+                const data = [
+                    x + 1,
+                    'test',
+                    4
+                ];
+
+                await pool.query('INSERT INTO word_list(id, word, word_length) VALUES($1,$2,$3)', data);
+            };
+
+            await hangmanInstance.reloadData([
+                'house',
+                'car',
+                'plane'
+            ]);
+
+            assert.strict.deepEqual(await hangmanInstance.allWords(), [
+                { id: 1, word: 'house', word_length: 5 },
+                { id: 2, word: 'car', word_length: 3 },
+                { id: 3, word: 'plane', word_length: 5 }
+            ]);
+        });
+        it('Should return a list of words with the length of 5', async () => {
+            const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.reloadData([
+                'house',
+                'car',
+                'plane'
+            ]);
+            const list = await hangmanInstance.listOfWordSize(5);
+            assert.strict.deepEqual(list, [
+                { id: 1, word: 'house', word_length: 5 },
+                { id: 3, word: 'plane', word_length: 5 }
+            ]);
+        });
+        it('Should return a list of words with the new word added', async () => {
+            const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.reloadData([
+                'house',
+                'car',
+                'plane'
+            ]);
+            await hangmanInstance.addNewWord('school');
+            const list = await hangmanInstance.allWords();
+            assert.strict.deepEqual(list, [
+                { id: 1, word: 'house', word_length: 5 },
+                { id: 2, word: 'car', word_length: 3 },
+                { id: 3, word: 'plane', word_length: 5 },
+                { id: 4, word: 'school', word_length: 6 }
+            ]);
+        });
+        it("Should return a list of words, the new word shouldn't add as it already exists", async () => {
+            const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.reloadData([
+                'house',
+                'car',
+                'plane'
+            ]);
+            await hangmanInstance.addNewWord('house');
+            const list = await hangmanInstance.allWords();
+            assert.strict.deepEqual(list, [
+                { id: 1, word: 'house', word_length: 5 },
+                { id: 2, word: 'car', word_length: 3 },
+                { id: 3, word: 'plane', word_length: 5 }
+            ]);
+        });
+        it("Should return a list of users, 'dyllanhope' being the only one as it was added", async () => {
+            const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.addUser('dyllanhope', '123');
+
+            const list = await hangmanInstance.allUsers();
+            assert.strict.deepEqual(list, [
+                { id: 1, username: 'dyllanhope', password: '123', points: 0, words_played: '' }
+            ]);
+        });
+        it("Should return a list of users, 'dyllanhope' being the only one as it was added, even though a it was attempted to add again", async () => {
+            const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('dyllanhope', '123');
+
+            const list = await hangmanInstance.allUsers();
+            assert.strict.deepEqual(list, [
+                { id: 1, username: 'dyllanhope', password: '123', points: 0, words_played: '' }
+            ]);
+        });
+        it("Should return a list of users, 'dyllanhope', with updated points", async () => {
+            const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addWordTo('dyllanhope', 'Aeroplane');
+
+            const list = await hangmanInstance.allUsers();
+            assert.strict.deepEqual(list, [
+                { id: 1, username: 'dyllanhope', password: '123', points: 9, words_played: 'Aeroplane,' }
+            ]);
+        });
+        it("Should return a list of users, 'dyllanhope', with decremented points", async () => {
+            const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addWordTo('dyllanhope', 'Aeroplane');
+            await hangmanInstance.decrementPoints('dyllanhope', 4);
+
+            const list = await hangmanInstance.allUsers();
+            assert.strict.deepEqual(list, [
+                { id: 1, username: 'dyllanhope', password: '123', points: 5, words_played: 'Aeroplane,' }
+            ]);
+        });
+        it("Should return a list of users, 'dyllanhope', with decremented points (user can't go below 0)", async () => {
+            const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.decrementPoints('dyllanhope', 4);
+
+            const list = await hangmanInstance.allUsers();
+            assert.strict.deepEqual(list, [
+                { id: 1, username: 'dyllanhope', password: '123', points: 0, words_played: '' }
+            ]);
+        });
     });
 });
 
-after(function () {
+after(() => {
     pool.end();
 });
