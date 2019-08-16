@@ -4,6 +4,8 @@ const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const flash = require('express-flash');
 const session = require('express-session');
+const wordList = require('./word.json');
+const HangmanService = require('./hangman-service');
 
 const app = express();
 
@@ -22,6 +24,8 @@ const pool = new Pool({
     connectionString,
     ssl: useSSL
 });
+
+const hangmanService = HangmanService(pool);
 
 app.use(session({
     secret: 'yikes',
@@ -44,6 +48,13 @@ app.use(express.static('public'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+if (process.env.RELOAD_DATA) {
+    console.log('About to reload data');
+    hangmanService.reloadData(wordList);
+} else {
+    console.log('Data not reloaded');
+};
 
 app.get('/', (req, res) => {
     res.send('Hello world');

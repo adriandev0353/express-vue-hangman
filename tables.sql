@@ -1,4 +1,4 @@
-create table word_list(
+create table word_list( 
     id int not null,
     word text not null,
     word_length int not null
