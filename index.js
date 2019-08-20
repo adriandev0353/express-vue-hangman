@@ -8,8 +8,10 @@ const wordList = require('./word.json');
 const HangmanAPI = require('./hangman-api');
 const HangmanService = require('./hangman-service');
 const AppRouting = require('./app-routing');
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
 
 const pg = require('pg');
 const Pool = pg.Pool;
