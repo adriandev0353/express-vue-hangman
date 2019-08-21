@@ -19,7 +19,7 @@
               </td>
             </tr>
           </table>
-          <h4>{{ message }}</h4>
+          <h5 class='error'>{{ message }}</h5>
           <b-button @click="submitUser" class="login">Login</b-button>
         </div>
         <div class="col-sm"></div>
@@ -46,21 +46,16 @@ export default {
       let username = this.user;
       let password = this.pass;
       axios
-      .get("https://hangman-webapp.herokuapp.com/api/check/user/" + username)
-      .then((results)=>{
-        const response = results.data;
-        const message = response.message;
-        console.log(message);
-      });
-      // axios
-      //   .post("https://hangman-webapp.herokuapp.com/api/add/user", {
-      //     username,
-      //     password
-      //   })
-      //   .then(results => {
-      //     console.log(results);
-      //     this.$forceUpdate();
-      //   });
+        .get("https://hangman-webapp.herokuapp.com/api/check/user/" + username)
+        .then(results => {
+          const response = results.data;
+          const message = response.message;
+          if (message === "already exists") {
+            this.$router.push({ name: "Play" });
+          }
+          this.message = "You need to create an account";
+          this.$forceUpdate();
+        });
     }
   }
 };
@@ -69,5 +64,8 @@ export default {
 <style scoped>
 .login {
   margin: 5px;
+}
+.error {
+  color: crimson;
 }
 </style>
