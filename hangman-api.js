@@ -60,7 +60,7 @@ module.exports = (hangmanService) => {
     const userCheck = async (req, res) => {
         try {
             const user = req.params.user;
-            const result = hangmanService.userCheck(user);
+            const result = await hangmanService.userCheck(user);
             res.json({
                 status: 'success',
                 message: result
