@@ -113,7 +113,7 @@ export default {
     activatePlay() {
       this.wordGuessed = [];
       axios
-        .get("http://localhost:3000/api/list/size/" + this.length)
+        .get("https://hangman-webapp.herokuapp.com/api/list/size/" + this.length)
         .then(results => {
           let response = results.data;
           let wordList = response.words;

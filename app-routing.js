@@ -1,4 +1,7 @@
 module.exports = (app, hangmanAPI) => {
+    app.get('/', (req, res) => {
+        res.send('This is the API server for my hangman game. welcome?');
+    });
     app.get('/api/all/words', hangmanAPI.allWords);
     app.get('/api/all/users', hangmanAPI.allUsers);
     app.get('/api/list/size/:size', hangmanAPI.listWordOfSize);
