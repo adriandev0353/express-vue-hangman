@@ -2,6 +2,9 @@
   <header class="header">
     <div>
       <b-navbar type="primary" variant="primary">
+        <b-navbar-brand href="#">
+      <img src="../assets/hangman-game.svg" class="d-inline-block align-top" alt="logo">
+    </b-navbar-brand>
         <b-navbar-nav>
           <b-nav-item>
             <router-link to="/">Play</router-link>
@@ -30,5 +33,9 @@
 }
 a:hover {
   color: #ccc;
+}
+img {
+  width: 50px;
+  height: 50px;
 }
 </style>

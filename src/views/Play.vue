@@ -2,28 +2,28 @@
   <div class="play">
     <b-container>
       <div>
-        <img class="heading" src="../assets/logo.png" alt />
+        <img src="../assets/logo.png" alt />
         <p>Enter a word length:</p>
         <b-button-group>
           <input
             type="number"
             class="lengthInput"
-            v-model.number="length"
+            v-model="length"
             placeholder="Enter a word-length"
             :disabled="play"
           />
-          <b-button v-if="!play" @click="activatePlay" variant="outline-primary">Button</b-button>
-          <b-button v-if="play" @click="activatePlay" variant="outline-primary" disabled>Button</b-button>
+          <b-button v-if="!play" @click="activatePlay" variant="outline-primary">Submit</b-button>
+          <b-button v-if="play" @click="activatePlay" variant="outline-primary" disabled>Submit</b-button>
         </b-button-group>
       </div>
       <div v-if="play">
-        <div v-if="!win">
+        <div v-if="!win && guessesLeft>0">
           <h1>
             <span class="guess">{{ guessesLeft }}</span> Guesses left
           </h1>
           <span :key="index" v-for="(letter, index) of wordGuessed">{{ letter }} </span>
         </div>
-        <div v-else>
+        <div v-else-if="win">
           <h1>Congratulations!</h1>
           <h3>
             The word was
@@ -35,7 +35,15 @@
           </h4>
           <b-button @click="resetGame">New Game</b-button>
         </div>
-        <b-row v-if="!win">
+        <div v-else-if="guessesLeft === 0">
+          <h1 class='guess'>Game Over!</h1>
+          <h3>
+            The word was
+            <span class="word">{{ word.word }}</span>
+          </h3>
+          <b-button @click="resetGame">New Game</b-button>
+        </div>
+        <b-row v-if="!win && guessesLeft > 0">
           <hr />
           <b-col sm></b-col>
           <b-col sm>
@@ -116,13 +124,13 @@ export default {
         })
         .then(() => {
           let word = this.word.word;
-          for (let i = 0; i<word.length;i++){
-            if(word[i]==='-'){
-              this.wordGuessed.push('-');
+          for (let i = 0; i < word.length; i++) {
+            if (word[i] === "-") {
+              this.wordGuessed.push("-");
             } else {
-              this.wordGuessed.push('_');
-            };
-          };
+              this.wordGuessed.push("_");
+            }
+          }
         });
 
       this.play = true;
@@ -176,6 +184,9 @@ export default {
 </script>
 
 <style scoped>
+img {
+margin: 10px;
+}
 .heading {
   margin: 10px;
 }
