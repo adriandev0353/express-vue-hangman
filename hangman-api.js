@@ -57,6 +57,19 @@ module.exports = (hangmanService) => {
         }
     };
 
+    const userCheck = async (req, res) => {
+        try {
+            const user = req.params.user;
+            const result = hangmanService.userCheck(user);
+            res.json({
+                status: 'success',
+                message: result
+            });
+        } catch (err) {
+            returnError(res, err);
+        }
+    };
+
     const addWordTo = async (req, res) => {
         try {
             const details = req.body;
@@ -93,6 +106,7 @@ module.exports = (hangmanService) => {
         listWordOfSize,
         addNewWord,
         addUser,
+        userCheck,
         addWordTo,
         decrementPoints,
         allUsers

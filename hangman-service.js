@@ -47,6 +47,15 @@ module.exports = (pool) => {
         }
     };
 
+    const userCheck = async (username) => {
+        const search = await pool.query('SELECT * FROM user_data WHERE username = $1', [username]);
+        if (search.rowCount === 0) {
+            return 'new account';
+        } else {
+            return 'already exists';
+        }
+    };
+
     const addWordTo = async (username, word) => {
         const result = await pool.query('SELECT * FROM user_data WHERE username = $1', [username]);
         const played = result.rows[0].words_played + word + ',';
@@ -78,6 +87,7 @@ module.exports = (pool) => {
         addNewWord,
         allUsers,
         addUser,
+        userCheck,
         addWordTo,
         decrementPoints
     };

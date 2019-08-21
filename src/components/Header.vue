@@ -7,10 +7,10 @@
     </b-navbar-brand>
         <b-navbar-nav>
           <b-nav-item>
-            <router-link to="/">Play</router-link>
+            <router-link to="/Play">Play</router-link>
           </b-nav-item>
           <b-nav-item>
-            <router-link to="/about">Leaderboard</router-link>
+            <router-link to="/leader">Leaderboard</router-link>
           </b-nav-item>
           <b-nav-item>
             <router-link to="/new/word">Add new word</router-link>

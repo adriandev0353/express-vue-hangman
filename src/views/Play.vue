@@ -69,7 +69,7 @@
 import axios from "axios";
 
 export default {
-  name: "home",
+  name: "play",
   data() {
     return {
       length: 0,
@@ -124,6 +124,7 @@ export default {
         })
         .then(() => {
           let word = this.word.word;
+          console.log(word);
           for (let i = 0; i < word.length; i++) {
             if (word[i] === "-") {
               this.wordGuessed.push("-");
