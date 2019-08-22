@@ -3,6 +3,7 @@ const config = require('./config.js');
 
 const checkToken = (req, res, next) => {
     const token = req.body;
+    console.log(token);
     // eslint-disable-next-line handle-callback-err
     jwt.verify(token, config.secret, function (err, decoded) {
         console.log(decoded); // bar
