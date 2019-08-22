@@ -91,7 +91,12 @@ module.exports = (hangmanService) => {
             console.log(pass);
             console.log('----------------------------------------');
             // eslint-disable-next-line handle-callback-err
-            result = bcrypt.compare(pass, hash);
+            bcrypt.compare(pass, hash, function (err, res) {
+                console.log('##########');
+                console.log(res);
+                console.log('##########');
+            });
+            result = bcrypt.compareSync(pass, hash);
             console.log(result);
             res.json({
                 status: result
