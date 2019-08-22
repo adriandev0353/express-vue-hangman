@@ -81,17 +81,15 @@ module.exports = (hangmanService) => {
 
     const loginCheck = async (req, res) => {
         try {
-            let result;
+            let result = false;
             const details = req.body;
             const user = details.username;
             const pass = details.password;
             const hash = await hangmanService.loginCheck(user);
             // eslint-disable-next-line handle-callback-err
-            bcrypt.compare(pass, hash, function (err, res) {
-                result = res;
-            });
+            result = bcrypt.compare(pass, hash);
             res.json({
-                status: result
+                status: String(result)
             });
         } catch (err) {
             returnError(res, err);
