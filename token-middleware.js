@@ -17,7 +17,10 @@ const checkToken = (req, res, next) => {
                 });
             } else {
                 req.decoded = decoded;
-                next();
+                return res.json({
+                    success: true,
+                    message: 'Token valid'
+                });
             }
         });
     } else {
