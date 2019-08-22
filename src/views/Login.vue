@@ -46,16 +46,10 @@ export default {
       let username = this.user;
       let password = this.pass;
       axios
-        .get("https://hangman-webapp.herokuapp.com/api/check/user/" + username)
-        .then(results => {
-          const response = results.data;
-          const message = response.message;
-          if (message === "already exists") {
-            this.$router.push({ name: "Play" });
-          }
-          this.message = "You need to create an account";
-          this.$forceUpdate();
-        });
+      .post('https://hangman-webapp.herokuapp.com/api/login/check', {username, password})
+      .then((results)=>{
+        console.log(results.data);
+      });
     },
     registerUser() {
       this.$router.push({ name: "register" });
