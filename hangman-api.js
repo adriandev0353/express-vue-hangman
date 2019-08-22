@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 var saltRounds = 10;
 
 module.exports = (hangmanService) => {
@@ -82,24 +83,21 @@ module.exports = (hangmanService) => {
     const loginCheck = async (req, res) => {
         try {
             let result;
+            let token;
             const details = req.body;
             const user = details.username;
             const pass = details.password;
             const hash = await hangmanService.loginCheck(user);
-            console.log('----------------------------------------');
-            console.log(hash);
-            console.log(pass);
-            console.log('----------------------------------------');
             // eslint-disable-next-line handle-callback-err
-            bcrypt.compare(pass, hash, function (err, res) {
-                console.log('##########');
-                console.log(res);
-                console.log('##########');
-            });
             result = bcrypt.compareSync(pass, hash);
-            console.log(result);
+            if (result) {
+                token = jwt.sign({ user: user }, 'yikes', {
+                    expiresIn: 86400 // expires in 24 hours
+                });
+            };
             res.json({
-                status: result
+                auth: result,
+                token
             });
         } catch (err) {
             returnError(res, err);

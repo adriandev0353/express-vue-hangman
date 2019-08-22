@@ -48,7 +48,10 @@ export default {
       axios
       .post('https://hangman-webapp.herokuapp.com/api/login/check', {username, password})
       .then((results)=>{
-        console.log(results.data);
+        let response = results.data;
+        let auth = response.auth;
+        let token = response.token;
+        console.log(token, auth);
       });
     },
     registerUser() {
