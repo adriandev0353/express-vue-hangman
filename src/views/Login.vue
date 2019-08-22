@@ -51,7 +51,9 @@ export default {
         let response = results.data;
         let auth = response.auth;
         let token = response.token;
-        console.log(token, auth);
+        if (auth){
+          localStorage['token'] = token;
+        }
       });
     },
     registerUser() {

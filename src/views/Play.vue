@@ -110,8 +110,9 @@ export default {
     };
   },
   beforeCreate(){
+    let token = localStorage['token'];
     axios
-    .get('https://hangman-webapp.herokuapp.com/api/token/check')
+    .post('https://hangman-webapp.herokuapp.com/api/token/check', token)
     .then((results)=>{
       let response = results.data;
       let message = response.message;

@@ -7,7 +7,7 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/all/users', hangmanAPI.allUsers);
     app.get('/api/list/size/:size', hangmanAPI.listWordOfSize);
     app.get('/api/check/user/:user', hangmanAPI.userCheck);
-    app.get('/api/token/check', middleware.checkToken, (req, res) => {
+    app.post('/api/token/check', middleware.checkToken, (req, res) => {
         res.json({
             success: true,
             message: 'Token authorized'
