@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const config = require('./config');
 var saltRounds = 10;
 
 module.exports = (hangmanService) => {
@@ -91,7 +92,7 @@ module.exports = (hangmanService) => {
             // eslint-disable-next-line handle-callback-err
             result = bcrypt.compareSync(pass, hash);
             if (result) {
-                token = jwt.sign({ user: user }, 'yikes', {
+                token = jwt.sign({ user: user }, config.secret, {
                     expiresIn: 86400 // expires in 24 hours
                 });
             };

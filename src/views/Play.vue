@@ -109,6 +109,17 @@ export default {
       ]
     };
   },
+  beforeCreate(){
+    axios
+    .get('/api/token/check')
+    .then((results)=>{
+      let response = results.data;
+      let message = response.message;
+      let success = response.success;
+
+      console.log(message, success);
+    });
+  },
   methods: {
     activatePlay() {
       this.wordGuessed = [];
