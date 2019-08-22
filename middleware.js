@@ -5,7 +5,7 @@ const checkToken = (req, res, next) => {
     const token = req.body;
     // eslint-disable-next-line handle-callback-err
     jwt.verify(token, config.secret, function (err, decoded) {
-        console.log(decoded.user); // bar
+        console.log(decoded); // bar
     });
     next();
     // let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
