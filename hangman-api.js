@@ -91,8 +91,7 @@ module.exports = (hangmanService) => {
                 result = res;
             });
             res.json({
-                status: 'success',
-                match: result
+                status: result
             });
         } catch (err) {
             returnError(res, err);
