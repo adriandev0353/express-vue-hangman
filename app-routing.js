@@ -6,7 +6,7 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/all/users', hangmanAPI.allUsers);
     app.get('/api/list/size/:size', hangmanAPI.listWordOfSize);
     app.get('/api/check/user/:user', hangmanAPI.userCheck);
-    app.post('api/login/check', hangmanAPI.loginCheck);
+    app.post('/api/login/check', hangmanAPI.loginCheck);
     app.post('/api/add/word/:word', hangmanAPI.addNewWord);
     app.post('/api/add/user', hangmanAPI.addUser);
     app.post('/api/add/to/user', hangmanAPI.addWordTo);
