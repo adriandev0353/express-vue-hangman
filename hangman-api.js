@@ -53,6 +53,8 @@ module.exports = (hangmanService) => {
             const details = req.body;
             const user = details.username;
             const pass = details.password;
+            // password hashing
+            // eslint-disable-next-line handle-callback-err
             bcrypt.hash(pass, saltRounds, async (err, hash) => {
                 await hangmanService.addUser(user, hash);
             });
@@ -71,6 +73,26 @@ module.exports = (hangmanService) => {
             res.json({
                 status: 'success',
                 message: result
+            });
+        } catch (err) {
+            returnError(res, err);
+        }
+    };
+
+    const loginCheck = async (req, res) => {
+        try {
+            let result;
+            const details = req.body;
+            const user = details.username;
+            const pass = details.password;
+            const hash = await hangmanService.loginCheck(user);
+            // eslint-disable-next-line handle-callback-err
+            bcrypt.compare(pass, hash, function (err, res) {
+                result = res;
+            });
+            res.json({
+                status: 'success',
+                match: result
             });
         } catch (err) {
             returnError(res, err);
@@ -116,6 +138,7 @@ module.exports = (hangmanService) => {
         userCheck,
         addWordTo,
         decrementPoints,
-        allUsers
+        allUsers,
+        loginCheck
     };
 };

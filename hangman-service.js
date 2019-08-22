@@ -56,6 +56,11 @@ module.exports = (pool) => {
         }
     };
 
+    const loginCheck = async (username) => {
+        const search = await pool.query('SELECT password FROM user_data WHERE username = $1', [username]);
+        return search.rows[0].password;
+    };
+
     const addWordTo = async (username, word) => {
         const result = await pool.query('SELECT * FROM user_data WHERE username = $1', [username]);
         const played = result.rows[0].words_played + word + ',';
@@ -89,6 +94,7 @@ module.exports = (pool) => {
         addUser,
         userCheck,
         addWordTo,
-        decrementPoints
+        decrementPoints,
+        loginCheck
     };
 };
