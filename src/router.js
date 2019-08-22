@@ -4,6 +4,7 @@ import Play from './views/Play.vue';
 import Leader from './views/Leaderboard.vue';
 import New from './views/New-word.vue';
 import Login from './views/Login.vue';
+import Register from './views/Register.vue';
 
 Vue.use(Router);
 
@@ -15,19 +16,33 @@ export default new Router({
             component: Login
         },
         {
+            path: '/register',
+            name: 'register',
+            component: Register
+        },
+        {
             path: '/leader',
             name: 'Leaderboard',
-            component: Leader
+            component: Leader,
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path: '/new/word',
             name: 'Add new word',
-            component: New
+            component: New,
+            meta: {
+                requiresAuth: true
+            }
         },
         {
             path: '/play',
             name: 'Play',
-            component: Play
+            component: Play,
+            meta: {
+                requiresAuth: true
+            }
         }
     ]
 });

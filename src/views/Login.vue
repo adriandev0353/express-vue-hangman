@@ -19,8 +19,9 @@
               </td>
             </tr>
           </table>
-          <h5 class='error'>{{ message }}</h5>
+          <h5 class="error">{{ message }}</h5>
           <b-button @click="submitUser" class="login">Login</b-button>
+          <b-button @click="registerUser" class="login">Sign up</b-button>
         </div>
         <div class="col-sm"></div>
       </div>
@@ -37,8 +38,7 @@ export default {
     return {
       user: "",
       pass: "",
-      message: "",
-      accountStatus: false
+      message: ""
     };
   },
   methods: {
@@ -56,6 +56,11 @@ export default {
           this.message = "You need to create an account";
           this.$forceUpdate();
         });
+    },
+    registerUser() {
+      this.$router.push({ name: "register" });
+      axios
+      .get()
     }
   }
 };

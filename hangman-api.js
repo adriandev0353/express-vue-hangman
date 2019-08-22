@@ -1,3 +1,6 @@
+const bcrypt = require('bcrypt');
+var saltRounds = 10;
+
 module.exports = (hangmanService) => {
     const allWords = async (req, res) => {
         try {
@@ -48,7 +51,11 @@ module.exports = (hangmanService) => {
     const addUser = async (req, res) => {
         try {
             const details = req.body;
-            await hangmanService.addUser(details.username, details.password);
+            const user = details.username;
+            const pass = details.password;
+            bcrypt.hash(pass, saltRounds, async (err, hash) => {
+                await hangmanService.addUser(user, hash);
+            });
             res.json({
                 status: 'success'
             });
