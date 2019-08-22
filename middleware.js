@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken');
 const config = require('./config.js');
 
 const checkToken = (req, res, next) => {
-    const token = req.body;
-    console.log(Object.keys(token));
-    console.log(token);
+    let token = req.body;
+    token = Object.keys(token);
+    token = token[0];
 
     // eslint-disable-next-line handle-callback-err
     jwt.verify(Object.keys(token), config.secret, function (err, decoded) {
