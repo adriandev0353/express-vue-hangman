@@ -109,7 +109,7 @@ export default {
       ]
     };
   },
-  beforeMount(){
+  beforeCreate(){
     axios
     .get('https://hangman-webapp.herokuapp.com/api/token/check')
     .then((results)=>{

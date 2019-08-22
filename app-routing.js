@@ -1,3 +1,4 @@
+const middleware = require('./middleware');
 module.exports = (app, hangmanAPI) => {
     app.get('/', (req, res) => {
         res.send('This is the API server for my hangman game. welcome?');
@@ -6,10 +7,10 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/all/users', hangmanAPI.allUsers);
     app.get('/api/list/size/:size', hangmanAPI.listWordOfSize);
     app.get('/api/check/user/:user', hangmanAPI.userCheck);
-    app.get('/api/token/check', hangmanAPI.checkToken, (req, res) => {
+    app.get('/api/token/check', middleware.checkToken, (req, res) => {
         res.json({
             success: true,
-            message: 'Index page'
+            message: 'Token authorized'
         });
     });
     app.post('/api/login/check', hangmanAPI.loginCheck);
