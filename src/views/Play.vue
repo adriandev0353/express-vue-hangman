@@ -111,7 +111,7 @@ export default {
   },
   beforeCreate(){
     axios
-    .get('/api/token/check')
+    .get('https://hangman-webapp.herokuapp.com/api/token/check')
     .then((results)=>{
       let response = results.data;
       let message = response.message;
