@@ -92,7 +92,7 @@ module.exports = (hangmanService) => {
             // eslint-disable-next-line handle-callback-err
             result = bcrypt.compareSync(pass, hash);
             if (result) {
-                token = jwt.sign({ user: user }, config.secret, {
+                token = jwt.sign({ user }, config.secret, {
                     expiresIn: 86400 // expires in 24 hours
                 });
             };

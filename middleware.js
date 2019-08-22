@@ -3,9 +3,11 @@ const config = require('./config.js');
 
 const checkToken = (req, res, next) => {
     const token = req.body;
+    console.log(Object.keys(token));
     console.log(token);
+
     // eslint-disable-next-line handle-callback-err
-    jwt.verify(token, config.secret, function (err, decoded) {
+    jwt.verify(Object.keys(token), config.secret, function (err, decoded) {
         console.log(decoded); // bar
     });
     next();
