@@ -49,8 +49,8 @@ export default {
 .dropdown a {
   color: black;
 }
-span {
-  color: white;
+a:hover{
+  color:rgb(196, 195, 195);
 }
 img {
   width: 50px;
