@@ -67,6 +67,8 @@ module.exports = (pool) => {
         const points = word.length;
         const newPoints = result.rows[0].points + points;
 
+        console.log(newPoints, played, username);
+
         await pool.query('UPDATE user_data SET points = $1, words_played = $2 WHERE username = $3', [newPoints, played, username]);
     };
 

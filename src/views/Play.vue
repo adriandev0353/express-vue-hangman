@@ -119,7 +119,6 @@ export default {
         let message = response.message;
         let success = response.success;
         this.user = response.user;
-        console.log(response);
 
         if (!success) {
           this.$router.push({ name: "login" });
@@ -179,12 +178,12 @@ export default {
       }
       if (wordSoFar === word) {
         this.win = true;
-        // axios
-        //   .post("/api/add/to/user", {
-        //     username: this.user,
-        //     word: this.word
-        //   })
-        //   .then(res => {});
+        axios
+          .post("https://hangman-webapp.herokuapp.com/api/add/to/user", {
+            username: this.user,
+            word: this.word
+          })
+          .then(res => {});
       }
       if (!isCorrect) {
         this.guessesLeft--;
