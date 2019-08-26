@@ -126,7 +126,7 @@ describe('Testing hangman game', () => {
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { id: 1, username: 'dyllanhope', password: '123', points: 0, words_played: '' }
+                { id: 1, username: 'dyllanhope', password: '123', points: 0, words_played: 0 }
             ]);
         });
         it("Should return a list of users, 'dyllanhope' being the only one as it was added, even though a it was attempted to add again", async () => {
@@ -136,7 +136,7 @@ describe('Testing hangman game', () => {
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { id: 1, username: 'dyllanhope', password: '123', points: 0, words_played: '' }
+                { id: 1, username: 'dyllanhope', password: '123', points: 0, words_played: 0 }
             ]);
         });
         it("Should return a list of users, 'dyllanhope', with updated points", async () => {
@@ -146,7 +146,7 @@ describe('Testing hangman game', () => {
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { id: 1, username: 'dyllanhope', password: '123', points: 9, words_played: 'Aeroplane,' }
+                { id: 1, username: 'dyllanhope', password: '123', points: 9, words_played: 1 }
             ]);
         });
         it("Should return a list of users, 'dyllanhope', with decremented points", async () => {
@@ -157,7 +157,7 @@ describe('Testing hangman game', () => {
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { id: 1, username: 'dyllanhope', password: '123', points: 5, words_played: 'Aeroplane,' }
+                { id: 1, username: 'dyllanhope', password: '123', points: 5, words_played: 1 }
             ]);
         });
         it("Should return a list of users, 'dyllanhope', with decremented points (user can't go below 0)", async () => {
@@ -167,7 +167,7 @@ describe('Testing hangman game', () => {
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { id: 1, username: 'dyllanhope', password: '123', points: 0, words_played: '' }
+                { id: 1, username: 'dyllanhope', password: '123', points: 0, words_played: 0 }
             ]);
         });
     });

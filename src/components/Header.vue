@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div>
-      <b-navbar type="primary" variant="primary">
+      <b-navbar type="dark" variant="dark">
         <b-navbar-brand href="#">
           <img src="../assets/hangman-game.svg" class="d-inline-block align-top" alt="logo" />
         </b-navbar-brand>
@@ -17,9 +17,13 @@
           </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
-          <b-nav-item>
-            <a @click="logout" href="#">Logout</a>
-          </b-nav-item>
+          <b-nav-item-dropdown text="Other" right>
+            <b-dropdown-item>Profile</b-dropdown-item>
+            <b-dropdown-divider></b-dropdown-divider>
+            <b-dropdown-item>
+              <a class="dropdown" @click="logout" href="#">Logout</a>
+            </b-dropdown-item>
+          </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-navbar>
     </div>
@@ -42,8 +46,11 @@ export default {
   text-decoration: none;
   color: white;
 }
-a:hover {
-  color: #ccc;
+.dropdown a {
+  color: black;
+}
+span {
+  color: white;
 }
 img {
   width: 50px;
