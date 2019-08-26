@@ -181,7 +181,7 @@ export default {
         axios
           .post("https://hangman-webapp.herokuapp.com/api/add/to/user", {
             username: this.user,
-            word: this.word
+            word: this.word.word
           })
           .then(res => {});
       }

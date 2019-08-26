@@ -83,7 +83,7 @@ module.exports = (pool) => {
     };
 
     const allUsers = async () => {
-        const result = await pool.query('SELECT * FROM user_data');
+        const result = await pool.query('SELECT * FROM user_data ORDER BY points DESC');
         return result.rows;
     };
 
