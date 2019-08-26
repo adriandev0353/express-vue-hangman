@@ -6,6 +6,8 @@ const checkToken = (req, res, next) => {
     token = Object.keys(token);
     token = token[0];
 
+    console.log(token);
+
     // eslint-disable-next-line handle-callback-err
     jwt.verify(Object.keys(token), config.secret, function (err, decoded) {
         console.log(decoded); // bar
