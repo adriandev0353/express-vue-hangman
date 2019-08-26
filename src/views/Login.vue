@@ -56,6 +56,7 @@ export default {
           let token = response.token;
           if (auth) {
             localStorage["token"] = token;
+            localStorage["user"] = username;
             this.$router.push({ name: "Play" });
           }
         });

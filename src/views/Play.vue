@@ -72,7 +72,6 @@ export default {
   name: "play",
   data() {
     return {
-      user: "",
       length: 0,
       play: false,
       guessesLeft: 4,
@@ -165,7 +164,7 @@ export default {
         this.win = true;
         axios
           .post("https://hangman-webapp.herokuapp.com/api/add/to/user", {
-            username: this.user,
+            username: localStorage["user"],
             word: this.word.word
           })
           .then(res => {});

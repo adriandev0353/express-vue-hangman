@@ -7,11 +7,8 @@ const checkToken = (req, res, next) => {
         token = Object.keys(token);
         token = token[0];
 
-        console.log(token);
-
         try {
             var decoded = jwt.verify(token, config.secret);
-            console.log(decoded);
             req.decoded = decoded;
             next();
         } catch (err) {

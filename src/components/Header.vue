@@ -18,7 +18,7 @@
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-item-dropdown text="Other" right>
-            <b-dropdown-item>Profile</b-dropdown-item>
+            <b-dropdown-item><router-link to="/profile">Profile</router-link></b-dropdown-item>
             <b-dropdown-divider></b-dropdown-divider>
             <b-dropdown-item>
               <a class="dropdown" @click="logout" href="#">Logout</a>
