@@ -4,14 +4,28 @@ const config = require('./config.js');
 const checkToken = (req, res, next) => {
     let token = req.body;
     token = Object.keys(token);
-    token = token[0];
+    if (token) {
+        token = token[0];
 
-    console.log(token);
+        console.log(token);
 
-    // eslint-disable-next-line handle-callback-err
-    var decoded = jwt.verify(token, config.secret);
-    console.log(decoded); // bar
-    next();
+        try {
+            var decoded = jwt.verify(token, config.secret);
+            console.log(decoded);
+            req.decoded = decoded;
+            next();
+        } catch (err) {
+            return res.json({
+                success: false,
+                message: 'Token not valid'
+            });
+        };
+    } else {
+        return res.json({
+            success: false,
+            message: 'No auth token generated'
+        });
+    }
     // let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
     // if (token.startsWith('Bearer ')) {
     //     // Remove Bearer from string
