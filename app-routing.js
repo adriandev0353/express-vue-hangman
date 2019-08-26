@@ -10,7 +10,8 @@ module.exports = (app, hangmanAPI) => {
     app.post('/api/token/check', middleware.checkToken, (req, res) => {
         res.json({
             success: true,
-            message: 'Token authorized'
+            message: 'Token authorized',
+            user: req.decoded.user
         });
     });
     app.post('/api/login/check', hangmanAPI.loginCheck);

@@ -36,7 +36,7 @@
           <b-button @click="resetGame">New Game</b-button>
         </div>
         <div v-else-if="guessesLeft === 0">
-          <h1 class='guess'>Game Over!</h1>
+          <h1 class="guess">Game Over!</h1>
           <h3>
             The word was
             <span class="word">{{ word.word }}</span>
@@ -72,6 +72,7 @@ export default {
   name: "play",
   data() {
     return {
+      user: "",
       length: 0,
       play: false,
       guessesLeft: 4,
@@ -109,26 +110,29 @@ export default {
       ]
     };
   },
-  beforeCreate(){
-    let token = localStorage['token'];
+  beforeMount() {
+    let token = localStorage["token"];
     axios
-    .post('https://hangman-webapp.herokuapp.com/api/token/check', token)
-    .then((results)=>{
-      let response = results.data;
-      let message = response.message;
-      let success = response.success;
+      .post("https://hangman-webapp.herokuapp.com/api/token/check", token)
+      .then(results => {
+        let response = results.data;
+        let message = response.message;
+        let success = response.success;
+        this.user = response.user;
+        console.log(response);
 
-      if (!success){
-        this.$router.push({ name: "login" });
-      };
-      
-    });
+        if (!success) {
+          this.$router.push({ name: "login" });
+        }
+      });
   },
   methods: {
     activatePlay() {
       this.wordGuessed = [];
       axios
-        .get("https://hangman-webapp.herokuapp.com/api/list/size/" + this.length)
+        .get(
+          "https://hangman-webapp.herokuapp.com/api/list/size/" + this.length
+        )
         .then(results => {
           let response = results.data;
           let wordList = response.words;
@@ -175,6 +179,12 @@ export default {
       }
       if (wordSoFar === word) {
         this.win = true;
+        // axios
+        //   .post("/api/add/to/user", {
+        //     username: this.user,
+        //     word: this.word
+        //   })
+        //   .then(res => {});
       }
       if (!isCorrect) {
         this.guessesLeft--;
@@ -201,7 +211,7 @@ export default {
 
 <style scoped>
 img {
-margin: 10px;
+  margin: 10px;
 }
 .heading {
   margin: 10px;
