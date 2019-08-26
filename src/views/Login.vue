@@ -46,20 +46,23 @@ export default {
       let username = this.user;
       let password = this.pass;
       axios
-      .post('https://hangman-webapp.herokuapp.com/api/login/check', {username, password})
-      .then((results)=>{
-        let response = results.data;
-        let auth = response.auth;
-        let token = response.token;
-        if (auth){
-          localStorage['token'] = token;
-        }
-      });
+        .post("https://hangman-webapp.herokuapp.com/api/login/check", {
+          username,
+          password
+        })
+        .then(results => {
+          let response = results.data;
+          let auth = response.auth;
+          let token = response.token;
+          if (auth) {
+            localStorage["token"] = token;
+            this.$router.push({ name: "Play" });
+          }
+        });
     },
     registerUser() {
       this.$router.push({ name: "register" });
-      axios
-      .get()
+      axios.get();
     }
   }
 };

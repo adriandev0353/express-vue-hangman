@@ -110,21 +110,6 @@ export default {
       ]
     };
   },
-  beforeMount() {
-    let token = localStorage["token"];
-    axios
-      .post("https://hangman-webapp.herokuapp.com/api/token/check", token)
-      .then(results => {
-        let response = results.data;
-        let message = response.message;
-        let success = response.success;
-        this.user = response.user;
-
-        if (!success) {
-          this.$router.push({ name: "login" });
-        }
-      });
-  },
   methods: {
     activatePlay() {
       this.wordGuessed = [];
