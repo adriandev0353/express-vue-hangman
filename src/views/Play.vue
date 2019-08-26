@@ -41,6 +41,10 @@
             The word was
             <span class="word">{{ word.word }}</span>
           </h3>
+          <h4>
+            You lost
+            <span class="points">{{lost}}</span> points!
+          </h4>
           <b-button @click="resetGame">New Game</b-button>
         </div>
         <b-row v-if="!win && guessesLeft > 0">
@@ -72,9 +76,10 @@ export default {
   name: "play",
   data() {
     return {
+      lost: 0,
       length: 0,
       play: false,
-      guessesLeft: 4,
+      guessesLeft: 5,
       wordGuessed: [],
       win: false,
       word: {},
@@ -171,6 +176,15 @@ export default {
       }
       if (!isCorrect) {
         this.guessesLeft--;
+        if (this.guessesLeft === 0) {
+          this.lost = Math.floor(this.length / 2);
+          axios
+            .post("https://hangman-webapp.herokuapp.com/api/dec/points", {
+              username: localStorage["user"],
+              points: Math.floor(this.length / 2)
+            })
+            .then(res => {});
+        }
       }
     },
     isDisabled(index) {
@@ -181,7 +195,7 @@ export default {
       for (let item of this.alphabet) {
         item.disable = false;
       }
-      this.guessesLeft = 4;
+      this.guessesLeft = 5;
       this.length = 0;
       this.wordGuessed = [];
       this.win = false;

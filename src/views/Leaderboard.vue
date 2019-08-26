@@ -8,7 +8,7 @@
       </b-row>
       <b-row>
         <b-col></b-col>
-        <b-col cols='7'><b-table light :items="items" :fields="fields"></b-table></b-col>
+        <b-col cols='7'><b-table info :items="items" :fields="fields"></b-table></b-col>
         <b-col></b-col>
       </b-row>
     </b-container>
