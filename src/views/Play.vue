@@ -117,8 +117,11 @@ export default {
       let response = results.data;
       let message = response.message;
       let success = response.success;
+
+      if (!success){
+        this.$router.push({ name: "login" });
+      };
       
-      console.log(message, success);
     });
   },
   methods: {

@@ -3,8 +3,8 @@
     <div>
       <b-navbar type="primary" variant="primary">
         <b-navbar-brand href="#">
-      <img src="../assets/hangman-game.svg" class="d-inline-block align-top" alt="logo">
-    </b-navbar-brand>
+          <img src="../assets/hangman-game.svg" class="d-inline-block align-top" alt="logo" />
+        </b-navbar-brand>
         <b-navbar-nav>
           <b-nav-item>
             <router-link to="/Play">Play</router-link>
@@ -18,13 +18,24 @@
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-item>
-            <router-link to="/logout">Logout</router-link>
+            <a @click="logout" href="#">Logout</a>
           </b-nav-item>
         </b-navbar-nav>
       </b-navbar>
     </div>
   </header>
 </template>
+
+<script>
+export default {
+  methods: {
+    logout() {
+      localStorage.clear();
+      this.$router.push({ name: "login" });
+    }
+  }
+};
+</script>
 
 <style scoped>
 .header a {
