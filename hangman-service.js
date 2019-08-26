@@ -67,8 +67,6 @@ module.exports = (pool) => {
         const points = word.length;
         const newPoints = result.rows[0].points + points;
 
-        console.log(newPoints, played, username);
-
         await pool.query('UPDATE user_data SET points = $1, words_played = $2 WHERE username = $3', [newPoints, played, username]);
     };
 
@@ -84,7 +82,18 @@ module.exports = (pool) => {
 
     const allUsers = async () => {
         const result = await pool.query('SELECT * FROM user_data ORDER BY points DESC');
-        return result.rows;
+        const data = result.rows;
+        for (const item of data) {
+            const words = item.words_played;
+            const list = words.split(',');
+            for (let i = 0; i < list.length; i++) {
+                if (list[i] === '') {
+                    list.splice(i, 1);
+                }
+            }
+            item.words_played = list.length;
+        }
+        return data;
     };
 
     return {

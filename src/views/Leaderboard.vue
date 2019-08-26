@@ -1,6 +1,17 @@
 <template>
   <div class="leaderboard">
-    <h1>Leaderboard coming soon..</h1>
+    <b-container>
+      <b-row>
+        <b-col></b-col>
+        <b-col cols='7'><h1>The Hangman Leaderboards</h1></b-col>
+        <b-col></b-col>
+      </b-row>
+      <b-row>
+        <b-col></b-col>
+        <b-col cols='7'><b-table light :items="items" :fields="fields"></b-table></b-col>
+        <b-col></b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -8,20 +19,44 @@
 import axios from "axios";
 
 export default {
-  beforeMount(){
-    let token = localStorage['token'];
+  beforeMount() {
+    let token = localStorage["token"];
     axios
-    .post('https://hangman-webapp.herokuapp.com/api/token/check', token)
-    .then((results)=>{
-      let response = results.data;
-      let message = response.message;
-      let success = response.success;
+      .post("https://hangman-webapp.herokuapp.com/api/token/check", token)
+      .then(results => {
+        let response = results.data;
+        let message = response.message;
+        let success = response.success;
 
-      if (!success){
-        this.$router.push({ name: "login" });
-      };
-
-    });
+        if (!success) {
+          this.$router.push({ name: "login" });
+        }
+      });
   },
-}
+  beforeCreate() {
+    axios
+      .get("https://hangman-webapp.herokuapp.com/api/all/users")
+      .then(res => {
+        let list = [];
+        let response = res.data;
+        let users = response.words;
+        for (let x = 0; x < users.length; x++) {
+          let item = {
+            Ranking: x + 1,
+            Username: users[x].username,
+            Points: users[x].points,
+            Words: users[x].words_played
+          };
+          list.push(item);
+        }
+        this.items = list;
+      });
+  },
+  data() {
+    return {
+      fields: ["Ranking", "Username", "Points", "Words"],
+      items: []
+    };
+  }
+};
 </script>
