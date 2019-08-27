@@ -3,12 +3,16 @@
     <b-container>
       <b-row>
         <b-col></b-col>
-        <b-col cols='7'><h1>The Hangman Leaderboards</h1></b-col>
+        <b-col cols="7">
+          <h1>The Hangman Leaderboards</h1>
+        </b-col>
         <b-col></b-col>
       </b-row>
       <b-row>
         <b-col></b-col>
-        <b-col cols='7'><b-table info :items="items" :fields="fields"></b-table></b-col>
+        <b-col cols="7">
+          <b-table info :items="items" :fields="fields" :tbody-tr-class="rowClass"></b-table>
+        </b-col>
         <b-col></b-col>
       </b-row>
     </b-container>
@@ -42,6 +46,14 @@ export default {
       fields: ["Ranking", "Username", "Points"],
       items: []
     };
+  },
+  methods: {
+    rowClass(item, type) {
+      if (!item) return;
+      if (item.Ranking === 1) {
+        return "table-warning";
+      };
+    }
   }
 };
 </script>

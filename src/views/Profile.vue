@@ -35,7 +35,6 @@ export default {
 
         for (let i = 0; i < data.length; i++) {
             this.totalPoints += data[i].points;
-            console.log(data[i])
           let item = {
             Total_points: this.totalPoints,
             Word: data[i].word,
