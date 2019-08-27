@@ -11,7 +11,7 @@
       <b-row>
         <b-col></b-col>
         <b-col cols="7">
-          <b-table info :items="items" :fields="fields"></b-table>
+          <b-table info :items="items" :fields="fields" :tbody-tr-class="rowClass"></b-table>
         </b-col>
         <b-col></b-col>
       </b-row>
@@ -34,10 +34,12 @@ export default {
         let list = [];
 
         for (let i = 0; i < data.length; i++) {
+            this.totalPoints += data[i].points;
+            console.log(data[i])
           let item = {
-            Username: data[i].username,
+            Total_points: this.totalPoints,
             Word: data[i].word,
-            Status: data[i].complete_state,
+            Result: data[i].complete_state,
             Points: data[i].points
           };
           list.push(item);
@@ -48,9 +50,20 @@ export default {
   data() {
     return {
       user: localStorage["user"],
-      fields: ["Username", "Word", "Status", "Points"],
-      items: []
+      fields: ["Total_points", "Word", "Result", "Points"],
+      items: [],
+      totalPoints: 0
     };
+  },
+  methods: {
+    rowClass(item, type) {
+      if (!item) return;
+      if (item.Result === "won") {
+        return "table-success";
+      } else {
+        return "table-danger";
+      }
+    }
   }
 };
 </script>

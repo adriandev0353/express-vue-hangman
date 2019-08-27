@@ -168,14 +168,14 @@ describe('Testing hangman game', () => {
             await hangmanInstance.addUser('dyllanhope', '123');
             await hangmanInstance.addUser('michael', '123');
 
-            await hangmanInstance.addWordTo('dyllanhope', 'plane', 'win');
-            await hangmanInstance.addWordTo('dyllanhope', 'house', 'lose');
-            await hangmanInstance.addWordTo('michael', 'house', 'win');
+            await hangmanInstance.addWordTo('dyllanhope', 'plane', 'won');
+            await hangmanInstance.addWordTo('dyllanhope', 'house', 'lost');
+            await hangmanInstance.addWordTo('michael', 'house', 'won');
 
             const data = await hangmanInstance.personalData('dyllanhope');
             assert.strict.deepEqual(data, [
-                { username: 'dyllanhope', word: 'house', complete_state: 'lost', points: -2 },
-                { username: 'dyllanhope', word: 'plane', complete_state: 'won', points: 5 }]
+                { id: 1, username: 'dyllanhope', word: 'house', complete_state: 'lost', points: -2 },
+                { id: 1, username: 'dyllanhope', word: 'plane', complete_state: 'won', points: 5 }]
             );
         });
     });
