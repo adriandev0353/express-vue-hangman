@@ -37,7 +37,7 @@ export default {
           let item = {
             Username: data[i].username,
             Word: data[i].word,
-            State: data[i].complete_state,
+            Status: data[i].complete_state,
             Points: data[i].points
           };
           list.push(item);
@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       user: localStorage["user"],
-      fields: ["Username", "Word", "Win/Lost", "Points"],
+      fields: ["Username", "Word", "Status", "Points"],
       items: []
     };
   }

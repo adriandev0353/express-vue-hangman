@@ -21,7 +21,7 @@
           <h1>
             <span class="guess">{{ guessesLeft }}</span> Guesses left
           </h1>
-          <span :key="index" v-for="(letter, index) of wordGuessed">{{ letter }}</span>
+          <span :key="index" v-for="(letter, index) of wordGuessed">{{ letter }} </span>
         </div>
         <div v-else-if="win">
           <h1>Congratulations!</h1>
