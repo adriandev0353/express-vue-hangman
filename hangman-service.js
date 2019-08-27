@@ -65,10 +65,10 @@ module.exports = (pool) => {
         const userPoints = await pool.query('SELECT points FROM user_data WHERE username = $1', [username]);
         let newPoints = 0;
         let addPoints = 0;
-        if (state === 'win') {
+        if (state === 'won') {
             newPoints = userPoints.rows[0].points + word.length;
             addPoints = word.length;
-        } else if (state === 'lose') {
+        } else if (state === 'lost') {
             const decPoints = Math.floor(word.length / 2);
             newPoints = userPoints.rows[0].points - decPoints;
             addPoints = -decPoints;
