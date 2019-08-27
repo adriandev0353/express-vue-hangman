@@ -3,7 +3,7 @@
     <b-container>
       <b-row>
         <b-col></b-col>
-        <b-col cols="7">
+        <b-col style='margin-top:30px' cols="7">
           <h1>The Hangman Leaderboards</h1>
         </b-col>
         <b-col></b-col>
