@@ -30,8 +30,7 @@ export default {
           let item = {
             Ranking: x + 1,
             Username: users[x].username,
-            Points: users[x].points,
-            Words: users[x].words_played
+            Points: users[x].points
           };
           list.push(item);
         }
@@ -40,7 +39,7 @@ export default {
   },
   data() {
     return {
-      fields: ["Ranking", "Username", "Points", "Words"],
+      fields: ["Ranking", "Username", "Points"],
       items: []
     };
   }

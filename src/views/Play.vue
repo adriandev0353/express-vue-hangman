@@ -21,7 +21,7 @@
           <h1>
             <span class="guess">{{ guessesLeft }}</span> Guesses left
           </h1>
-          <span :key="index" v-for="(letter, index) of wordGuessed">{{ letter }} </span>
+          <span :key="index" v-for="(letter, index) of wordGuessed">{{ letter }}</span>
         </div>
         <div v-else-if="win">
           <h1>Congratulations!</h1>
@@ -170,7 +170,8 @@ export default {
         axios
           .post("https://hangman-webapp.herokuapp.com/api/add/to/user", {
             username: localStorage["user"],
-            word: this.word.word
+            word: this.word.word,
+            state: "won"
           })
           .then(res => {});
       }
@@ -179,9 +180,10 @@ export default {
         if (this.guessesLeft === 0) {
           this.lost = Math.floor(this.length / 2);
           axios
-            .post("https://hangman-webapp.herokuapp.com/api/dec/points", {
+            .post("https://hangman-webapp.herokuapp.com/api/add/to/user", {
               username: localStorage["user"],
-              points: Math.floor(this.length / 2)
+              word: this.word.word,
+              state: "lost"
             })
             .then(res => {});
         }

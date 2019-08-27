@@ -22,6 +22,7 @@ describe('Testing hangman game', () => {
         // clean the tables before each test run
         await pool.query('delete from word_list;');
         await pool.query('delete from user_data;');
+        await pool.query('delete from table_link;');
     });
     describe('testing database manipulation', () => {
         it('Should return a list of 3 words with their id and length', async () => {
@@ -126,7 +127,7 @@ describe('Testing hangman game', () => {
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { id: 1, username: 'dyllanhope', password: '123', points: 0, words_played: 0 }
+                { id: 1, username: 'dyllanhope', password: '123', points: 0 }
             ]);
         });
         it("Should return a list of users, 'dyllanhope' being the only one as it was added, even though a it was attempted to add again", async () => {
@@ -136,39 +137,46 @@ describe('Testing hangman game', () => {
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { id: 1, username: 'dyllanhope', password: '123', points: 0, words_played: 0 }
+                { id: 1, username: 'dyllanhope', password: '123', points: 0 }
             ]);
         });
         it("Should return a list of users, 'dyllanhope', with updated points", async () => {
             const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.reloadData([
+                'house',
+                'car',
+                'plane',
+                'Aeroplane'
+            ]);
             await hangmanInstance.addUser('dyllanhope', '123');
-            await hangmanInstance.addWordTo('dyllanhope', 'Aeroplane');
+            await hangmanInstance.addWordTo('dyllanhope', 'Aeroplane', 'win');
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { id: 1, username: 'dyllanhope', password: '123', points: 9, words_played: 1 }
+                { id: 1, username: 'dyllanhope', password: '123', points: 9 }
             ]);
         });
-        it("Should return a list of users, 'dyllanhope', with decremented points", async () => {
-            const hangmanInstance = HangmanService(pool);
-            await hangmanInstance.addUser('dyllanhope', '123');
-            await hangmanInstance.addWordTo('dyllanhope', 'Aeroplane');
-            await hangmanInstance.decrementPoints('dyllanhope', 4);
 
-            const list = await hangmanInstance.allUsers();
-            assert.strict.deepEqual(list, [
-                { id: 1, username: 'dyllanhope', password: '123', points: 5, words_played: 1 }
-            ]);
-        });
-        it("Should return a list of users, 'dyllanhope', with decremented points (user can't go below 0)", async () => {
+        it("Should return a list of words that the user 'dyllanhope' has played along with whether he lost or won", async () => {
             const hangmanInstance = HangmanService(pool);
-            await hangmanInstance.addUser('dyllanhope', '123');
-            await hangmanInstance.decrementPoints('dyllanhope', 4);
-
-            const list = await hangmanInstance.allUsers();
-            assert.strict.deepEqual(list, [
-                { id: 1, username: 'dyllanhope', password: '123', points: 0, words_played: 0 }
+            await hangmanInstance.reloadData([
+                'house',
+                'car',
+                'plane',
+                'Aeroplane'
             ]);
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+
+            await hangmanInstance.addWordTo('dyllanhope', 'plane', 'win');
+            await hangmanInstance.addWordTo('dyllanhope', 'house', 'lose');
+            await hangmanInstance.addWordTo('michael', 'house', 'win');
+
+            const data = await hangmanInstance.personalData('dyllanhope');
+            assert.strict.deepEqual(data, [
+                { username: 'dyllanhope', word: 'house', complete_state: 'lost', points: -2 },
+                { username: 'dyllanhope', word: 'plane', complete_state: 'won', points: 5 }]
+            );
         });
     });
 });

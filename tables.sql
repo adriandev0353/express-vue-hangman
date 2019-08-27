@@ -8,6 +8,13 @@ create table user_data(
     id int not null,
     username text not null,
     password text not null,
-    points int not null,
-    words_played text not null
+    points int not null
+);
+
+create table table_link(
+    id int not null,
+    word_key int not null,
+    user_key int not null,
+    complete_state text not null,
+    points int not null
 );

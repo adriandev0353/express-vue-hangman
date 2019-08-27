@@ -81,6 +81,18 @@ module.exports = (hangmanService) => {
         }
     };
 
+    const personalData = async (req, res) => {
+        try {
+            const user = req.params.user;
+            res.json({
+                status: 'success',
+                data: await hangmanService.personalData(user)
+            });
+        } catch (err) {
+            returnError(res, err);
+        }
+    };
+
     const loginCheck = async (req, res) => {
         try {
             let result;
@@ -108,19 +120,7 @@ module.exports = (hangmanService) => {
     const addWordTo = async (req, res) => {
         try {
             const details = req.body;
-            await hangmanService.addWordTo(details.username, details.word);
-            res.json({
-                status: 'success'
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
-    };
-
-    const decrementPoints = async (req, res) => {
-        try {
-            const details = req.body;
-            await hangmanService.decrementPoints(details.username, details.points);
+            await hangmanService.addWordTo(details.username, details.word, details.state);
             res.json({
                 status: 'success'
             });
@@ -143,8 +143,8 @@ module.exports = (hangmanService) => {
         addUser,
         userCheck,
         addWordTo,
-        decrementPoints,
         allUsers,
-        loginCheck
+        loginCheck,
+        personalData
     };
 };

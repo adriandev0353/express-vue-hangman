@@ -76,15 +76,5 @@ describe('API Tests', () => {
                     done();
                 });
         });
-        it('should return a successful posting of decrementing points from a user', (done) => {
-            request(app)
-                .post('/api/dec/points')
-                .send({ username: 'dyllanhope', points: 10 })
-                .end((err, res) => {
-                    expect(res.body.status).to.be.equal('success');
-                    expect(res.statusCode).to.be.equal(200);
-                    done();
-                });
-        });
     });
 });
