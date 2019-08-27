@@ -107,14 +107,8 @@ module.exports = (pool) => {
     };
 
     const choiceFilter = async (user, choice) => {
-        let result = [];
-        if (choice != null) {
-            result = await pool.query('SELECT table_link.id, user_data.username, word_list.word, table_link.complete_state, table_link.points FROM user_data INNER JOIN table_link ON user_data.id = table_link.user_key INNER JOIN word_list on table_link.word_key = word_list.id WHERE user_data.username = $1 AND table_link.complete_state = $2 ORDER BY table_link.id ASC', [user, choice]);
-            return result.rows;
-        } else {
-            result = await personalData(user);
-            return result;
-        }
+        const result = await pool.query('SELECT table_link.id, user_data.username, word_list.word, table_link.complete_state, table_link.points FROM user_data INNER JOIN table_link ON user_data.id = table_link.user_key INNER JOIN word_list on table_link.word_key = word_list.id WHERE user_data.username = $1 AND table_link.complete_state = $2 ORDER BY table_link.id ASC', [user, choice]);
+        return result.rows;
     };
 
     return {

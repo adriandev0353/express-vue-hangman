@@ -91,31 +91,59 @@ export default {
     },
     onChange(event) {
       this.totalPoints = 0;
-      axios
-        .get(
-          "https://hangman-webapp.herokuapp.com/api/get/user/data/user/" +
-            localStorage["user"] +
-            "/choice/" +
-            this.selected
-        )
-        .then(res => {
-          let response = res.data;
-          let data = response.data;
-          let list = [];
+      if (this.selected) {
+        axios
+          .get(
+            "https://hangman-webapp.herokuapp.com/api/get/user/data/user/" +
+              localStorage["user"] +
+              "/choice/" +
+              this.selected
+          )
+          .then(res => {
+            let response = res.data;
+            let data = response.data;
+            let list = [];
 
-          for (let i = 0; i < data.length; i++) {
-            this.totalPoints += data[i].points;
-            let item = {
-              Total_points: this.totalPoints,
-              Word: data[i].word,
-              Result: data[i].complete_state,
-              Points: data[i].points
-            };
-            list.push(item);
-          }
-          this.items = list;
-          this.$forceUpdate();
-        });
+            for (let i = 0; i < data.length; i++) {
+              this.totalPoints += data[i].points;
+              let item = {
+                Total_points: this.totalPoints,
+                Word: data[i].word,
+                Result: data[i].complete_state,
+                Points: data[i].points
+              };
+              list.push(item);
+            }
+            this.items = list;
+            this.$forceUpdate();
+          });
+      } else {
+        axios
+          .get(
+            "https://hangman-webapp.herokuapp.com/api/get/user/data/" +
+              localStorage["user"]
+          )
+          .then(res => {
+            let response = res.data;
+            let data = response.data;
+            let list = [];
+
+            for (let i = 0; i < data.length; i++) {
+              this.totalPoints += data[i].points;
+              if (this.totalPoints < 0) {
+                this.totalPoints = 0;
+              }
+              let item = {
+                Total_points: this.totalPoints,
+                Word: data[i].word,
+                Result: data[i].complete_state,
+                Points: data[i].points
+              };
+              list.push(item);
+            }
+            this.items = list;
+          });
+      }
     }
   }
 };
