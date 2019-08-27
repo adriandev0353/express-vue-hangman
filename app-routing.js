@@ -8,6 +8,7 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/list/size/:size', hangmanAPI.listWordOfSize);
     app.get('/api/check/user/:user', hangmanAPI.userCheck);
     app.get('/api/get/user/data/:user', hangmanAPI.personalData);
+    app.get('/api/get/user/data/user/:user/choice/:choice', hangmanAPI.choiceFilter);
     app.post('/api/token/check', middleware.checkToken, (req, res) => {
         res.json({
             success: true,

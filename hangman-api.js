@@ -129,6 +129,20 @@ module.exports = (hangmanService) => {
         }
     };
 
+    const choiceFilter = async (req, res) => {
+        try {
+            const user = req.params.user;
+            const choice = req.params.choice;
+            const filter = await hangmanService.choiceFilter(user, choice);
+            res.json({
+                status: 'success',
+                data: filter
+            });
+        } catch (err) {
+            returnError(res, err);
+        }
+    };
+
     const returnError = (res, err) => {
         res.json({
             status: 'error',
@@ -145,6 +159,7 @@ module.exports = (hangmanService) => {
         addWordTo,
         allUsers,
         loginCheck,
-        personalData
+        personalData,
+        choiceFilter
     };
 };
