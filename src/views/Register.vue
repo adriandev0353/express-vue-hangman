@@ -27,6 +27,7 @@
           </table>
           <h5 class="error">{{ message }}</h5>
           <b-button @click="submitUser" class="login">Sign up</b-button>
+          <b-button @click="back" class="login">Back</b-button>
         </div>
         <div class="col-sm"></div>
       </div>
@@ -76,12 +77,18 @@ export default {
             }
           });
       }
+    },
+    back(){
+      this.$router.push({ name:'login' });
     }
   }
 };
 </script>
 
 <style scoped>
+.login {
+  margin: 5px;
+}
 .error {
   color: crimson;
 }
