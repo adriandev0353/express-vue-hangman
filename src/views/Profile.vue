@@ -6,7 +6,7 @@
           <h1>{{ user }}</h1>
           <h2>
             Points:
-            <span class="points">{{ totalPoints }}</span>
+            <span class="points">{{ points }}</span>
           </h2>
           <h2>Ranking: {{ ranking }}</h2>
           <hr />
@@ -30,6 +30,7 @@
 import axios from "axios";
 export default {
   beforeCreate() {
+    this.points = 0;
     axios
       .get(
         "https://hangman-webapp.herokuapp.com/api/get/user/data/" +
@@ -41,12 +42,12 @@ export default {
         let list = [];
 
         for (let i = 0; i < data.length; i++) {
-          this.totalPoints += data[i].points;
-          if (this.totalPoints < 0) {
-            this.totalPoints = 0;
+          this.points += data[i].points;
+          if (this.points < 0) {
+            this.points = 0;
           }
           let item = {
-            Total_points: this.totalPoints,
+            Total_points: this.points,
             Word: data[i].word,
             Result: data[i].complete_state,
             Points: data[i].points
@@ -74,6 +75,7 @@ export default {
       fields: ["Total_points", "Word", "Result", "Points"],
       items: [],
       totalPoints: 0,
+      points: 0,
       ranking: 0,
       selected: null
     };
@@ -88,6 +90,7 @@ export default {
       }
     },
     onChange(event) {
+      this.totalPoints = 0;
       axios
         .get(
           "https://hangman-webapp.herokuapp.com/api/get/user/data/user/" +

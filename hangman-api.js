@@ -133,6 +133,7 @@ module.exports = (hangmanService) => {
         try {
             const user = req.params.user;
             const choice = req.params.choice;
+            console.log(user, choice);
             const filter = await hangmanService.choiceFilter(user, choice);
             res.json({
                 status: 'success',
