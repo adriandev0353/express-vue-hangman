@@ -19,7 +19,8 @@
               </td>
             </tr>
           </table>
-          <h5 class="error">{{ message }}</h5>
+          <b-alert v-if='error' show  style='margin:5px' variant="danger">{{ message }}</b-alert>
+          <b-alert v-else hide variant="danger">{{ message }}</b-alert>
           <b-button @click="submitUser" class="login">Login</b-button>
           <b-button @click="registerUser" class="login">Sign up</b-button>
         </div>
@@ -38,6 +39,7 @@ export default {
     return {
       user: "",
       pass: "",
+      error: false,
       message: ""
     };
   },
@@ -45,6 +47,7 @@ export default {
     submitUser() {
       let username = this.user;
       let password = this.pass;
+      if(username && password){
       axios
         .post("https://hangman-webapp.herokuapp.com/api/login/check", {
           username,
@@ -58,12 +61,18 @@ export default {
             localStorage["token"] = token;
             localStorage["user"] = username;
             this.$router.push({ name: "Play" });
+          } else {
+            this.error = true;
+            this.message = "Your username or password are incorrect"
           }
         });
+      } else {
+        this.error = true;
+        this.message = "Please enter a username and a password";
+      }
     },
     registerUser() {
       this.$router.push({ name: "register" });
-      axios.get();
     }
   }
 };
