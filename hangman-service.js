@@ -69,7 +69,7 @@ module.exports = (pool) => {
             newPoints = userPoints.rows[0].points + word.length;
             addPoints = word.length;
         } else if (state === 'lost') {
-            const decPoints = Math.floor(word.length / 2);
+            const decPoints = Math.ceil(word.length / 2);
             newPoints = userPoints.rows[0].points - decPoints;
             addPoints = -decPoints;
             if (newPoints < 0) {

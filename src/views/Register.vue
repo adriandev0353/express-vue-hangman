@@ -25,7 +25,8 @@
               </td>
             </tr>
           </table>
-          <h5 class="error">{{ message }}</h5>
+          <b-alert v-if="error" show style="margin:5px" variant="danger">{{ message }}</b-alert>
+          <b-alert v-else hide variant="danger">{{ message }}</b-alert>
           <b-button @click="submitUser" class="login">Sign up</b-button>
           <b-button @click="back" class="login">Back</b-button>
         </div>
@@ -45,41 +46,51 @@ export default {
       pass: "",
       passConfirm: "",
       message: "",
+      error: false,
       accountAvailability: false
     };
   },
   methods: {
     submitUser() {
       let message;
-      if (this.pass === this.passConfirm && this.pass.length > 0) {
-        axios
-          .get(
-            "https://hangman-webapp.herokuapp.com/api/check/user/" + this.user
-          )
-          .then(results => {
-            let response = results.data;
-            message = response.message;
-            if (message === "already exists") {
-              this.message = "This account already exists";
-            } else {
-              this.accountAvailability = true;
-            }
-            this.$forceUpdate();
-            if (this.accountAvailability) {
-              axios
-                .post("https://hangman-webapp.herokuapp.com/api/add/user/", {
-                  username: this.user,
-                  password: this.pass
-                })
-                .then(results => {
-                  this.$router.push({ name: "login" });
-                });
-            }
-          });
+      if (this.user && this.pass) {
+        if (this.pass === this.passConfirm) {
+          axios
+            .get(
+              "https://hangman-webapp.herokuapp.com/api/check/user/" + this.user
+            )
+            .then(results => {
+              let response = results.data;
+              message = response.message;
+              if (message === "already exists") {
+                this.error = true;
+                this.message = "This username already exists";
+              } else {
+                this.accountAvailability = true;
+              }
+              this.$forceUpdate();
+              if (this.accountAvailability) {
+                axios
+                  .post("https://hangman-webapp.herokuapp.com/api/add/user/", {
+                    username: this.user,
+                    password: this.pass
+                  })
+                  .then(results => {
+                    this.$router.push({ name: "login" });
+                  });
+              }
+            });
+        } else {
+          this.error = true;
+          this.message = "The passwords you have entered do not match";
+        }
+      } else {
+        this.error = true;
+        this.message = "Please enter a username and a password";
       }
     },
-    back(){
-      this.$router.push({ name:'login' });
+    back() {
+      this.$router.push({ name: "login" });
     }
   }
 };
@@ -88,8 +99,5 @@ export default {
 <style scoped>
 .login {
   margin: 5px;
-}
-.error {
-  color: crimson;
 }
 </style>

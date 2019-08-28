@@ -82,7 +82,4 @@ export default {
 .login {
   margin: 5px;
 }
-.error {
-  color: crimson;
-}
 </style>
