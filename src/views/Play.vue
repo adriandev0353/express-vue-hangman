@@ -125,7 +125,7 @@ export default {
           let response = results.data;
           let wordList = response.words;
           let listLength = wordList.length;
-          let index = Math.floor(Math.random() * listLength) + 1;
+          let index = Math.ceil(Math.random() * listLength) + 1;
           this.word = wordList[index];
           this.$forceUpdate();
         })
@@ -178,7 +178,7 @@ export default {
       if (!isCorrect) {
         this.guessesLeft--;
         if (this.guessesLeft === 0) {
-          this.lost = Math.floor(this.length / 2);
+          this.lost = Math.ceil(this.length / 2);
           axios
             .post("https://hangman-webapp.herokuapp.com/api/add/to/user", {
               username: localStorage["user"],
