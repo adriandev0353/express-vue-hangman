@@ -143,9 +143,9 @@ module.exports = (hangmanService) => {
         }
     };
 
-    const findUser = async () => {
-        try {  
-            let user = req.params.user;
+    const findUser = async (req, res) => {
+        try {
+            const user = req.params.user;
             res.json({
                 status: 'success',
                 user: await hangmanService.findUser(user)
