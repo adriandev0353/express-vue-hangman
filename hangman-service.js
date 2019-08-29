@@ -38,12 +38,18 @@ module.exports = (pool) => {
     };
     const addUser = async (username, password) => {
         const search = await pool.query('SELECT * FROM user_data WHERE username = $1 ORDER BY DESC', [username]);
-        const allItems = await pool.query('SELECT * FROM user_data ORDER BY DESC', [username]);
+        const allItems = await pool.query('SELECT * FROM user_data ORDER BY DESC');
         const userList = allItems.rows;
+        console.log(userList);
 
         if (search.rowCount === 0) {
+            console.log(userList.length);
+            console.log(userList[userList.length].id);
+            console.log(userList[userList.length].id + 1);
+
             const id = userList[userList.length].id + 1;
             const data = [id, username, password, 0];
+            console.log(data);
 
             await pool.query('INSERT INTO user_data(id, username, password, points) VALUES($1, $2, $3, $4)', data);
         }
