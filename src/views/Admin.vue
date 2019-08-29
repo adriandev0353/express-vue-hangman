@@ -119,9 +119,10 @@ export default {
       }
     },
     deleteUser(id) {
+      if(confirm('Are you sure you want to delete this person?')){
       let list= [];
       axios
-        .post("https://hangman-webapp.herokuapp.com/api/delete/user", id)
+        .post("https://hangman-webapp.herokuapp.com/api/delete/user", {id})
         .then(res => {
           let response = res.data;
           let users = response.users;
@@ -136,6 +137,7 @@ export default {
             this.items = list;
           }
         });
+      }
     }
   }
 };
