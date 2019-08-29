@@ -111,6 +111,11 @@ module.exports = (pool) => {
         return result.rows;
     };
 
+    const findUser = async (user) =>{
+        const result = await pool.query('SELECT * FROM user_data WHERE username = $1', [user]);
+        return result.rows[0];
+    };
+
     return {
         reloadData,
         listWordOfSize,
@@ -122,6 +127,7 @@ module.exports = (pool) => {
         addWordTo,
         loginCheck,
         personalData,
-        choiceFilter
+        choiceFilter,
+        findUser
     };
 };

@@ -143,6 +143,18 @@ module.exports = (hangmanService) => {
         }
     };
 
+    const findUser = async () => {
+        try {  
+            let user = req.params.user;
+            res.json({
+                status: 'success',
+                user: await hangmanService.findUser(user)
+            });
+        } catch (err) {
+            returnError(res, err);
+        }
+    }
+
     const returnError = (res, err) => {
         res.json({
             status: 'error',
@@ -160,6 +172,7 @@ module.exports = (hangmanService) => {
         allUsers,
         loginCheck,
         personalData,
-        choiceFilter
+        choiceFilter,
+        findUser
     };
 };

@@ -9,9 +9,9 @@
               <label>
                 Search user:
                 <b-input-group style="margin-bottom:10px; width:200px" class="mt-3">
-                  <b-form-input></b-form-input>
+                  <b-form-input v-model="search"></b-form-input>
                   <b-input-group-append>
-                    <b-button variant="outline-dark">Search</b-button>
+                    <b-button @click="searchUser" variant="outline-dark">Search</b-button>
                   </b-input-group-append>
                 </b-input-group>
               </label>
@@ -77,8 +77,30 @@ export default {
         { key: "Points", label: "Points", colType: "points" },
         { key: "Remove", label: "", colType: "button" }
       ],
-      items: []
+      items: [],
+      search: ''
     };
+  },
+  methods: {
+    searchUser(){
+      let list = [];
+      let user = this.search;
+      axios
+      .get('https://hangman-webapp.herokuapp.com/api/find/user/' + this.search)
+      .then((res)=>{
+        let response = res.data;
+        let user = response.user;
+        for (let x = 0; x < users.length; x++) {
+          let item = {
+            ID: users[x].id,
+            Username: users[x].username,
+            Points: users[x].points
+          };
+          list.push(item);
+        };
+        this.items = list;
+      });
+    }
   }
 };
 </script>
