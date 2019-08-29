@@ -37,9 +37,9 @@ module.exports = (pool) => {
         };
     };
     const addUser = async (username, password) => {
-        const search = await pool.query('SELECT * FROM user_data WHERE username = $1 ORDER BY id DESC', [username]);
-        const allItems = await pool.query('SELECT * FROM user_data ORDER BY DESC');
-        const userList = allItems.rows;
+        const search = await pool.query('SELECT * FROM user_data WHERE username = $1', [username]);
+        const allUsers = await pool.query('SELECT * FROM user_data ORDER BY id DESC');
+        const userList = allUsers.rows;
         console.log(userList);
 
         if (search.rowCount === 0) {
