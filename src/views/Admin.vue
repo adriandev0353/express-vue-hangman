@@ -93,9 +93,9 @@ export default {
             let response = res.data;
             let user = response.user;
             let item = {
-              ID: user[x].id,
-              Username: user[x].username,
-              Points: user[x].points
+              ID: user.id,
+              Username: user.username,
+              Points: user.points
             };
             this.items = [item];
           });
