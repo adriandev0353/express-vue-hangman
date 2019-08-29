@@ -40,19 +40,17 @@ module.exports = (pool) => {
         const search = await pool.query('SELECT * FROM user_data WHERE username = $1', [username]);
         const allUsers = await pool.query('SELECT * FROM user_data ORDER BY id ASC');
         const userList = allUsers.rows;
-        console.log(userList);
 
         if (search.rowCount === 0) {
-            console.log(userList.length);
-            console.log(userList[userList.length - 1].id);
-            console.log(userList[userList.length - 1].id + 1);
-
             const id = userList[userList.length - 1].id + 1;
             const data = [id, username, password, 0];
-            console.log(data);
 
             await pool.query('INSERT INTO user_data(id, username, password, points) VALUES($1, $2, $3, $4)', data);
         }
+    };
+
+    const delUser = async (id) => {
+        await pool.query('DELETE FROM user_data WHERE id = $1', [id]);
     };
 
     const userCheck = async (username) => {
@@ -136,6 +134,7 @@ module.exports = (pool) => {
         loginCheck,
         personalData,
         choiceFilter,
-        findUser
+        findUser,
+        delUser
     };
 };

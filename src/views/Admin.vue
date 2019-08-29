@@ -18,7 +18,7 @@
               <b-table dark striped :items="items" :fields="fields">
                 <template v-for="(field, index) in fields" :slot="field.key" slot-scope="data">
                   <div :key="index" v-if="field.colType === 'button'">
-                    <b-button variant="danger">Remove</b-button>
+                    <b-button @click="deleteUser(data.item.ID)" variant="danger">Remove</b-button>
                   </div>
                   <div :key="index" v-else-if="field.colType === 'id'">
                     <h5>{{data.item.ID}}</h5>
@@ -117,6 +117,23 @@ export default {
             }
           });
       }
+    },
+    deleteUser(id) {
+      axios
+        .post("https://hangman-webapp.herokuapp.com/api/delete/user", id)
+        .then(res => {
+          let response = res.data;
+          let users = response.users;
+          for (let x = 0; x < users.length; x++) {
+            let item = {
+              ID: users[x].id,
+              Username: users[x].username,
+              Points: users[x].points
+            };
+            list.push(item);
+            this.items = list;
+          }
+        });
     }
   }
 };

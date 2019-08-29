@@ -155,6 +155,19 @@ module.exports = (hangmanService) => {
         }
     };
 
+    const delUser = async (req, res) => {
+        try {
+            const id = req.body.id;
+            await hangmanService.delUser(id);
+            res.json({
+                status: 'success',
+                users: await hangmanService.allUsers()
+            });
+        } catch (err) {
+            returnError(res, err);
+        }
+    };
+
     const returnError = (res, err) => {
         res.json({
             status: 'error',
@@ -173,6 +186,7 @@ module.exports = (hangmanService) => {
         loginCheck,
         personalData,
         choiceFilter,
-        findUser
+        findUser,
+        delUser
     };
 };
