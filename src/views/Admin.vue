@@ -83,28 +83,40 @@ export default {
   },
   methods: {
     searchUser() {
-      let list = [];
       let user = this.search;
-      axios
-        .get(
-          "https://hangman-webapp.herokuapp.com/api/find/user/" + this.search
-        )
-        .then(res => {
-          let response = res.data;
-          let user = response.user;
-          console.log(user);
-          for (let x = 0; x < user.length; x++) {
+      if (user != "") {
+        axios
+          .get(
+            "https://hangman-webapp.herokuapp.com/api/find/user/" + this.search
+          )
+          .then(res => {
+            let response = res.data;
+            let user = response.user;
             let item = {
               ID: user[x].id,
               Username: user[x].username,
               Points: user[x].points
             };
-            console.log(item);
-            list.push(item);
-          }
-          console.log(list);
-          this.items = list;
-        });
+            this.items = [item];
+          });
+      } else {
+        axios
+          .get("https://hangman-webapp.herokuapp.com/api/all/users")
+          .then(res => {
+            let list = [];
+            let response = res.data;
+            let users = response.words;
+            for (let x = 0; x < users.length; x++) {
+              let item = {
+                ID: users[x].id,
+                Username: users[x].username,
+                Points: users[x].points
+              };
+              list.push(item);
+              this.items = list;
+            }
+          });
+      }
     }
   }
 };

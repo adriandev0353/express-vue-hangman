@@ -153,7 +153,7 @@ module.exports = (hangmanService) => {
         } catch (err) {
             returnError(res, err);
         }
-    }
+    };
 
     const returnError = (res, err) => {
         res.json({
