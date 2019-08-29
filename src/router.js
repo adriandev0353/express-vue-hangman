@@ -6,6 +6,7 @@ import New from './views/New-word.vue';
 import Login from './views/Login.vue';
 import Register from './views/Register.vue';
 import Profile from './views/Profile.vue';
+import Admin from './views/Admin.vue';
 import axios from 'axios';
 
 Vue.use(Router);
@@ -16,6 +17,11 @@ const router = new Router({
             path: '/',
             name: 'login',
             component: Login
+        },
+        {
+            path: '/admin',
+            name: 'admin',
+            component: Admin
         },
         {
             path: '/register',

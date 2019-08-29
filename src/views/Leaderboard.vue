@@ -3,7 +3,7 @@
     <b-container>
       <b-row>
         <b-col></b-col>
-        <b-col style='margin-top:30px' cols="7">
+        <b-col style="margin-top:30px" cols="7">
           <h1>The Hangman Leaderboards</h1>
         </b-col>
         <b-col></b-col>
@@ -30,6 +30,7 @@ export default {
         let list = [];
         let response = res.data;
         let users = response.words;
+        console.log(users);
         for (let x = 0; x < users.length; x++) {
           let item = {
             Ranking: x + 1,
@@ -37,8 +38,8 @@ export default {
             Points: users[x].points
           };
           list.push(item);
+          this.items = list;
         }
-        this.items = list;
       });
   },
   data() {
@@ -52,7 +53,7 @@ export default {
       if (!item) return;
       if (item.Ranking === 1) {
         return "table-warning";
-      };
+      }
     }
   }
 };

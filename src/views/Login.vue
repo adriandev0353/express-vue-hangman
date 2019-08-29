@@ -46,6 +46,7 @@ export default {
   methods: {
     submitUser() {
       let username = this.user;
+      username = username.toLowerCase();
       let password = this.pass;
       if(username && password){
       axios
