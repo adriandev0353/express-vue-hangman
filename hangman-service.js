@@ -47,7 +47,7 @@ module.exports = (pool) => {
             console.log(userList[userList.length - 1].id);
             console.log(userList[userList.length - 1].id + 1);
 
-            const id = userList[userList.length].id + 1;
+            const id = userList[userList.length - 1].id + 1;
             const data = [id, username, password, 0];
             console.log(data);
 
