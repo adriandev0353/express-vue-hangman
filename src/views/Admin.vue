@@ -49,7 +49,7 @@
 </template>
 
 <script>
-  import axios from 'axios';
+import axios from "axios";
 export default {
   beforeCreate() {
     axios
@@ -78,28 +78,33 @@ export default {
         { key: "Remove", label: "", colType: "button" }
       ],
       items: [],
-      search: ''
+      search: ""
     };
   },
   methods: {
-    searchUser(){
+    searchUser() {
       let list = [];
       let user = this.search;
       axios
-      .get('https://hangman-webapp.herokuapp.com/api/find/user/' + this.search)
-      .then((res)=>{
-        let response = res.data;
-        let user = response.user;
-        for (let x = 0; x < users.length; x++) {
-          let item = {
-            ID: users[x].id,
-            Username: users[x].username,
-            Points: users[x].points
-          };
-          list.push(item);
-        };
-        this.items = list;
-      });
+        .get(
+          "https://hangman-webapp.herokuapp.com/api/find/user/" + this.search
+        )
+        .then(res => {
+          let response = res.data;
+          let user = response.user;
+          console.log(user);
+          for (let x = 0; x < user.length; x++) {
+            let item = {
+              ID: user[x].id,
+              Username: user[x].username,
+              Points: user[x].points
+            };
+            console.log(item);
+            list.push(item);
+          }
+          console.log(list);
+          this.items = list;
+        });
     }
   }
 };
