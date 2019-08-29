@@ -158,6 +158,7 @@ module.exports = (hangmanService) => {
     const delUser = async (req, res) => {
         try {
             const id = req.body.id;
+            console.log(id, 'api');
             await hangmanService.delUser(id);
             res.json({
                 status: 'success',

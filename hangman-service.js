@@ -50,6 +50,7 @@ module.exports = (pool) => {
     };
 
     const delUser = async (id) => {
+        console.log(id);
         await pool.query('DELETE FROM user_data WHERE id = $1', [id]);
     };
 

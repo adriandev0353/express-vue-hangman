@@ -119,11 +119,13 @@ export default {
       }
     },
     deleteUser(id) {
+      let list= [];
       axios
         .post("https://hangman-webapp.herokuapp.com/api/delete/user", id)
         .then(res => {
           let response = res.data;
           let users = response.users;
+          console.log(users);
           for (let x = 0; x < users.length; x++) {
             let item = {
               ID: users[x].id,
