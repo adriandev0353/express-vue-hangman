@@ -40,7 +40,7 @@
                 <b-badge variant="primary">4</b-badge>
               </span>
             </template>
-              <h1>new words to verify here..</h1>
+            <h1>new words to verify here..</h1>
           </b-tab>
         </b-tabs>
       </b-card>
@@ -49,7 +49,26 @@
 </template>
 
 <script>
+  import axios from 'axios';
 export default {
+  beforeCreate() {
+    axios
+      .get("https://hangman-webapp.herokuapp.com/api/all/users")
+      .then(res => {
+        let list = [];
+        let response = res.data;
+        let users = response.words;
+        for (let x = 0; x < users.length; x++) {
+          let item = {
+            ID: users[x].id,
+            Username: users[x].username,
+            Points: users[x].points
+          };
+          list.push(item);
+          this.items = list;
+        }
+      });
+  },
   data() {
     return {
       fields: [
@@ -58,11 +77,7 @@ export default {
         { key: "Points", label: "Points", colType: "points" },
         { key: "Remove", label: "", colType: "button" }
       ],
-      items: [
-        { ID: 1, Username: "dyllanhope", Points: 26 },
-        { ID: 2, Username: "chrisgreen", Points: 6 },
-        { ID: 3, Username: "markjones", Points: 20 }
-      ]
+      items: []
     };
   }
 };

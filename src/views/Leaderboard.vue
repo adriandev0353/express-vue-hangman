@@ -30,7 +30,6 @@ export default {
         let list = [];
         let response = res.data;
         let users = response.words;
-        console.log(users);
         for (let x = 0; x < users.length; x++) {
           let item = {
             Ranking: x + 1,
