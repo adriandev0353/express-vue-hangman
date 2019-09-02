@@ -66,7 +66,13 @@ module.exports = (pool) => {
         return results.rows;
     };
 
-    const setNewWordStatus = async (word, status) => { await pool.query('UPDATE new_words SET status = $1 WHERE word = $2', [status, word]); };
+    const setNewWordStatus = async (word, status) => {
+        if (status === 'confirmed') {
+            await pool.query('UPDATE new_words SET status = $1 WHERE word = $2', [status, word]);
+        } else {
+            await pool.query('DELETE FROM new_words WHERE word = $1', [word]);
+        }
+    };
 
     const checkWord = async (word) => {
         const check = await pool.query('SELECT * FROM word_list WHERE word = $1', [word]);

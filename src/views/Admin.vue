@@ -44,14 +44,18 @@
             <b-table dark striped :items="words" :fields="columns">
               <template v-for="(column, index) in columns" :slot="column.key" slot-scope="data">
                 <div :key="index" v-if="column.colType === 'status'">
-                  <b-button @click="confirmWord(data.item.Word)" variant="success">+</b-button>
-                  <b-button @click="denyWord(data.item.Word)" variant="danger">-</b-button>
+                  <b-button
+                    style="margin:5px"
+                    @click="confirmWord(data.item.word)"
+                    variant="success"
+                  >+</b-button>
+                  <b-button style="margin:5px" @click="denyWord(data.item.word)" variant="danger">-</b-button>
                 </div>
                 <div :key="index" v-else-if="column.colType === 'user'">
-                  <h5>{{data.item.User}}</h5>
+                  <h5>{{data.item.username}}</h5>
                 </div>
                 <div :key="index" v-else-if="column.colType === 'word'">
-                  <h5>{{data.item.Word}}</h5>
+                  <h5>{{data.item.word}}</h5>
                 </div>
               </template>
             </b-table>
@@ -82,14 +86,27 @@ export default {
           this.items = list;
         }
       })
-      .then(()=>{
+      .then(() => {
         axios
-        .get('https://hangman-webapp.herokuapp.com/api/all/new/words')
-        .then((res)=>{
-          const response = res.data;
-          const words = response.words;
-          console.log(words);
-        });
+          .get("https://hangman-webapp.herokuapp.com/api/all/new/words")
+          .then(res => {
+            const response = res.data;
+            const words = response.words;
+            const list = [];
+            this.newWords = 0;
+            for (let item of words) {
+              if (item.status === "pending") {
+                let wordData = {
+                  username: item.username,
+                  word: item.word
+                };
+                list.push(wordData);
+                this.newWords++;
+                this.$forceUpdate();
+              }
+            }
+            this.words = list;
+          });
       });
   },
   data() {
@@ -104,11 +121,11 @@ export default {
       columns: [
         { key: "username", label: "Username", colType: "user" },
         { key: "word", label: "Word", colType: "word" },
-        { key: "status", label: "", colType: "status" }
+        { key: "status", label: "Confirm/Deny", colType: "status" }
       ],
       words: [],
       search: "",
-      newWords : 0
+      newWords: 0
     };
   },
   methods: {
@@ -149,7 +166,7 @@ export default {
       }
     },
     deleteUser(id) {
-      if (confirm("Are you sure you want to delete this person?")) {
+      if (confirm("Are you sure you want to delete this users' account?")) {
         let list = [];
         axios
           .post("https://hangman-webapp.herokuapp.com/api/delete/user", { id })
@@ -169,10 +186,66 @@ export default {
       }
     },
     confirmWord(word) {
-      console.log(word);
+      axios
+        .post("https://hangman-webapp.herokuapp.com/api/add/word/" + word)
+        .then(res => {
+          axios
+            .post(
+              "https://hangman-webapp.herokuapp.com/api/set/new/word/status",
+              { word: word, status: "confirmed" }
+            )
+            .then(res => {
+              axios
+                .get("https://hangman-webapp.herokuapp.com/api/all/new/words")
+                .then(res => {
+                  const response = res.data;
+                  const words = response.words;
+                  this.newWords = 0;
+                  const list = [];
+                  for (let item of words) {
+                    if (item.status === "pending") {
+                      let wordData = {
+                        username: item.username,
+                        word: item.word
+                      };
+                      list.push(wordData);
+                      this.newWords++;
+                      this.$forceUpdate();
+                    }
+                  }
+                  this.words = list;
+                });
+            });
+        });
     },
     denyWord(word) {
-      console.log(word);
+      axios
+        .post("https://hangman-webapp.herokuapp.com/api/set/new/word/status", {
+          word: word,
+          status: "denied"
+        })
+        .then(res => {
+          axios
+            .get("https://hangman-webapp.herokuapp.com/api/all/new/words")
+            .then(res => {
+              const response = res.data;
+              const words = response.words;
+              this.newWords = 0;
+              const list = [];
+              for (let item of words) {
+                if (item.status === "pending") {
+                  let wordData = {
+                    username: item.username,
+                    word: item.word
+                  };
+                  list.push(wordData);
+                  this.newWords++;
+                  this.$forceUpdate();
+                }
+              }
+              this.words = list;
+            });
+        });
     }
   }
 };
