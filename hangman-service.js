@@ -40,16 +40,30 @@ module.exports = (pool) => {
     // to add words into 'new word' table to be confirmed
     const storeNewWord = async (word, user) => {
         const newWords = await pool.query('SELECT * FROM new_words');
-        console.log(newWords);
-        console.log(newWords[newWords.rows.length - 1].id + 1);
-        const data = [
-            newWords[newWords.rows.length - 1].id + 1,
-            word,
-            user,
-            'pending'
-        ];
-        console.log(data);
-        await pool.query('INSERT INTO new_words(id, word, username,status) VALUES ($1, $2, $3, $4)', data);
+
+        if (newWords.rowCount === 0) {
+            const data = [
+                1,
+                word,
+                user,
+                'pending'
+            ];
+            await pool.query('INSERT INTO new_words(id, word, username,status) VALUES ($1, $2, $3, $4)', data);
+        } else {
+            console.log(newWords);
+            console.log(newWords.rowCount - 1);
+            console.log(newWords[newWords.rowCount - 1]);
+            console.log(newWords[newWords.rowCount - 1].id);
+            console.log(newWords[newWords.rowCount - 1].id + 1);
+            const data = [
+                newWords[newWords.rowCount - 1].id + 1,
+                word,
+                user,
+                'pending'
+            ];
+            console.log(data);
+            await pool.query('INSERT INTO new_words(id, word, username,status) VALUES ($1, $2, $3, $4)', data);
+        }
     };
 
     const checkWord = async (word) => {
