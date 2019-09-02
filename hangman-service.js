@@ -9,6 +9,16 @@ module.exports = (pool) => {
             ];
             await pool.query('INSERT INTO word_list(id, word, word_length) VALUES($1, $2, $3)', data);
         };
+        const results = await pool.query('SELECT * FROM new_words');
+        for (const item of results.rows) {
+            const list = await allWords();
+            const data = [
+                list[list.length - 1].id + 1,
+                item.word,
+                item.word.length
+            ];
+            await pool.query('INSERT INTO word_list(id, word, word_length) VALUES($1, $2, $3)', data);
+        };
     };
 
     const allWords = async () => {
