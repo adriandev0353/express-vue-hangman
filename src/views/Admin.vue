@@ -189,7 +189,7 @@ export default {
       axios
         .post("https://hangman-webapp.herokuapp.com/api/add/word/from/user/", {
           word: word,
-          user: localStorage["user"]
+          user:user
         })
         .then(res => {
           axios
