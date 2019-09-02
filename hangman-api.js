@@ -5,221 +5,150 @@ var saltRounds = 10;
 
 module.exports = (hangmanService) => {
     const allWords = async (req, res) => {
-        try {
-            res.json({
-                status: 'success',
-                words: await hangmanService.allWords()
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
+        res.json({
+            status: 'success',
+            words: await hangmanService.allWords()
+        });
     };
 
     const allUsers = async (req, res) => {
-        try {
-            res.json({
-                status: 'success',
-                words: await hangmanService.allUsers()
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
+        res.json({
+            status: 'success',
+            words: await hangmanService.allUsers()
+        });
     };
 
     const listWordOfSize = async (req, res) => {
-        try {
-            const size = req.params.size;
-            res.json({
-                status: 'success',
-                words: await hangmanService.listWordOfSize(size)
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
+        const size = req.params.size;
+        res.json({
+            status: 'success',
+            words: await hangmanService.listWordOfSize(size)
+        });
     };
 
     const addNewWord = async (req, res) => {
-        try {
-            const details = req.body;
-            await hangmanService.addNewWord(details.word, details.user);
-            res.json({
-                status: 'success'
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
+        const details = req.body;
+        await hangmanService.addNewWord(details.word, details.user);
+        res.json({
+            status: 'success'
+        });
     };
 
     const addUser = async (req, res) => {
-        try {
-            const details = req.body;
-            const user = details.username;
-            const pass = details.password;
-            // password hashing
-            // eslint-disable-next-line handle-callback-err
-            bcrypt.hash(pass, saltRounds, async (err, hash) => {
-                await hangmanService.addUser(user, hash);
-            });
-            res.json({
-                status: 'success'
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
+        const details = req.body;
+        const user = details.username;
+        const pass = details.password;
+        // password hashing
+        // eslint-disable-next-line handle-callback-err
+        bcrypt.hash(pass, saltRounds, async (err, hash) => {
+            await hangmanService.addUser(user, hash);
+        });
+        res.json({
+            status: 'success'
+        });
     };
 
     const userCheck = async (req, res) => {
-        try {
-            const user = req.params.user;
-            const result = await hangmanService.userCheck(user);
-            res.json({
-                status: 'success',
-                message: result
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
+        const user = req.params.user;
+        const result = await hangmanService.userCheck(user);
+        res.json({
+            status: 'success',
+            message: result
+        });
     };
 
     const personalData = async (req, res) => {
-        try {
-            const user = req.params.user;
-            res.json({
-                status: 'success',
-                data: await hangmanService.personalData(user)
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
+        const user = req.params.user;
+        res.json({
+            status: 'success',
+            data: await hangmanService.personalData(user)
+        });
     };
 
     const loginCheck = async (req, res) => {
-        try {
-            let result;
-            let token;
-            const details = req.body;
-            const user = details.username;
-            const pass = details.password;
-            const hash = await hangmanService.loginCheck(user);
+        let result;
+        let token;
+        const details = req.body;
+        const user = details.username;
+        const pass = details.password;
+        const hash = await hangmanService.loginCheck(user);
 
-            // eslint-disable-next-line handle-callback-err
-            result = bcrypt.compareSync(pass, hash);
-            if (result) {
-                token = jwt.sign({ user }, config.secret, {
-                    expiresIn: 86400 // expires in 24 hours
-                });
-            };
-            res.json({
-                auth: result,
-                token
+        // eslint-disable-next-line handle-callback-err
+        result = bcrypt.compareSync(pass, hash);
+        if (result) {
+            token = jwt.sign({ user }, config.secret, {
+                expiresIn: 86400 // expires in 24 hours
             });
-        } catch (err) {
-            returnError(res, err);
-        }
+        };
+        res.json({
+            auth: result,
+            token
+        });
     };
 
     const addWordTo = async (req, res) => {
-        try {
-            const details = req.body;
-            await hangmanService.addWordTo(details.username, details.word, details.state);
-            res.json({
-                status: 'success'
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
+        const details = req.body;
+        await hangmanService.addWordTo(details.username, details.word, details.state);
+        res.json({
+            status: 'success'
+        });
     };
 
     const choiceFilter = async (req, res) => {
-        try {
-            const user = req.params.user;
-            const choice = req.params.choice;
-            const filter = await hangmanService.choiceFilter(user, choice);
-            res.json({
-                status: 'success',
-                data: filter
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
+        const user = req.params.user;
+        const choice = req.params.choice;
+        const filter = await hangmanService.choiceFilter(user, choice);
+        res.json({
+            status: 'success',
+            data: filter
+        });
     };
 
     const setNewWordStatus = async (req, res) => {
-        try {
-            const details = req.body;
-            await hangmanService.setNewWordStatus(details.word, details.status);
-            res.json({
-                status: 'success'
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
+        const details = req.body;
+        await hangmanService.setNewWordStatus(details.word, details.status);
+        res.json({
+            status: 'success'
+        });
     };
 
     const storeNewWord = async (req, res) => {
-        try {
-            const details = req.body;
-            await hangmanService.storeNewWord(details.word, details.user);
-            res.json({
-                status: 'success'
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
+        const details = req.body;
+        await hangmanService.storeNewWord(details.word, details.user);
+        res.json({
+            status: 'success'
+        });
     };
 
     const newWordList = async (req, res) => {
-        try {
-            res.json({
-                status: 'success',
-                words: await hangmanService.newWordList()
-            });
-        } catch (err) {
-            returnError(res, err);
-        };
+        res.json({
+            status: 'success',
+            words: await hangmanService.newWordList()
+        });
     };
 
     const checkWord = async (req, res) => {
-        try {
-            const word = req.params.word;
-            res.json({
-                status: 'success',
-                check: await hangmanService.checkWord(word)
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
+        const word = req.params.word;
+        res.json({
+            status: 'success',
+            check: await hangmanService.checkWord(word)
+        });
     };
 
     const findUser = async (req, res) => {
-        try {
-            const user = req.params.user;
-            res.json({
-                status: 'success',
-                user: await hangmanService.findUser(user)
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
+        const user = req.params.user;
+        res.json({
+            status: 'success',
+            user: await hangmanService.findUser(user)
+        });
     };
 
     const delUser = async (req, res) => {
-        try {
-            const id = req.body.id;
-            await hangmanService.delUser(id);
-            res.json({
-                status: 'success',
-                users: await hangmanService.allUsers()
-            });
-        } catch (err) {
-            returnError(res, err);
-        }
-    };
-
-    const returnError = (res, err) => {
+        const id = req.body.id;
+        await hangmanService.delUser(id);
         res.json({
-            status: 'error',
-            error: err.stack
+            status: 'success',
+            users: await hangmanService.allUsers()
         });
     };
 

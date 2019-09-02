@@ -162,7 +162,7 @@ describe('API Tests', () => {
                     done();
                 });
         });
-        it('should return a successful posting of storing a new word in the "new_words" table', (done) => {
+        it('should return a filter of all the games dyllanhope has won', (done) => {
             request(app)
                 .get('/api/get/user/data/user/dyllanhope/choice/won')
                 .end((err, res) => {
