@@ -143,6 +143,19 @@ module.exports = (hangmanService) => {
         }
     };
 
+    const storeNewWord = async (req, res) => {
+        try {
+            const details = req.body;
+            console.log(details);
+            await hangmanService.storeNewWord(details.word, details.user);
+            res.json({
+                status: 'success'
+            });
+        } catch (err) {
+            returnError(res, err);
+        }
+    };
+
     const checkWord = async (req, res) => {
         try {
             const word = req.params.word;
@@ -200,6 +213,7 @@ module.exports = (hangmanService) => {
         choiceFilter,
         findUser,
         delUser,
-        checkWord
+        checkWord,
+        storeNewWord
     };
 };

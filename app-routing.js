@@ -11,6 +11,7 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/find/user/:user', hangmanAPI.findUser);
     app.get('/api/get/user/data/user/:user/choice/:choice', hangmanAPI.choiceFilter);
     app.get('/api/check/word/:word', hangmanAPI.checkWord);
+    app.post('/api/store/new/word', hangmanAPI.storeNewWord);
     app.post('/api/delete/user', hangmanAPI.delUser);
     app.post('/api/token/check', middleware.checkToken, (req, res) => {
         res.json({

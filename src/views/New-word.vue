@@ -34,15 +34,21 @@ export default {
   },
   methods: {
     submitWord() {
-      // axios
-      // .get('/api/check/word/' + this.word)
-      // .then((res)=>{
-      //   let response = res.data;
-      //   let check = response.check;
-      //   if(check === 'new'){
-          
-      //   };
-      // });
+      let check = '';
+      axios
+      .get('https://hangman-webapp.herokuapp.com/api/check/word/' + this.word)
+      .then((res)=>{
+        let response = res.data;
+        check = response.check;
+      })
+      .then(()=>{
+        axios
+        .get('https://hangman-webapp.herokuapp.com/api/store/new/word', {word: this.word, user: localStorage['user']})
+        .then((res)=>{
+          let response = res.data;
+          console.log(response.status);
+        });
+      });
     }
   }
 };

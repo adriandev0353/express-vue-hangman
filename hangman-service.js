@@ -21,6 +21,7 @@ module.exports = (pool) => {
         return result.rows;
     };
 
+    // to add new word to repository once confirmed
     const addNewWord = async (word) => {
         const check = await pool.query('SELECT * FROM word_list WHERE word = $1', [word]);
         if (check.rowCount === 0) {
@@ -35,6 +36,20 @@ module.exports = (pool) => {
         } else {
             return 'This word already exists in our database';
         };
+    };
+    // to add words into 'new word' table to be confirmed
+    const storeNewWord = async (word, user) => {
+        const newWords = await pool.query('SELECT * FROM new_words');
+        console.log(newWords);
+        console.log(newWords[newWords.rows.length - 1].id + 1);
+        const data = [
+            newWords[newWords.rows.length - 1].id + 1,
+            word,
+            user,
+            'pending'
+        ];
+        console.log(data);
+        await pool.query('INSERT INTO new_words(id, word, username,status) VALUES ($1, $2, $3, $4)', data);
     };
 
     const checkWord = async (word) => {
@@ -146,6 +161,7 @@ module.exports = (pool) => {
         choiceFilter,
         findUser,
         delUser,
-        checkWord
+        checkWord,
+        storeNewWord
     };
 };
