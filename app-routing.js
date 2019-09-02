@@ -4,6 +4,7 @@ module.exports = (app, hangmanAPI) => {
         res.send('This is the API server for my hangman game. welcome?');
     });
     app.get('/api/all/words', hangmanAPI.allWords);
+    app.get('/api/all/new/words', hangmanAPI.newWordList);
     app.get('/api/all/users', hangmanAPI.allUsers);
     app.get('/api/list/size/:size', hangmanAPI.listWordOfSize);
     app.get('/api/check/user/:user', hangmanAPI.userCheck);
@@ -11,6 +12,7 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/find/user/:user', hangmanAPI.findUser);
     app.get('/api/get/user/data/user/:user/choice/:choice', hangmanAPI.choiceFilter);
     app.get('/api/check/word/:word', hangmanAPI.checkWord);
+    app.post('/api/set/new/word/status', hangmanAPI.setNewWordStatus);
     app.post('/api/store/new/word', hangmanAPI.storeNewWord);
     app.post('/api/delete/user', hangmanAPI.delUser);
     app.post('/api/token/check', middleware.checkToken, (req, res) => {

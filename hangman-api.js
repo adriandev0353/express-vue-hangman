@@ -143,10 +143,21 @@ module.exports = (hangmanService) => {
         }
     };
 
+    const setNewWordStatus = async (req, res) => {
+        try {
+            const details = req.body;
+            await hangmanService.setNewWordStatus(details.word, details.status);
+            res.json({
+                status: 'success'
+            });
+        } catch (err) {
+            returnError(res, err);
+        }
+    };
+
     const storeNewWord = async (req, res) => {
         try {
             const details = req.body;
-            console.log(details);
             await hangmanService.storeNewWord(details.word, details.user);
             res.json({
                 status: 'success'
@@ -154,6 +165,17 @@ module.exports = (hangmanService) => {
         } catch (err) {
             returnError(res, err);
         }
+    };
+
+    const newWordList = async (req, res) => {
+        try {
+            res.json({
+                status: 'success',
+                words: await hangmanService.newWordList()
+            });
+        } catch (err) {
+            returnError(res, err);
+        };
     };
 
     const checkWord = async (req, res) => {
@@ -214,6 +236,8 @@ module.exports = (hangmanService) => {
         findUser,
         delUser,
         checkWord,
-        storeNewWord
+        storeNewWord,
+        newWordList,
+        setNewWordStatus
     };
 };

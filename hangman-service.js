@@ -50,11 +50,6 @@ module.exports = (pool) => {
             ];
             await pool.query('INSERT INTO new_words(id, word, username,status) VALUES ($1, $2, $3, $4)', data);
         } else {
-            console.log(newWords);
-            console.log(newWords.rowCount - 1);
-            console.log(newWords.rows[newWords.rowCount - 1]);
-            console.log(newWords.rows[newWords.rowCount - 1].id);
-            console.log(newWords.rows[newWords.rowCount - 1].id + 1);
             const data = [
                 newWords.rows[newWords.rowCount - 1].id + 1,
                 word,
@@ -65,6 +60,13 @@ module.exports = (pool) => {
             await pool.query('INSERT INTO new_words(id, word, username,status) VALUES ($1, $2, $3, $4)', data);
         }
     };
+
+    const newWordList = async () => {
+        const results = await pool.query('SELECT * FROM new_words');
+        return results.rows;
+    };
+
+    const setNewWordStatus = async (word, status) => { await pool.query('UPDATE new_words SET status = $1 WHERE word = $2', [status, word]); };
 
     const checkWord = async (word) => {
         const check = await pool.query('SELECT * FROM word_list WHERE word = $1', [word]);
@@ -176,6 +178,8 @@ module.exports = (pool) => {
         findUser,
         delUser,
         checkWord,
-        storeNewWord
+        storeNewWord,
+        newWordList,
+        setNewWordStatus
     };
 };

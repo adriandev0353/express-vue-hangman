@@ -37,10 +37,24 @@
             <template slot="title">
               <span>
                 New Words
-                <b-badge variant="primary">4</b-badge>
+                <b-badge variant="primary">{{ newWords }}</b-badge>
               </span>
             </template>
             <h1>new words to verify here..</h1>
+            <b-table dark striped :items="words" :fields="columns">
+              <template v-for="(column, index) in columns" :slot="column.key" slot-scope="data">
+                <div :key="index" v-if="column.colType === 'status'">
+                  <b-button @click="confirmWord(data.item.Word)" variant="success">+</b-button>
+                  <b-button @click="denyWord(data.item.Word)" variant="danger">-</b-button>
+                </div>
+                <div :key="index" v-else-if="column.colType === 'user'">
+                  <h5>{{data.item.User}}</h5>
+                </div>
+                <div :key="index" v-else-if="column.colType === 'word'">
+                  <h5>{{data.item.Word}}</h5>
+                </div>
+              </template>
+            </b-table>
           </b-tab>
         </b-tabs>
       </b-card>
@@ -67,6 +81,15 @@ export default {
           list.push(item);
           this.items = list;
         }
+      })
+      .then(()=>{
+        axios
+        .get('https://hangman-webapp.herokuapp.com/api/all/new/words')
+        .then((res)=>{
+          const response = res.data;
+          const words = response.words;
+          console.log(words);
+        });
       });
   },
   data() {
@@ -78,7 +101,14 @@ export default {
         { key: "Remove", label: "", colType: "button" }
       ],
       items: [],
-      search: ""
+      columns: [
+        { key: "username", label: "Username", colType: "user" },
+        { key: "word", label: "Word", colType: "word" },
+        { key: "status", label: "", colType: "status" }
+      ],
+      words: [],
+      search: "",
+      newWords : 0
     };
   },
   methods: {
@@ -119,24 +149,30 @@ export default {
       }
     },
     deleteUser(id) {
-      if(confirm('Are you sure you want to delete this person?')){
-      let list= [];
-      axios
-        .post("https://hangman-webapp.herokuapp.com/api/delete/user", {id})
-        .then(res => {
-          let response = res.data;
-          let users = response.users;
-          for (let x = 0; x < users.length; x++) {
-            let item = {
-              ID: users[x].id,
-              Username: users[x].username,
-              Points: users[x].points
-            };
-            list.push(item);
-            this.items = list;
-          }
-        });
+      if (confirm("Are you sure you want to delete this person?")) {
+        let list = [];
+        axios
+          .post("https://hangman-webapp.herokuapp.com/api/delete/user", { id })
+          .then(res => {
+            let response = res.data;
+            let users = response.users;
+            for (let x = 0; x < users.length; x++) {
+              let item = {
+                ID: users[x].id,
+                Username: users[x].username,
+                Points: users[x].points
+              };
+              list.push(item);
+              this.items = list;
+            }
+          });
       }
+    },
+    confirmWord(word) {
+      console.log(word);
+    },
+    denyWord(word) {
+      console.log(word);
     }
   }
 };
