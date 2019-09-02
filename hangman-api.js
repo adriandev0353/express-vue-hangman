@@ -104,6 +104,13 @@ module.exports = (hangmanService) => {
         });
     };
 
+    const linkTableData = async (req, res) => {
+        res.json({
+            status: 'success',
+            items: await hangmanService.linkTableData()
+        });
+    };
+
     const setNewWordStatus = async (req, res) => {
         const details = req.body;
         await hangmanService.setNewWordStatus(details.word, details.status);
@@ -168,6 +175,7 @@ module.exports = (hangmanService) => {
         checkWord,
         storeNewWord,
         newWordList,
-        setNewWordStatus
+        setNewWordStatus,
+        linkTableData
     };
 };
