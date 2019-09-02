@@ -40,9 +40,8 @@ module.exports = (hangmanService) => {
 
     const addNewWord = async (req, res) => {
         try {
-            const word = req.params.word;
-            const user = req.params.user;
-            await hangmanService.addNewWord(word, user);
+            const details = req.body;
+            await hangmanService.addNewWord(details.word, details.user);
             res.json({
                 status: 'success'
             });

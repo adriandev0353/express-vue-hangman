@@ -187,7 +187,10 @@ export default {
     },
     confirmWord(word, user) {
       axios
-        .post("https://hangman-webapp.herokuapp.com/api/add/word/" + word + '/user/'+ user)
+        .post("https://hangman-webapp.herokuapp.com/api/add/word/from/user/", {
+          word: word,
+          user: localStorage["user"]
+        })
         .then(res => {
           axios
             .post(
