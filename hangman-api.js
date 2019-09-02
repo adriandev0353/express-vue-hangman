@@ -101,6 +101,7 @@ module.exports = (hangmanService) => {
             const user = details.username;
             const pass = details.password;
             const hash = await hangmanService.loginCheck(user);
+
             // eslint-disable-next-line handle-callback-err
             result = bcrypt.compareSync(pass, hash);
             if (result) {

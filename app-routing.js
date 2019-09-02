@@ -23,7 +23,7 @@ module.exports = (app, hangmanAPI) => {
         });
     });
     app.post('/api/login/check', hangmanAPI.loginCheck);
-    app.post('/api/add/word/from/user/', hangmanAPI.addNewWord);
+    app.post('/api/add/word/from/user', hangmanAPI.addNewWord);
     app.post('/api/add/user', hangmanAPI.addUser);
     app.post('/api/add/to/user', hangmanAPI.addWordTo);
 };

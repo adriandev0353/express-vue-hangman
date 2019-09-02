@@ -66,7 +66,6 @@ module.exports = (pool) => {
                 user,
                 'pending'
             ];
-            console.log(data);
             await pool.query('INSERT INTO new_words(id, word, username,status) VALUES ($1, $2, $3, $4)', data);
         }
     };
@@ -103,7 +102,10 @@ module.exports = (pool) => {
         const allUsers = await pool.query('SELECT * FROM user_data ORDER BY id ASC');
         const userList = allUsers.rows;
 
-        if (search.rowCount === 0) {
+        if (allUsers.rowCount === 0) {
+            const data = [1, username, password, 0];
+            await pool.query('INSERT INTO user_data(id, username, password, points) VALUES($1, $2, $3, $4)', data);
+        } else if (search.rowCount === 0) {
             const id = userList[userList.length - 1].id + 1;
             const data = [id, username, password, 0];
 
@@ -136,7 +138,7 @@ module.exports = (pool) => {
         if (state === 'won') {
             newPoints = userPoints.rows[0].points + word.length;
             addPoints = word.length;
-        } else if (state === 'lost') {
+        } else {
             const decPoints = Math.ceil(word.length / 2);
             newPoints = userPoints.rows[0].points - decPoints;
             addPoints = -decPoints;

@@ -49,7 +49,8 @@ describe('API Tests', () => {
         });
         it('should return a successful posting of a new word', (done) => {
             request(app)
-                .post('/api/add/word/suspicious')
+                .post('/api/add/word/from/user')
+                .send({ word: 'suspicious', user: 'dyllanhope' })
                 .end((err, res) => {
                     expect(res.body.status).to.be.equal('success');
                     expect(res.statusCode).to.be.equal(200);
@@ -70,6 +71,100 @@ describe('API Tests', () => {
             request(app)
                 .post('/api/add/to/user')
                 .send({ username: 'dyllanhope', word: 'suspicious' })
+                .end((err, res) => {
+                    expect(res.body.status).to.be.equal('success');
+                    expect(res.statusCode).to.be.equal(200);
+                    done();
+                });
+        });
+        it('should return a successful posting of deleting a user', (done) => {
+            request(app)
+                .post('/api/delete/user')
+                .send({ username: 1 })
+                .end((err, res) => {
+                    expect(res.body.status).to.be.equal('success');
+                    expect(res.statusCode).to.be.equal(200);
+                    done();
+                });
+        });
+        it('should return that the user login is unauthorized', (done) => {
+            request(app)
+                .post('/api/login/check')
+                .send({ username: 'dyllanhope', password: '123' })
+                .end((err, res) => {
+                    expect(res.body.auth).to.be.equal(false);
+                    expect(res.statusCode).to.be.equal(200);
+                    done();
+                });
+        });
+        it('should return a successful posting of checking for the user dyllanhope', (done) => {
+            request(app)
+                .get('/api/check/user/dyllanhope')
+                .end((err, res) => {
+                    expect(res.body.status).to.be.equal('success');
+                    expect(res.statusCode).to.be.equal(200);
+                    done();
+                });
+        });
+        it('should return a successful posting of finding dyllanhopes personal data (game history)', (done) => {
+            request(app)
+                .get('/api/get/user/data/dyllanhope')
+                .end((err, res) => {
+                    expect(res.body.status).to.be.equal('success');
+                    expect(res.statusCode).to.be.equal(200);
+                    done();
+                });
+        });
+        it('should return a successful posting of finding the user dyllanhope', (done) => {
+            request(app)
+                .get('/api/find/user/dyllanhope')
+                .end((err, res) => {
+                    expect(res.body.status).to.be.equal('success');
+                    expect(res.statusCode).to.be.equal(200);
+                    done();
+                });
+        });
+        it('should return a successful posting of checking if a word already exists', (done) => {
+            request(app)
+                .get('/api/check/word/word')
+                .end((err, res) => {
+                    expect(res.body.status).to.be.equal('success');
+                    expect(res.statusCode).to.be.equal(200);
+                    done();
+                });
+        });
+        it('should return a list of the new words added by users', (done) => {
+            request(app)
+                .get('/api/all/new/words')
+                .end((err, res) => {
+                    expect(res.body.status).to.be.equal('success');
+                    expect(res.statusCode).to.be.equal(200);
+                    done();
+                });
+        });
+        it('should return a successful posting of setting the new word statuses', (done) => {
+            request(app)
+                .post('/api/set/new/word/status')
+                .send({ word: 'mouse', status: 'confirmed' })
+                .end((err, res) => {
+                    expect(res.body.status).to.be.equal('success');
+                    expect(res.statusCode).to.be.equal(200);
+                    done();
+                });
+        });
+        it('should return a successful posting of storing a new word in the "new_words" table', (done) => {
+            request(app)
+                .post('/api/store/new/word')
+                .send({ word: 'mouse', user: 'dyllanhope' })
+                .end((err, res) => {
+                    expect(res.body.status).to.be.equal('success');
+                    expect(res.statusCode).to.be.equal(200);
+                    done();
+                });
+        });
+        it('should return a successful posting of storing a new word in the "new_words" table', (done) => {
+            request(app)
+                .get('/api/get/user/data/user/dyllanhope/choice/won')
                 .end((err, res) => {
                     expect(res.body.status).to.be.equal('success');
                     expect(res.statusCode).to.be.equal(200);
