@@ -52,11 +52,11 @@ module.exports = (pool) => {
         } else {
             console.log(newWords);
             console.log(newWords.rowCount - 1);
-            console.log(newWords[newWords.rowCount - 1]);
-            console.log(newWords[newWords.rowCount - 1].id);
-            console.log(newWords[newWords.rowCount - 1].id + 1);
+            console.log(newWords.rows[newWords.rowCount - 1]);
+            console.log(newWords.rows[newWords.rowCount - 1].id);
+            console.log(newWords.rows[newWords.rowCount - 1].id + 1);
             const data = [
-                newWords[newWords.rowCount - 1].id + 1,
+                newWords.rows[newWords.rowCount - 1].id + 1,
                 word,
                 user,
                 'pending'
