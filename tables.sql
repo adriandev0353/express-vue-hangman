@@ -18,3 +18,10 @@ create table table_link(
     complete_state text not null,
     points int not null
 );
+
+create table new_words(
+    id int not null,
+    word text not null,
+    username text not null,
+    status text not null
+);

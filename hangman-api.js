@@ -143,6 +143,18 @@ module.exports = (hangmanService) => {
         }
     };
 
+    const checkWord = async (req, res) => {
+        try {
+            const word = req.params.word;
+            res.json({
+                status: 'success',
+                check: await hangmanService.checkWord(word)
+            });
+        } catch (err) {
+            returnError(res, err);
+        }
+    };
+
     const findUser = async (req, res) => {
         try {
             const user = req.params.user;
@@ -158,7 +170,6 @@ module.exports = (hangmanService) => {
     const delUser = async (req, res) => {
         try {
             const id = req.body.id;
-            console.log(id, 'api');
             await hangmanService.delUser(id);
             res.json({
                 status: 'success',
@@ -188,6 +199,7 @@ module.exports = (hangmanService) => {
         personalData,
         choiceFilter,
         findUser,
-        delUser
+        delUser,
+        checkWord
     };
 };

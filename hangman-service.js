@@ -36,6 +36,16 @@ module.exports = (pool) => {
             return 'This word already exists in our database';
         };
     };
+
+    const checkWord = async (word) => {
+        const check = await pool.query('SELECT * FROM word_list WHERE word = $1', [word]);
+        if (check.rowCount === 0) {
+            return 'new';
+        } else {
+            return 'exists';
+        };
+    };
+
     const addUser = async (username, password) => {
         const search = await pool.query('SELECT * FROM user_data WHERE username = $1', [username]);
         const allUsers = await pool.query('SELECT * FROM user_data ORDER BY id ASC');
@@ -50,7 +60,6 @@ module.exports = (pool) => {
     };
 
     const delUser = async (id) => {
-        console.log(id);
         await pool.query('DELETE FROM user_data WHERE id = $1', [id]);
     };
 
@@ -136,6 +145,7 @@ module.exports = (pool) => {
         personalData,
         choiceFilter,
         findUser,
-        delUser
+        delUser,
+        checkWord
     };
 };
