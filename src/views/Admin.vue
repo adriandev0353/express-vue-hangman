@@ -46,7 +46,7 @@
                 <div :key="index" v-if="column.colType === 'status'">
                   <b-button
                     style="margin:5px"
-                    @click="confirmWord(data.item.word)"
+                    @click="confirmWord(data.item.word, data.item.username)"
                     variant="success"
                   >+</b-button>
                   <b-button style="margin:5px" @click="denyWord(data.item.word)" variant="danger">-</b-button>
@@ -185,9 +185,9 @@ export default {
           });
       }
     },
-    confirmWord(word) {
+    confirmWord(word, user) {
       axios
-        .post("https://hangman-webapp.herokuapp.com/api/add/word/" + word)
+        .post("https://hangman-webapp.herokuapp.com/api/add/word/" + word + '/user/'+ user)
         .then(res => {
           axios
             .post(

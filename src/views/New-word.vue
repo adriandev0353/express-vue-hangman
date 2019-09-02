@@ -6,7 +6,7 @@
           <h4 style="margin-top:15px">
             <u>How does this work?</u>
           </h4>
-          <p>On this page you can add new words to the current repository of words. These added words will be used in games that other players play. When you click submit, the word is sent in to be confirmed/verified. Once verified, you will recieve points according to the word length.</p>
+          <p>On this page you can add new words to the current repository of words. These added words will be used in games that other players play. When you click submit, the word is sent in to be confirmed/verified. Once verified, you will recieve 3 points for every new word you add.</p>
         </b-col>
         <b-col cols="6">
           <h1>Add new word here..</h1>

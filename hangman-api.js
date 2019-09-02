@@ -41,7 +41,8 @@ module.exports = (hangmanService) => {
     const addNewWord = async (req, res) => {
         try {
             const word = req.params.word;
-            const addStatus = await hangmanService.addNewWord(word);
+            const user = req.params.user;
+            const addStatus = await hangmanService.addNewWord(word, user);
             res.json({
                 status: addStatus
             });
