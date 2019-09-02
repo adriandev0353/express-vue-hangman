@@ -18,7 +18,12 @@
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-item-dropdown text="Other" right>
-            <b-dropdown-item><router-link to="/profile">Profile</router-link></b-dropdown-item>
+            <b-dropdown-item>
+              <router-link to="/profile">Profile</router-link>
+            </b-dropdown-item>
+            <b-dropdown-item v-if="user === 'admin'">
+              <router-link to="/admin">Admin Page</router-link>
+            </b-dropdown-item>
             <b-dropdown-divider></b-dropdown-divider>
             <b-dropdown-item>
               <a class="dropdown" @click="logout" href="#">Logout</a>
@@ -31,11 +36,28 @@
 </template>
 
 <script>
+import { EventBus } from "../event-bus";
+
 export default {
+  data() {
+    return {
+      user: ""
+    };
+  },
+  mounted() {
+    // Listen for the 'clicked-event' and its payload.
+    EventBus.$on("userData", name => {
+      this.user = name;
+    });
+  },
   methods: {
     logout() {
       localStorage.clear();
+      this.user = "";
       this.$router.push({ name: "login" });
+    },
+    setUser(value) {
+      this.user = value;
     }
   }
 };
@@ -49,8 +71,8 @@ export default {
 .dropdown a {
   color: black;
 }
-a:hover{
-  color:rgb(196, 195, 195);
+a:hover {
+  color: rgb(196, 195, 195);
 }
 img {
   width: 50px;

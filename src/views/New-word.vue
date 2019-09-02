@@ -50,7 +50,7 @@ export default {
               })
               .then(res => {
                 let response = res.data;
-                console.log(response);
+                console.log(response.status);
               });
           }
         });

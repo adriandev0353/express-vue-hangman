@@ -42,9 +42,9 @@ module.exports = (hangmanService) => {
         try {
             const word = req.params.word;
             const user = req.params.user;
-            const addStatus = await hangmanService.addNewWord(word, user);
+            await hangmanService.addNewWord(word, user);
             res.json({
-                status: addStatus
+                status: 'success'
             });
         } catch (err) {
             returnError(res, err);

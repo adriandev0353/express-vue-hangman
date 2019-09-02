@@ -32,6 +32,7 @@
 
 <script>
 import axios from "axios";
+import { EventBus } from '../event-bus';
 
 export default {
   name: "login",
@@ -61,6 +62,7 @@ export default {
           if (auth) {
             localStorage["token"] = token;
             localStorage["user"] = username;
+            EventBus.$emit("userData", this.user);
             this.$router.push({ name: "Play" });
           } else {
             this.error = true;
