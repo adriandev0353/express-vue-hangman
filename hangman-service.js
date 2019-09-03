@@ -128,7 +128,11 @@ module.exports = (pool) => {
 
     const loginCheck = async (username) => {
         const search = await pool.query('SELECT password FROM user_data WHERE username = $1', [username]);
-        return search.rows[0].password;
+        if (search.rowCount === 0) {
+            return 'Not found';
+        } else {
+            return search.rows[0].password;
+        }
     };
 
     const addWordTo = async (username, word, state) => {
@@ -165,7 +169,6 @@ module.exports = (pool) => {
 
         await pool.query('INSERT INTO table_link(id, word_key, user_key, complete_state, points) VALUES($1, $2, $3, $4, $5)', data);
         const userData = await personalData(username);
-        console.log(userData);
         if (userData.length > 0) {
             let gameCount = 0;
             let winCount = 0;
@@ -175,9 +178,7 @@ module.exports = (pool) => {
                     winCount++;
                 };
             };
-            console.log(gameCount, winCount);
             const winRate = ((winCount / gameCount) * 100).toFixed(2);
-            console.log(winRate);
             await pool.query('UPDATE user_data SET win_rate = $1 WHERE username = $2', [winRate, username]);
         }
     };

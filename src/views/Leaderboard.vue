@@ -39,7 +39,7 @@ export default {
             Ranking: x + 1,
             Username: users[x].username,
             Points: users[x].points,
-            Ratio: users[x].win_rate
+            Percentage: users[x].win_rate
           };
           list.push(item);
           this.items = list;
@@ -78,7 +78,7 @@ export default {
   },
   data() {
     return {
-      fields: ["Ranking", "Username", "Points", "Ratio"],
+      fields: ["Ranking", "Username", "Points", "Percentage"],
       items: [],
       mostWords: 0,
       topUser: "",

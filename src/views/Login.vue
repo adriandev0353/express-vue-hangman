@@ -19,7 +19,7 @@
               </td>
             </tr>
           </table>
-          <b-alert v-if='error' show  style='margin:5px' variant="danger">{{ message }}</b-alert>
+          <b-alert v-if="error" show style="margin:5px" variant="danger">{{ message }}</b-alert>
           <b-alert v-else hide variant="danger">{{ message }}</b-alert>
           <b-button @click="submitUser" class="login">Login</b-button>
           <b-button @click="registerUser" class="login">Sign up</b-button>
@@ -32,7 +32,7 @@
 
 <script>
 import axios from "axios";
-import { EventBus } from '../event-bus';
+import { EventBus } from "../event-bus";
 
 export default {
   name: "login",
@@ -49,26 +49,26 @@ export default {
       let username = this.user;
       username = username.toLowerCase();
       let password = this.pass;
-      if(username && password){
-      axios
-        .post("https://hangman-webapp.herokuapp.com/api/login/check", {
-          username,
-          password
-        })
-        .then(results => {
-          let response = results.data;
-          let auth = response.auth;
-          let token = response.token;
-          if (auth) {
-            localStorage["token"] = token;
-            localStorage["user"] = username;
-            EventBus.$emit("userData", this.user);
-            this.$router.push({ name: "Play" });
-          } else {
-            this.error = true;
-            this.message = "Your username or password are incorrect"
-          }
-        });
+      if (username && password) {
+        axios
+          .post("https://hangman-webapp.herokuapp.com/api/login/check", {
+            username,
+            password
+          })
+          .then(results => {
+            let response = results.data;
+            let auth = response.auth;
+            if (auth) {
+              let token = response.token;
+              localStorage["token"] = token;
+              localStorage["user"] = username;
+              EventBus.$emit("userData", this.user);
+              this.$router.push({ name: "Play" });
+            } else {
+              this.error = true;
+              this.message = response.message;
+            }
+          });
       } else {
         this.error = true;
         this.message = "Please enter a username and a password";

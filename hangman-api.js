@@ -66,24 +66,36 @@ module.exports = (hangmanService) => {
     };
 
     const loginCheck = async (req, res) => {
-        let result;
+        let result = false;
         let token;
         const details = req.body;
         const user = details.username;
         const pass = details.password;
         const hash = await hangmanService.loginCheck(user);
 
-        // eslint-disable-next-line handle-callback-err
-        result = bcrypt.compareSync(pass, hash);
-        if (result) {
-            token = jwt.sign({ user }, config.secret, {
-                expiresIn: 86400 // expires in 24 hours
+        if (hash !== 'Not found') {
+            // eslint-disable-next-line handle-callback-err
+            result = bcrypt.compareSync(pass, hash);
+            if (result) {
+                token = jwt.sign({ user }, config.secret, {
+                    expiresIn: 86400 // expires in 24 hours
+                });
+                res.json({
+                    auth: result,
+                    token
+                });
+            } else {
+                res.json({
+                    auth: result,
+                    message: 'Username or password incorrect'
+                });
+            }
+        } else {
+            res.json({
+                auth: false,
+                message: 'Not found'
             });
-        };
-        res.json({
-            auth: result,
-            token
-        });
+        }
     };
 
     const addWordTo = async (req, res) => {
