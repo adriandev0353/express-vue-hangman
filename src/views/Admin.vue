@@ -1,7 +1,7 @@
 <template>
   <div class="admin">
     <b-container>
-      <h1>Admin page here..</h1>
+      <h1>Admin page</h1>
       <b-card no-body>
         <b-tabs pills card vertical>
           <b-tab title="Users" active>
@@ -40,7 +40,7 @@
                 <b-badge variant="primary">{{ newWords }}</b-badge>
               </span>
             </template>
-            <h1>new words to verify here..</h1>
+            <h1>Verify new words</h1>
             <b-table dark striped :items="words" :fields="columns">
               <template v-for="(column, index) in columns" :slot="column.key" slot-scope="data">
                 <div :key="index" v-if="column.colType === 'status'">

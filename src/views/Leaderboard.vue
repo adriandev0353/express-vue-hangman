@@ -3,10 +3,14 @@
     <b-container>
       <b-row>
         <b-col style="margin-top:30px">
-          <h3><u>Most words won</u></h3>
+          <h3>
+            <u>Most words won</u>
+          </h3>
           {{topUser}} - {{mostWords}}
-          <hr>
-          <h3><u>Longest word</u></h3>
+          <hr />
+          <h3>
+            <u>Longest word</u>
+          </h3>
           {{longestUser}} - {{longestWord}}
         </b-col>
         <b-col style="margin-top:30px" cols="6">
@@ -46,20 +50,23 @@ export default {
           .then(res => {
             const response = res.data;
             const items = response.items;
+            console.log(items);
             let countMap = {};
             this.longestWord = items[0].word;
-            this.longestUser = items[0].username
-            for(const item of items){
-              if(countMap[item.username] === undefined){
-                countMap[item.username] = 1;
-              } else {
-                countMap[item.username] ++;
-              };
-            };
-            let tempTopUser = '';
+            this.longestUser = items[0].username;
+            for (const item of items) {
+              if (item.complete_state === "won") {
+                if (countMap[item.username] === undefined) {
+                  countMap[item.username] = 1;
+                } else {
+                  countMap[item.username]++;
+                }
+              }
+            }
+            let tempTopUser = "";
             let tempTopCount = 0;
-            for(const count in countMap){
-              if(countMap[count] > tempTopCount){
+            for (const count in countMap) {
+              if (countMap[count] > tempTopCount) {
                 tempTopUser = count;
                 tempTopCount = countMap[count];
               }
@@ -74,9 +81,9 @@ export default {
       fields: ["Ranking", "Username", "Points"],
       items: [],
       mostWords: 0,
-      topUser: '',
-      longestWord: '',
-      longestUser: ''
+      topUser: "",
+      longestWord: "",
+      longestUser: ""
     };
   },
   methods: {

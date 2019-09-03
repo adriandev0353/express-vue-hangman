@@ -172,7 +172,7 @@ module.exports = (pool) => {
     };
 
     const linkTableData = async () => {
-        const result = await pool.query('SELECT table_link.id, user_data.username, word_list.word, table_link.complete_state, table_link.points FROM user_data INNER JOIN table_link ON user_data.id = table_link.user_key INNER JOIN word_list on table_link.word_key = word_list.id WHERE complete_state = $1 ORDER BY table_link.points DESC', ['won']);
+        const result = await pool.query('SELECT table_link.id, user_data.username, word_list.word, table_link.complete_state, table_link.points FROM user_data INNER JOIN table_link ON user_data.id = table_link.user_key INNER JOIN word_list on table_link.word_key = word_list.id WHERE ORDER BY table_link.points DESC');
         return result.rows;
     };
 
