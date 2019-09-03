@@ -183,7 +183,7 @@ module.exports = (pool) => {
     };
 
     const allUsers = async () => {
-        const result = await pool.query('SELECT * FROM user_data WHERE username != $1 ORDER BY points DESC', ['admin']);
+        const result = await pool.query('SELECT * FROM user_data WHERE username != $1 ORDER BY points DESC, win_rate DESC', ['admin']);
         return result.rows;
     };
 
