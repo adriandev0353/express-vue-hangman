@@ -2,7 +2,7 @@
   <div class="Profile">
     <b-container>
       <b-row>
-        <b-col style="margin-top:50px">
+        <b-col sm style="margin-top:50px">
           <h1>{{ user }}</h1>
           <h2>
             Points:
@@ -29,13 +29,12 @@
             <span v-else-if="winPercentage<=50 && !loading" class="loseRate">{{ winPercentage }}%</span>
           </h2>
         </b-col>
-        <b-col cols="7">
+        <b-col sm>
           <div style="margin-top:100px" v-if="history">
             <b-spinner variant="success" label="Spinning"></b-spinner>
           </div>
-          <b-table v-else info :items="items" :fields="fields" :tbody-tr-class="rowClass"></b-table>
+          <b-table sticky-header style='margin-top:50px' v-else info :items="items" :fields="fields" :tbody-tr-class="rowClass"></b-table>
         </b-col>
-        <b-col></b-col>
       </b-row>
     </b-container>
   </div>
@@ -67,7 +66,7 @@ export default {
             Total_points: this.points,
             Word: data[i].word,
             Result: data[i].complete_state,
-            Points: data[i].points
+            Pts: data[i].points
           };
           list.push(item);
         }
@@ -102,7 +101,7 @@ export default {
   data() {
     return {
       user: localStorage["user"],
-      fields: ["Total_points", "Word", "Result", "Points"],
+      fields: ["Total_points", "Word", "Result", "Pts"],
       winPercentage: 0,
       items: [],
       totalPoints: 0,
@@ -146,7 +145,7 @@ export default {
                 Total_points: this.totalPoints,
                 Word: data[i].word,
                 Result: data[i].complete_state,
-                Points: data[i].points
+                Pts: data[i].points
               };
               list.push(item);
             }

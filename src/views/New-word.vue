@@ -2,13 +2,13 @@
   <div class="new">
     <b-container>
       <b-row>
-        <b-col>
+        <b-col sm='5'>
           <h4 style="margin-top:15px">
             <u>How does this work?</u>
           </h4>
           <p>On this page you can add new words to the current repository of words. These added words will be used in games that other players play. When you click submit, the word is sent in to be confirmed/verified. Once verified, you will recieve 3 points for every new word you add.</p>
         </b-col>
-        <b-col cols="6">
+        <b-col sm='7'>
           <h1>Add new word here..</h1>
           <b-input-group style="margin-bottom:10px; width:200px" class="mt-3 mx-auto">
             <b-form-input v-model="word" placeholder="eg. hangman"></b-form-input>
@@ -20,7 +20,6 @@
           <b-alert v-else-if="success" show variant="success">{{ message }}</b-alert>
           <b-alert v-else hide variant="danger">{{ message }}</b-alert>
         </b-col>
-        <b-col></b-col>
       </b-row>
     </b-container>
   </div>

@@ -1,8 +1,8 @@
 <template>
   <div class="leaderboard">
-    <b-container>
+    <b-container style='width: 100%'>
       <b-row>
-        <b-col style="margin-top:30px">
+        <b-col sm='4' style="margin-top:30px">
           <h3>
             <u>Most words won</u>
           </h3>
@@ -15,12 +15,11 @@
           <b-spinner v-if="statLoading" small label="Small Spinner"></b-spinner>
           <span v-else>{{longestUser}} - {{longestWord}}</span>
         </b-col>
-        <b-col style="margin-top:30px" cols="6">
+        <b-col sm='8' style="margin-top:30px">
           <h1>The Hangman Leaderboards</h1>
           <b-spinner v-if="loading" label="Spinning"></b-spinner>
-          <b-table v-else info :items="items" :fields="fields" :tbody-tr-class="rowClass"></b-table>
+          <b-table sticky-header v-else info :items="items" :fields="fields" :tbody-tr-class="rowClass"></b-table>
         </b-col>
-        <b-col></b-col>
       </b-row>
     </b-container>
   </div>
@@ -41,10 +40,10 @@ export default {
         let users = response.words;
         for (let x = 0; x < users.length; x++) {
           let item = {
-            Ranking: x + 1,
+            Rank: x + 1,
             Username: users[x].username,
-            Points: users[x].points,
-            Percentage: users[x].win_rate
+            Pts: users[x].points,
+            Ratio: users[x].win_rate
           };
           list.push(item);
           this.items = list;
@@ -85,7 +84,7 @@ export default {
   },
   data() {
     return {
-      fields: ["Ranking", "Username", "Points", "Percentage"],
+      fields: ["Rank", "Username", "Pts", "Ratio"],
       items: [],
       mostWords: 0,
       topUser: "",
@@ -98,7 +97,7 @@ export default {
   methods: {
     rowClass(item, type) {
       if (!item) return;
-      if (item.Ranking === 1) {
+      if (item.Rank === 1) {
         return "table-warning";
       }
     }

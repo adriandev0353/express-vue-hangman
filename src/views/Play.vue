@@ -2,25 +2,43 @@
   <div class="play">
     <b-container>
       <div>
-        <img src="../assets/logo.png" alt />
-        <p>Enter a word length:</p>
-        <b-button-group>
-          <input
-            type="number"
-            class="lengthInput"
-            v-model="length"
-            placeholder="Enter a word-length"
-            :disabled="play"
-          />
-          <b-button v-if="!play" @click="activatePlay" variant="outline-primary">Submit</b-button>
-          <b-button v-if="play" @click="activatePlay" variant="outline-primary" disabled>Submit</b-button>
-        </b-button-group>
+        <!-- <img src="../assets/logo.png" alt /> -->
+        <h1>Hangman</h1>
+        <div v-if="!play">
+          <p>Enter a word length:</p>
+          <b-button-group>
+            <input
+              type="number"
+              class="lengthInput"
+              v-model="length"
+              placeholder="Enter a word-length"
+              :disabled="play"
+            />
+            <b-button v-if="!play" @click="activatePlay" variant="outline-primary">Submit</b-button>
+            <b-button v-if="play" @click="activatePlay" variant="outline-primary" disabled>Submit</b-button>
+          </b-button-group>
+        </div>
+        <b-row>
+          <b-col></b-col>
+          <b-col>
+            <div style="margin-top:5px; margin-left:50px">
+              <div v-if='guessesLeft<=5' class="rope"></div>
+              <div v-if='guessesLeft<=4' class="head"></div>
+              <div v-if='guessesLeft<=3' class="body"></div>
+              <div v-if='guessesLeft<=2' class="arm1"></div>
+              <div v-if='guessesLeft<=2' class="arm2"></div>
+              <div v-if='guessesLeft<=1' class="leg1"></div>
+              <div v-if='guessesLeft<=1' class="leg2"></div>
+              <div v-if="guessesLeft<=5" class="crossBeam"></div>
+              <div v-if="guessesLeft<=5" class="pole"></div>
+              <div class="base"></div>
+            </div>
+          </b-col>
+          <b-col></b-col>
+        </b-row>
       </div>
       <div v-if="play">
         <div v-if="!win && guessesLeft>0">
-          <h1 v-if="!error">
-            <span class="guess">{{ guessesLeft }}</span> Guesses left
-          </h1>
           <b-spinner v-if="loading" label="Spinning"></b-spinner>
           <span v-else :key="index" v-for="(letter, index) of wordGuessed">{{ letter }} </span>
         </div>
@@ -246,5 +264,89 @@ img {
 }
 .lengthInput {
   width: 50px;
+}
+
+.base {
+  height: 20px;
+  width: 100px;
+  background: black;
+  border-radius: 5px;
+}
+
+.pole {
+  height: 300px;
+  width: 10px;
+  background: black;
+  margin-left: 45px;
+}
+
+.crossBeam {
+  height: 5px;
+  width: 250px;
+  background: black;
+}
+
+.rope {
+  height: 50px;
+  width: 2px;
+  background: black;
+  margin-left: 200px;
+  position: absolute;
+}
+
+.head {
+  height: 40px;
+  width: 40px;
+  background: black;
+  margin-left: 181px;
+  margin-top: 50px;
+  position: absolute;
+  border-radius: 50%;
+}
+
+.body {
+  height: 120px;
+  width: 6px;
+  background: black;
+  margin-left: 196px;
+  margin-top: 80px;
+  position: absolute;
+}
+.arm1 {
+  height: 70px;
+  width: 5px;
+  background: black;
+  margin-left: 172px;
+  margin-top: 75px;
+  position: absolute;
+  transform: rotate(45deg);
+}
+.arm2 {
+  height: 70px;
+  width: 5px;
+  background: black;
+  margin-left: 222px;
+  margin-top: 75px;
+  position: absolute;
+  transform: rotate(-45deg);
+}
+
+.leg1 {
+  height: 70px;
+  width: 5px;
+  background: black;
+  margin-left: 172px;
+  margin-top: 187px;
+  position: absolute;
+  transform: rotate(45deg);
+}
+.leg2 {
+  height: 70px;
+  width: 5px;
+  background: black;
+  margin-left: 222px;
+  margin-top: 187px;
+  position: absolute;
+  transform: rotate(-45deg);
 }
 </style>
