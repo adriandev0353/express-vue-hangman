@@ -6,16 +6,19 @@
           <h3>
             <u>Most words won</u>
           </h3>
-          {{topUser}} - {{mostWords}}
+          <b-spinner v-if="statLoading" small label="Small Spinner"></b-spinner>
+          <span v-else>{{topUser}} - {{mostWords}}</span>
           <hr />
           <h3>
             <u>Longest word</u>
           </h3>
-          {{longestUser}} - {{longestWord}}
+          <b-spinner v-if="statLoading" small label="Small Spinner"></b-spinner>
+          <span v-else>{{longestUser}} - {{longestWord}}</span>
         </b-col>
         <b-col style="margin-top:30px" cols="6">
           <h1>The Hangman Leaderboards</h1>
-          <b-table info :items="items" :fields="fields" :tbody-tr-class="rowClass"></b-table>
+          <b-spinner v-if="loading" label="Spinning"></b-spinner>
+          <b-table v-else info :items="items" :fields="fields" :tbody-tr-class="rowClass"></b-table>
         </b-col>
         <b-col></b-col>
       </b-row>
@@ -28,6 +31,8 @@ import axios from "axios";
 
 export default {
   beforeCreate() {
+    this.loading = true;
+    this.statLoading= true;
     axios
       .get("https://hangman-webapp.herokuapp.com/api/all/users")
       .then(res => {
@@ -43,6 +48,7 @@ export default {
           };
           list.push(item);
           this.items = list;
+          this.loading = false;
         }
       })
       .then(() => {
@@ -73,6 +79,7 @@ export default {
             }
             this.topUser = tempTopUser;
             this.mostWords = tempTopCount;
+            this.statLoading = false;
           });
       });
   },
@@ -83,7 +90,9 @@ export default {
       mostWords: 0,
       topUser: "",
       longestWord: "",
-      longestUser: ""
+      longestUser: "",
+      loading: true,
+      statLoading: true
     };
   },
   methods: {

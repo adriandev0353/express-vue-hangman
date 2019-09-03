@@ -18,10 +18,11 @@
       </div>
       <div v-if="play">
         <div v-if="!win && guessesLeft>0">
-          <h1>
+          <h1 v-if="!error">
             <span class="guess">{{ guessesLeft }}</span> Guesses left
           </h1>
-          <span :key="index" v-for="(letter, index) of wordGuessed">{{ letter }} </span>
+          <b-spinner v-if="loading" label="Spinning"></b-spinner>
+          <span v-else :key="index" v-for="(letter, index) of wordGuessed">{{ letter }} </span>
         </div>
         <div v-else-if="win">
           <h1>Congratulations!</h1>
@@ -45,13 +46,19 @@
             You lost
             <span class="points">{{lost}}</span> points!
           </h4>
-          <b-button @click="resetGame">New Game</b-button>
         </div>
+        <b-alert
+          style="margin-top:20px"
+          v-if="error"
+          show
+          variant="danger"
+        >We have no words with a length of {{length}} letters</b-alert>
+        <b-button v-if="guessesLeft === 0 || error" @click="resetGame">New Game</b-button>
         <b-row v-if="!win && guessesLeft > 0">
           <hr />
           <b-col sm></b-col>
           <b-col sm>
-            <div>
+            <div v-if="!loading && !error">
               <b-button
                 @click="letterCheck(letter.letter)"
                 class="letter"
@@ -82,6 +89,8 @@ export default {
       guessesLeft: 5,
       wordGuessed: [],
       win: false,
+      loading: false,
+      error: false,
       word: {},
       lettersGuessed: [],
       alphabet: [
@@ -116,6 +125,7 @@ export default {
   },
   methods: {
     activatePlay() {
+      this.loading = true;
       this.wordGuessed = [];
       axios
         .get(
@@ -124,20 +134,24 @@ export default {
         .then(results => {
           let response = results.data;
           let wordList = response.words;
-          let listLength = wordList.length;
-          let index = Math.ceil(Math.random() * listLength) + 1;
-          this.word = wordList[index];
-          this.$forceUpdate();
-        })
-        .then(() => {
-          let word = this.word.word;
-          console.log(word);
-          for (let i = 0; i < word.length; i++) {
-            if (word[i] === "-") {
-              this.wordGuessed.push("-");
-            } else {
-              this.wordGuessed.push("_");
+          if (wordList.length > 0) {
+            let listLength = wordList.length;
+            let index = Math.ceil(Math.random() * listLength) - 1;
+            this.word = wordList[index];
+            this.$forceUpdate();
+            let word = this.word.word;
+            this.loading = false;
+            for (let i = 0; i < word.length; i++) {
+              if (word[i] === "-") {
+                this.wordGuessed.push("-");
+              } else {
+                this.wordGuessed.push("_");
+              }
             }
+          } else {
+            this.error = true;
+            this.loading = false;
+            this.$forceUpdate();
           }
         });
 
@@ -193,6 +207,7 @@ export default {
       return this.alphabet[index].disable;
     },
     resetGame() {
+      this.error = false;
       this.play = false;
       for (let item of this.alphabet) {
         item.disable = false;

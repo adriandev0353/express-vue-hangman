@@ -6,9 +6,14 @@
           <h1>{{ user }}</h1>
           <h2>
             Points:
-            <span class="points">{{ points }}</span>
+            <b-spinner v-if="loading" variant="warning" small label="Small Spinner"></b-spinner>
+            <span v-else class="points">{{ points }}</span>
           </h2>
-          <h2>Ranking: {{ ranking }}</h2>
+          <h2>
+            Ranking:
+            <b-spinner v-if="statLoading" variant="warning" small label="Small Spinner"></b-spinner>
+            <span v-else>{{ ranking }}</span>
+          </h2>
           <hr />
           <h5>filter:</h5>
           <b-form-select v-model="selected" class="mb-3" @change="onChange($event)">
@@ -19,12 +24,16 @@
           <hr />
           <h2>
             Win Rate:
-            <span v-if="winPercentage > 50" class="winRate">{{ winPercentage }}%</span>
-            <span v-else class="loseRate">{{ winPercentage }}%</span>
+            <b-spinner v-if="loading" variant="success" label="Spinning"></b-spinner>
+            <span v-if="winPercentage > 50 && !loading" class="winRate">{{ winPercentage }}%</span>
+            <span v-else-if="winPercentage<=50 && !loading" class="loseRate">{{ winPercentage }}%</span>
           </h2>
         </b-col>
         <b-col cols="7">
-          <b-table info :items="items" :fields="fields" :tbody-tr-class="rowClass"></b-table>
+          <div style="margin-top:100px" v-if="history">
+            <b-spinner variant="success" label="Spinning"></b-spinner>
+          </div>
+          <b-table v-else info :items="items" :fields="fields" :tbody-tr-class="rowClass"></b-table>
         </b-col>
         <b-col></b-col>
       </b-row>
@@ -36,6 +45,8 @@
 import axios from "axios";
 export default {
   beforeCreate() {
+    this.loading = true;
+    this.history = true;
     this.points = 0;
     axios
       .get(
@@ -70,7 +81,9 @@ export default {
           }
         }
         this.winPercentage = ((winCount / gameCount) * 100).toFixed(2);
+        this.loading = false;
         this.items = list;
+        this.history = false;
         axios
           .get("https://hangman-webapp.herokuapp.com/api/all/users")
           .then(res => {
@@ -80,6 +93,7 @@ export default {
             for (let i = 0; i < users.length; i++) {
               if (users[i].username === localStorage["user"]) {
                 this.ranking = i + 1;
+                this.statLoading = false;
               }
             }
           });
@@ -94,7 +108,10 @@ export default {
       totalPoints: 0,
       points: 0,
       ranking: 0,
-      selected: null
+      selected: null,
+      loading: true,
+      statLoading: true,
+      history: true
     };
   },
   methods: {
@@ -108,6 +125,8 @@ export default {
     },
     onChange(event) {
       this.totalPoints = 0;
+      this.history = true;
+      this.$forceUpdate();
       if (this.selected) {
         axios
           .get(
@@ -133,6 +152,7 @@ export default {
             }
             this.items = list;
             this.$forceUpdate();
+            this.history = false;
           });
       } else {
         axios
@@ -159,6 +179,7 @@ export default {
               list.push(item);
             }
             this.items = list;
+            this.history = false;
           });
       }
     }

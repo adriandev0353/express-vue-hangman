@@ -93,7 +93,7 @@ module.exports = (hangmanService) => {
         } else {
             res.json({
                 auth: false,
-                message: 'Not found'
+                message: 'Username not found'
             });
         }
     };

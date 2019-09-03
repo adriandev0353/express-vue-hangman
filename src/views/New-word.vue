@@ -16,6 +16,9 @@
               <b-button @click="submitWord" variant="outline-dark">Submit</b-button>
             </b-input-group-append>
           </b-input-group>
+          <b-alert v-if="error" show style="margin:5px" variant="danger">{{ message }}</b-alert>
+          <b-alert v-else-if="success" show variant="success">{{ message }}</b-alert>
+          <b-alert v-else hide variant="danger">{{ message }}</b-alert>
         </b-col>
         <b-col></b-col>
       </b-row>
@@ -29,7 +32,10 @@ import axios from "axios";
 export default {
   data() {
     return {
-      word: ""
+      word: "",
+      error: false,
+      success: false,
+      message: ""
     };
   },
   methods: {
@@ -43,6 +49,9 @@ export default {
         })
         .then(() => {
           if (check === "new") {
+            this.success = true;
+            this.error = false;
+            this.message ='Your word has been sent in to be verified';
             axios
               .post("https://hangman-webapp.herokuapp.com/api/store/new/word", {
                 word: this.word,
@@ -50,8 +59,11 @@ export default {
               })
               .then(res => {
                 let response = res.data;
-                console.log(response.status);
               });
+          } else {
+            this.success = false;
+            this.error = true;
+            this.message = "This word already exists in our repository";
           }
         });
     }
