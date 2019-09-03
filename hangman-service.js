@@ -107,9 +107,9 @@ module.exports = (pool) => {
             await pool.query('INSERT INTO user_data(id, username, password, points) VALUES($1, $2, $3, $4)', data);
         } else if (search.rowCount === 0) {
             const id = userList[userList.length - 1].id + 1;
-            const data = [id, username, password, 0];
+            const data = [id, username, password, 0, 0];
 
-            await pool.query('INSERT INTO user_data(id, username, password, points) VALUES($1, $2, $3, $4)', data);
+            await pool.query('INSERT INTO user_data(id, username, password, points, win_rate) VALUES($1, $2, $3, $4, $5)', data);
         }
     };
 
