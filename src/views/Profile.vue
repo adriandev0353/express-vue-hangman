@@ -16,6 +16,12 @@
             <option value="won">Words won</option>
             <option value="lost">Words lost</option>
           </b-form-select>
+          <hr />
+          <h2>
+            Win Rate:
+            <span v-if="winPercentage > 50" class="winRate">{{ winPercentage }}%</span>
+            <span v-else class="loseRate">{{ winPercentage }}%</span>
+          </h2>
         </b-col>
         <b-col cols="7">
           <b-table info :items="items" :fields="fields" :tbody-tr-class="rowClass"></b-table>
@@ -54,6 +60,16 @@ export default {
           };
           list.push(item);
         }
+
+        let gameCount = 0;
+        let winCount = 0;
+        for (const item of data) {
+          gameCount++;
+          if (item.complete_state === "won") {
+            winCount++;
+          }
+        }
+        this.winPercentage = ((winCount / gameCount) * 100).toFixed(2);
         this.items = list;
         axios
           .get("https://hangman-webapp.herokuapp.com/api/all/users")
@@ -73,6 +89,7 @@ export default {
     return {
       user: localStorage["user"],
       fields: ["Total_points", "Word", "Result", "Points"],
+      winPercentage: 0,
       items: [],
       totalPoints: 0,
       points: 0,
@@ -152,5 +169,11 @@ export default {
 <style scoped>
 .points {
   color: goldenrod;
+}
+.winRate {
+  color: green;
+}
+.loseRate {
+  color: crimson;
 }
 </style>

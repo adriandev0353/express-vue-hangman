@@ -8,7 +8,8 @@ create table user_data(
     id int not null,
     username text not null,
     password text not null,
-    points int not null
+    points int not null,
+    win_rate real not null
 );
 
 create table table_link(

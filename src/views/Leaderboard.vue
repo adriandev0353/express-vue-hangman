@@ -50,7 +50,6 @@ export default {
           .then(res => {
             const response = res.data;
             const items = response.items;
-            console.log(items);
             let countMap = {};
             this.longestWord = items[0].word;
             this.longestUser = items[0].username;
