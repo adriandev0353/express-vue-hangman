@@ -22,13 +22,13 @@
           <b-col></b-col>
           <b-col>
             <div style="margin-top:5px; margin-left:50px">
-              <div v-if='guessesLeft<=6' class="rope"></div>
-              <div v-if='guessesLeft<=5' class="head"></div>
-              <div v-if='guessesLeft<=4' class="body"></div>
-              <div v-if='guessesLeft<=3' class="arm1"></div>
-              <div v-if='guessesLeft<=2' class="arm2"></div>
-              <div v-if='guessesLeft<=1' class="leg1"></div>
-              <div v-if='guessesLeft<=0' class="leg2"></div>
+              <div v-if="guessesLeft<=6" class="rope"></div>
+              <div v-if="guessesLeft<=5" class="head"></div>
+              <div v-if="guessesLeft<=4" class="body"></div>
+              <div v-if="guessesLeft<=3" class="arm1"></div>
+              <div v-if="guessesLeft<=2" class="arm2"></div>
+              <div v-if="guessesLeft<=1" class="leg1"></div>
+              <div v-if="guessesLeft<=0" class="leg2"></div>
               <div v-if="guessesLeft<=6" class="crossBeam"></div>
               <div v-if="guessesLeft<=6" class="pole"></div>
               <div class="base"></div>
@@ -40,7 +40,7 @@
       <div v-if="play">
         <div v-if="!win && guessesLeft>0">
           <b-spinner v-if="loading" label="Spinning"></b-spinner>
-          <span v-else :key="index" v-for="(letter, index) of wordGuessed">{{ letter }} </span>
+          <span v-else :key="index" v-for="(letter, index) of wordGuessed">{{ letter }}</span>
         </div>
         <div v-else-if="win">
           <h1>Congratulations!</h1>
@@ -88,8 +88,12 @@
             </div>
           </b-col>
           <b-col sm>
-            <b-button v-if='!hintGiven && play && !loading' variant='outline-dark' @click='giveHint'>Hint</b-button>
-            <p v-if='!hintGiven && play && !loading' >Gives you one letter for free.</p>
+            <b-button
+              v-if="!hintGiven && play && !loading"
+              variant="outline-dark"
+              @click="giveHint"
+            >Hint</b-button>
+            <p v-if="!hintGiven && play && !loading">Gives you one letter for free.</p>
           </b-col>
         </b-row>
       </div>
@@ -242,16 +246,25 @@ export default {
       this.lettersGuessed = [];
       this.hintGiven = false;
     },
-    giveHint(){
+    giveHint() {
       this.hintGiven = true;
       let count = 0;
-      for(const letter of this.wordGuessed){
-        if(letter === '_'){
+      for (const letter of this.wordGuessed) {
+        if (letter === "_") {
           const letterToAdd = this.word.word[count];
-          this.wordGuessed[count] = letterToAdd;
+          for (let i = 0; i < this.word.word.length; i++) {
+            if (letterToAdd === this.word.word[i]){
+            this.wordGuessed[i] = letterToAdd;
+            }
+          }
+          for (let item of this.alphabet) {
+            if (item.letter === letter) {
+              item.disable = true;
+            }
+          }
           return;
         }
-        count ++;
+        count++;
       }
     }
   }
