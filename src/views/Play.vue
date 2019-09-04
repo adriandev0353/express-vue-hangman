@@ -166,6 +166,13 @@ export default {
             this.word = wordList[index];
             this.$forceUpdate();
             let word = this.word.word;
+            axios
+              .post('https://hangman-webapp.herokuapp.com/api/check/word/played', {user: localStorage['user'], word: word})
+              .then((res)=>{
+                const response = res.data;
+                const result = response.result;
+                console.log(result)
+              });
             this.loading = false;
             for (let i = 0; i < word.length; i++) {
               if (word[i] === "-") {

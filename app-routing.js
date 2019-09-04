@@ -13,6 +13,7 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/get/user/data/user/:user/choice/:choice', hangmanAPI.choiceFilter);
     app.get('/api/check/word/:word', hangmanAPI.checkWord);
     app.get('/api/link/data', hangmanAPI.linkTableData);
+    app.post('/api/check/word/played', hangmanAPI.checkWordsGuessed);
     app.post('/api/set/new/word/status', hangmanAPI.setNewWordStatus);
     app.post('/api/store/new/word', hangmanAPI.storeNewWord);
     app.post('/api/delete/user', hangmanAPI.delUser);

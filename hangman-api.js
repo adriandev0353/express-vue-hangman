@@ -171,6 +171,15 @@ module.exports = (hangmanService) => {
         });
     };
 
+    const checkWordsGuessed = async (req, res) => {
+        const details = req.body;
+        const result = hangmanService.checkWordsGuessed(details.user, details.word);
+        res.json({
+            status: 'success',
+            result
+        });
+    };
+
     return {
         allWords,
         listWordOfSize,
@@ -188,6 +197,7 @@ module.exports = (hangmanService) => {
         storeNewWord,
         newWordList,
         setNewWordStatus,
-        linkTableData
+        linkTableData,
+        checkWordsGuessed
     };
 };

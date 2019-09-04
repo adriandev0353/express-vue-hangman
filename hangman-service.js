@@ -196,6 +196,15 @@ module.exports = (pool) => {
         return result.rows[0];
     };
 
+    const checkWordsGuessed = async (user, word) => {
+        const result = await pool.query('SELECT user_data.username, word_list.word, table_link.complete_state, table_link.points FROM user_data INNER JOIN table_link ON user_data.id = table_link.user_key INNER JOIN word_list on table_link.word_key = word_list.id WHERE user_data.username = $1 AND word_list.word = $2 ORDER BY table_link.id ASC', [user, word]);
+        if (result.rowCount === 0) {
+            return 'not found';
+        } else {
+            return 'found';
+        };
+    };
+
     return {
         reloadData,
         listWordOfSize,
@@ -214,6 +223,7 @@ module.exports = (pool) => {
         storeNewWord,
         newWordList,
         setNewWordStatus,
-        linkTableData
+        linkTableData,
+        checkWordsGuessed
     };
 };
