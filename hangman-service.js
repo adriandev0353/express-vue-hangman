@@ -1,23 +1,27 @@
 module.exports = (pool) => {
     const reloadData = async (wordList) => {
+        console.log(wordList.length);
         await pool.query('DELETE FROM word_list');
         for (let i = 0; i < wordList.length; i++) {
-            const data = [
-                i + 1,
-                wordList[i],
-                wordList[i].length
-            ];
-            await pool.query('INSERT INTO word_list(id, word, word_length) VALUES($1, $2, $3)', data);
+            try {
+                const data = [
+                    wordList[i],
+                    wordList[i].length
+                ];
+                await pool.query('INSERT INTO word_list(word, word_length) VALUES($1, $2)', data);
+            } catch (err) {
+                console.log(err.stack);
+            }
         };
+        const rows = await allWords();
+        console.log(rows);
         const results = await pool.query('SELECT * FROM new_words');
         for (const item of results.rows) {
-            const list = await allWords();
             const data = [
-                list[list.length - 1].id + 1,
                 item.word,
                 item.word.length
             ];
-            await pool.query('INSERT INTO word_list(id, word, word_length) VALUES($1, $2, $3)', data);
+            await pool.query('INSERT INTO word_list(word, word_length) VALUES($1, $2)', data);
         };
     };
 
@@ -35,13 +39,11 @@ module.exports = (pool) => {
     const addNewWord = async (word, user) => {
         const check = await pool.query('SELECT * FROM word_list WHERE word = $1', [word]);
         if (check.rowCount === 0) {
-            const list = await allWords();
             const data = [
-                list[list.length - 1].id + 1,
                 word,
                 word.length
             ];
-            await pool.query('INSERT INTO word_list(id, word, word_length) VALUES($1, $2, $3)', data);
+            await pool.query('INSERT INTO word_list(word, word_length) VALUES($1, $2)', data);
             const userPoints = await pool.query('SELECT points FROM user_data WHERE username = $1', [user]);
             const newPoints = userPoints.rows[0].points + 3;
             await pool.query('UPDATE user_data SET points = $1 WHERE username = $2', [newPoints, user]);
@@ -53,20 +55,18 @@ module.exports = (pool) => {
 
         if (newWords.rowCount === 0) {
             const data = [
-                1,
                 word,
                 user,
                 'pending'
             ];
-            await pool.query('INSERT INTO new_words(id, word, username,status) VALUES ($1, $2, $3, $4)', data);
+            await pool.query('INSERT INTO new_words(word, username,status) VALUES ($1, $2, $3)', data);
         } else {
             const data = [
-                newWords.rows[newWords.rowCount - 1].id + 1,
                 word,
                 user,
                 'pending'
             ];
-            await pool.query('INSERT INTO new_words(id, word, username,status) VALUES ($1, $2, $3, $4)', data);
+            await pool.query('INSERT INTO new_words(word, username,status) VALUES ($1, $2, $3)', data);
         }
     };
 
@@ -100,16 +100,14 @@ module.exports = (pool) => {
     const addUser = async (username, password) => {
         const search = await pool.query('SELECT * FROM user_data WHERE username = $1', [username]);
         const allUsers = await pool.query('SELECT * FROM user_data ORDER BY id ASC');
-        const userList = allUsers.rows;
 
         if (allUsers.rowCount === 0) {
-            const data = [1, username, password, 0, 0];
-            await pool.query('INSERT INTO user_data(id, username, password, points, win_rate) VALUES($1, $2, $3, $4, $5)', data);
+            const data = [username, password, 0, 0];
+            await pool.query('INSERT INTO user_data(username, password, points, win_rate) VALUES($1, $2, $3, $4)', data);
         } else if (search.rowCount === 0) {
-            const id = userList[userList.length - 1].id + 1;
-            const data = [id, username, password, 0, 0];
+            const data = [username, password, 0, 0];
 
-            await pool.query('INSERT INTO user_data(id, username, password, points, win_rate) VALUES($1, $2, $3, $4, $5)', data);
+            await pool.query('INSERT INTO user_data(username, password, points, win_rate) VALUES($1, $2, $3, $4)', data);
         }
     };
 
@@ -156,18 +154,15 @@ module.exports = (pool) => {
         const userID = user.rows[0].id;
         const resultWord = await pool.query('SELECT id FROM word_list WHERE word = $1', [word]);
         const wordID = resultWord.rows[0].id;
-        const linkData = await pool.query('SELECT * FROM table_link');
-        const newID = (linkData.rows.length) + 1;
 
         const data = [
-            newID,
             wordID,
             userID,
             state,
             addPoints
         ];
 
-        await pool.query('INSERT INTO table_link(id, word_key, user_key, complete_state, points) VALUES($1, $2, $3, $4, $5)', data);
+        await pool.query('INSERT INTO table_link(word_key, user_key, complete_state, points) VALUES($1, $2, $3, $4)', data);
         const userData = await personalData(username);
         if (userData.length > 0) {
             let gameCount = 0;
