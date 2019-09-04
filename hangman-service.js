@@ -1,20 +1,13 @@
 module.exports = (pool) => {
     const reloadData = async (wordList) => {
-        console.log(wordList.length);
         await pool.query('DELETE FROM word_list');
         for (let i = 0; i < wordList.length; i++) {
-            try {
-                const data = [
-                    wordList[i],
-                    wordList[i].length
-                ];
-                await pool.query('INSERT INTO word_list(word, word_length) VALUES($1, $2)', data);
-            } catch (err) {
-                console.log(err.stack);
-            }
+            const data = [
+                wordList[i],
+                wordList[i].length
+            ];
+            await pool.query('INSERT INTO word_list(word, word_length) VALUES($1, $2)', data);
         };
-        const rows = await allWords();
-        console.log(rows);
         const results = await pool.query('SELECT * FROM new_words');
         for (const item of results.rows) {
             const data = [
@@ -111,8 +104,8 @@ module.exports = (pool) => {
         }
     };
 
-    const delUser = async (id) => {
-        await pool.query('DELETE FROM user_data WHERE id = $1', [id]);
+    const delUser = async (username) => {
+        await pool.query('DELETE FROM user_data WHERE username = $1', [username]);
     };
 
     const userCheck = async (username) => {
