@@ -78,7 +78,6 @@ export default {
         let users = response.words;
         for (let x = 0; x < users.length; x++) {
           let item = {
-            ID: users[x].id,
             Username: users[x].username,
             Points: users[x].points
           };
@@ -112,7 +111,6 @@ export default {
   data() {
     return {
       fields: [
-        { key: "ID", label: "ID", colType: "id" },
         { key: "Username", label: "Username", colType: "user" },
         { key: "Points", label: "Points", colType: "points" },
         { key: "Remove", label: "", colType: "button" }
@@ -140,7 +138,6 @@ export default {
             let response = res.data;
             let user = response.user;
             let item = {
-              ID: user.id,
               Username: user.username,
               Points: user.points
             };
@@ -155,7 +152,6 @@ export default {
             let users = response.words;
             for (let x = 0; x < users.length; x++) {
               let item = {
-                ID: users[x].id,
                 Username: users[x].username,
                 Points: users[x].points
               };
@@ -175,7 +171,6 @@ export default {
             let users = response.users;
             for (let x = 0; x < users.length; x++) {
               let item = {
-                ID: users[x].id,
                 Username: users[x].username,
                 Points: users[x].points
               };

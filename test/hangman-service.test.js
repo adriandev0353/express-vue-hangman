@@ -36,9 +36,9 @@ describe('Testing hangman game', () => {
             ]);
 
             assert.strict.deepEqual(await hangmanInstance.allWords(), [
-                { id: 1, word: 'house', word_length: 5 },
-                { id: 2, word: 'car', word_length: 3 },
-                { id: 3, word: 'plane', word_length: 5 }
+                { word: 'house', word_length: 5 },
+                { word: 'car', word_length: 3 },
+                { word: 'plane', word_length: 5 }
             ]);
         });
         it('Should return a list of 3 words with their id and length, clearing previous data', async () => {
@@ -61,9 +61,9 @@ describe('Testing hangman game', () => {
             ]);
 
             assert.strict.deepEqual(await hangmanInstance.allWords(), [
-                { id: 1, word: 'house', word_length: 5 },
-                { id: 2, word: 'car', word_length: 3 },
-                { id: 3, word: 'plane', word_length: 5 }
+                { word: 'house', word_length: 5 },
+                { word: 'car', word_length: 3 },
+                { word: 'plane', word_length: 5 }
             ]);
         });
         it('Should return a list of words with the length of 5', async () => {
@@ -75,8 +75,8 @@ describe('Testing hangman game', () => {
             ]);
             const list = await hangmanInstance.listWordOfSize(5);
             assert.strict.deepEqual(list, [
-                { id: 1, word: 'house', word_length: 5 },
-                { id: 3, word: 'plane', word_length: 5 }
+                { word: 'house', word_length: 5 },
+                { word: 'plane', word_length: 5 }
             ]);
         });
         it('Should return a message that the word added successfully', async () => {
@@ -91,10 +91,10 @@ describe('Testing hangman game', () => {
             const list = await hangmanInstance.allWords();
 
             assert.strict.deepEqual(list, [
-                { id: 1, word: 'house', word_length: 5 },
-                { id: 2, word: 'car', word_length: 3 },
-                { id: 3, word: 'plane', word_length: 5 },
-                { id: 4, word: 'motorbike', word_length: 9 }
+                { word: 'house', word_length: 5 },
+                { word: 'car', word_length: 3 },
+                { word: 'plane', word_length: 5 },
+                { word: 'motorbike', word_length: 9 }
             ]);
         });
         it('Should return an error message that the word already exists', async () => {
@@ -124,9 +124,9 @@ describe('Testing hangman game', () => {
             await hangmanInstance.addNewWord('house');
             const list = await hangmanInstance.allWords();
             assert.strict.deepEqual(list, [
-                { id: 1, word: 'house', word_length: 5 },
-                { id: 2, word: 'car', word_length: 3 },
-                { id: 3, word: 'plane', word_length: 5 }
+                { word: 'house', word_length: 5 },
+                { word: 'car', word_length: 3 },
+                { word: 'plane', word_length: 5 }
             ]);
         });
         it("Should return a list of users, 'dyllanhope' being the only one as it was added", async () => {
@@ -135,7 +135,7 @@ describe('Testing hangman game', () => {
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { id: 1, username: 'dyllanhope', password: '123', points: 0, win_rate: 0 }
+                { username: 'dyllanhope', password: '123', points: 0, win_rate: 0 }
             ]);
         });
         it("Should return a list of users, 'dyllanhope' being the only one as it was added, even though a it was attempted to add again", async () => {
@@ -145,7 +145,7 @@ describe('Testing hangman game', () => {
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { id: 1, username: 'dyllanhope', password: '123', points: 0, win_rate: 0 }
+                { username: 'dyllanhope', password: '123', points: 0, win_rate: 0 }
             ]);
         });
         it("Should return a list of users, 'dyllanhope', with updated points", async () => {
@@ -161,7 +161,7 @@ describe('Testing hangman game', () => {
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { id: 1, username: 'dyllanhope', password: '123', points: 9, win_rate: 100 }
+                { username: 'dyllanhope', password: '123', points: 9, win_rate: 100 }
             ]);
         });
 
@@ -182,8 +182,8 @@ describe('Testing hangman game', () => {
 
             const data = await hangmanInstance.personalData('dyllanhope');
             assert.strict.deepEqual(data, [
-                { id: 1, username: 'dyllanhope', word: 'plane', complete_state: 'won', points: 5 },
-                { id: 2, username: 'dyllanhope', word: 'house', complete_state: 'lost', points: -3 }]
+                { username: 'dyllanhope', word: 'plane', complete_state: 'won', points: 5 },
+                { username: 'dyllanhope', word: 'house', complete_state: 'lost', points: -3 }]
             );
         });
         it('Should return dyllanhopes user data', async () => {
@@ -197,7 +197,7 @@ describe('Testing hangman game', () => {
             await hangmanInstance.addUser('dyllanhope', '123');
             await hangmanInstance.addUser('michael', '123');
 
-            assert.strict.deepEqual(await hangmanInstance.findUser('dyllanhope'), { id: 1, username: 'dyllanhope', password: '123', points: 0, win_rate: 0 });
+            assert.strict.deepEqual(await hangmanInstance.findUser('dyllanhope'), { username: 'dyllanhope', password: '123', points: 0, win_rate: 0 });
         });
         it('Should return michaels data with his points remaining zero after losing points', async () => {
             const hangmanInstance = HangmanService(pool);
@@ -211,10 +211,10 @@ describe('Testing hangman game', () => {
             await hangmanInstance.addUser('michael', '123');
 
             await hangmanInstance.addWordTo('michael', 'car', 'lost');
-            const result = await pool.query('SELECT * FROM user_data WHERE username = $1', ['michael']);
+            const result = await pool.query('SELECT username,password,points,win_rate FROM user_data WHERE username = $1', ['michael']);
 
             assert.strict.deepEqual(result.rows[0],
-                { id: 2, username: 'michael', password: '123', points: 0, win_rate: 0 });
+                { username: 'michael', password: '123', points: 0, win_rate: 0 });
         });
         it('Should return dyllanhopes password', async () => {
             const hangmanInstance = HangmanService(pool);
@@ -270,13 +270,11 @@ describe('Testing hangman game', () => {
             await hangmanInstance.storeNewWord('jewellery', 'michael');
             assert.strict.deepEqual(await hangmanInstance.newWordList(), [
                 {
-                    id: 1,
                     word: 'select',
                     username: 'dyllanhope',
                     status: 'pending'
                 },
                 {
-                    id: 2,
                     word: 'jewellery',
                     username: 'michael',
                     status: 'pending'
@@ -320,7 +318,6 @@ describe('Testing hangman game', () => {
 
             assert.strict.deepEqual(await hangmanInstance.choiceFilter('dyllanhope', 'lost'), [
                 {
-                    id: 2,
                     username: 'dyllanhope',
                     word: 'car',
                     complete_state: 'lost',
@@ -339,9 +336,11 @@ describe('Testing hangman game', () => {
             await hangmanInstance.addUser('dyllanhope', '123');
             await hangmanInstance.addUser('michael', '123');
 
-            await hangmanInstance.delUser(1);
+            let id = await pool.query('SELECT id FROM user_data WHERE username = $1', ['dyllanhope']);
+            id = id.rows[0].id;
+            await hangmanInstance.delUser(id);
 
-            assert.strict.deepEqual(await hangmanInstance.allUsers(), [{ id: 2, username: 'michael', password: '123', points: 0, win_rate: 0 }]);
+            assert.strict.deepEqual(await hangmanInstance.allUsers(), [{ username: 'michael', password: '123', points: 0, win_rate: 0 }]);
         });
         it('Should return that the words "plane" and select already exist and "machine" is new', async () => {
             const hangmanInstance = HangmanService(pool);
@@ -365,12 +364,12 @@ describe('Testing hangman game', () => {
             ]);
 
             assert.strict.deepEqual(await hangmanInstance.allWords(), [
-                { id: 1, word: 'house', word_length: 5 },
-                { id: 2, word: 'car', word_length: 3 },
-                { id: 3, word: 'plane', word_length: 5 },
-                { id: 4, word: 'Aeroplane', word_length: 9 },
-                { id: 5, word: 'select', word_length: 6 },
-                { id: 6, word: 'jewellery', word_length: 9 }]
+                { word: 'house', word_length: 5 },
+                { word: 'car', word_length: 3 },
+                { word: 'plane', word_length: 5 },
+                { word: 'Aeroplane', word_length: 9 },
+                { word: 'select', word_length: 6 },
+                { word: 'jewellery', word_length: 9 }]
             );
         });
         it('Should return that the words "plane" and select already exist and "machine" is new', async () => {
@@ -392,7 +391,6 @@ describe('Testing hangman game', () => {
 
             assert.strict.deepEqual(await hangmanInstance.newWordList(), [
                 {
-                    id: 2,
                     word: 'jewellery',
                     username: 'michael',
                     status: 'confirmed'

@@ -26,12 +26,12 @@ module.exports = (pool) => {
     };
 
     const allWords = async () => {
-        const result = await pool.query('SELECT * FROM word_list');
+        const result = await pool.query('SELECT word, word_length FROM word_list');
         return result.rows;
     };
 
     const listWordOfSize = async (num) => {
-        const result = await pool.query('SELECT * FROM word_list WHERE word_length = $1', [num]);
+        const result = await pool.query('SELECT word, word_length FROM word_list WHERE word_length = $1', [num]);
         return result.rows;
     };
 
@@ -71,7 +71,7 @@ module.exports = (pool) => {
     };
 
     const newWordList = async () => {
-        const results = await pool.query('SELECT * FROM new_words');
+        const results = await pool.query('SELECT word,username,status FROM new_words');
         return results.rows;
     };
 
@@ -84,9 +84,9 @@ module.exports = (pool) => {
     };
 
     const checkWord = async (word) => {
-        const check = await pool.query('SELECT * FROM word_list WHERE word = $1', [word]);
+        const check = await pool.query('SELECT word, word_length FROM word_list WHERE word = $1', [word]);
         if (check.rowCount === 0) {
-            const newWordCheck = await pool.query('SELECT * FROM new_words WHERE word = $1', [word]);
+            const newWordCheck = await pool.query('SELECT word, username, status FROM new_words WHERE word = $1', [word]);
             if (newWordCheck.rowCount === 0) {
                 return 'new';
             } else {
@@ -116,7 +116,7 @@ module.exports = (pool) => {
     };
 
     const userCheck = async (username) => {
-        const search = await pool.query('SELECT * FROM user_data WHERE username = $1', [username]);
+        const search = await pool.query('SELECT username, password, points, win_rate FROM user_data WHERE username = $1', [username]);
         if (search.rowCount === 0) {
             return 'new account';
         } else {
@@ -179,27 +179,27 @@ module.exports = (pool) => {
     };
 
     const allUsers = async () => {
-        const result = await pool.query('SELECT * FROM user_data WHERE username != $1 ORDER BY points DESC, win_rate DESC', ['admin']);
+        const result = await pool.query('SELECT username, password, points, win_rate FROM user_data WHERE username != $1 ORDER BY points DESC, win_rate DESC', ['admin']);
         return result.rows;
     };
 
     const linkTableData = async () => {
-        const result = await pool.query('SELECT table_link.id, user_data.username, word_list.word, table_link.complete_state, table_link.points FROM user_data INNER JOIN table_link ON user_data.id = table_link.user_key INNER JOIN word_list on table_link.word_key = word_list.id ORDER BY table_link.points DESC');
+        const result = await pool.query('SELECT user_data.username, word_list.word, table_link.complete_state, table_link.points FROM user_data INNER JOIN table_link ON user_data.id = table_link.user_key INNER JOIN word_list on table_link.word_key = word_list.id ORDER BY table_link.points DESC');
         return result.rows;
     };
 
     const personalData = async (user) => {
-        const result = await pool.query('SELECT table_link.id, user_data.username, word_list.word, table_link.complete_state, table_link.points FROM user_data INNER JOIN table_link ON user_data.id = table_link.user_key INNER JOIN word_list on table_link.word_key = word_list.id WHERE user_data.username = $1 ORDER BY table_link.id ASC', [user]);
+        const result = await pool.query('SELECT user_data.username, word_list.word, table_link.complete_state, table_link.points FROM user_data INNER JOIN table_link ON user_data.id = table_link.user_key INNER JOIN word_list on table_link.word_key = word_list.id WHERE user_data.username = $1 ORDER BY table_link.id ASC', [user]);
         return result.rows;
     };
 
     const choiceFilter = async (user, choice) => {
-        const result = await pool.query('SELECT table_link.id, user_data.username, word_list.word, table_link.complete_state, table_link.points FROM user_data INNER JOIN table_link ON user_data.id = table_link.user_key INNER JOIN word_list on table_link.word_key = word_list.id WHERE user_data.username = $1 AND table_link.complete_state = $2 ORDER BY table_link.id ASC', [user, choice]);
+        const result = await pool.query('SELECT user_data.username, word_list.word, table_link.complete_state, table_link.points FROM user_data INNER JOIN table_link ON user_data.id = table_link.user_key INNER JOIN word_list on table_link.word_key = word_list.id WHERE user_data.username = $1 AND table_link.complete_state = $2 ORDER BY table_link.id ASC', [user, choice]);
         return result.rows;
     };
 
     const findUser = async (user) => {
-        const result = await pool.query('SELECT * FROM user_data WHERE username = $1', [user]);
+        const result = await pool.query('SELECT username, password, points, win_rate FROM user_data WHERE username = $1', [user]);
         return result.rows[0];
     };
 
