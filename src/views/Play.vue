@@ -167,22 +167,39 @@ export default {
             this.$forceUpdate();
             let word = this.word.word;
             axios
-              .post('https://hangman-webapp.herokuapp.com/api/check/word/played', {user: localStorage['user'], word: word})
-              .then((res)=>{
+              .post(
+                "https://hangman-webapp.herokuapp.com/api/check/word/played",
+                { user: localStorage["user"], word: word }
+              )
+              .then(res => {
                 const response = res.data;
                 const result = response.result;
-                console.log(response)
+                if (result === "found") {
+                  this.error = true;
+                  this.play = false;
+                  for (let item of this.alphabet) {
+                    item.disable = false;
+                  }
+                  this.guessesLeft = 6;
+                  this.length = 0;
+                  this.wordGuessed = [];
+                  this.win = false;
+                  this.word = {};
+                  this.lettersGuessed = [];
+                  this.hintGiven = false;
+                  return;
+                }
               })
-              .then(()=>{
-            this.loading = false;
-            for (let i = 0; i < word.length; i++) {
-              if (word[i] === "-") {
-                this.wordGuessed.push("-");
-              } else {
-                this.wordGuessed.push("_");
-              }
-            }
-            });
+              .then(() => {
+                this.loading = false;
+                for (let i = 0; i < word.length; i++) {
+                  if (word[i] === "-") {
+                    this.wordGuessed.push("-");
+                  } else {
+                    this.wordGuessed.push("_");
+                  }
+                }
+              });
           } else {
             this.error = true;
             this.loading = false;
@@ -262,8 +279,8 @@ export default {
         if (letter === "_") {
           const letterToAdd = this.word.word[count];
           for (let i = 0; i < this.word.word.length; i++) {
-            if (letterToAdd === this.word.word[i]){
-            this.wordGuessed[i] = letterToAdd;
+            if (letterToAdd === this.word.word[i]) {
+              this.wordGuessed[i] = letterToAdd;
             }
           }
           for (let item of this.alphabet) {
