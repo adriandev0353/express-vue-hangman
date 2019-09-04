@@ -87,7 +87,10 @@
               >{{ letter.letter }}</b-button>
             </div>
           </b-col>
-          <b-col sm></b-col>
+          <b-col sm>
+            <b-button v-if='!hintGiven && play && !loading' variant='outline-dark' @click='giveHint'>Hint</b-button>
+            <p v-if='!hintGiven && play && !loading' >Gives you one letter for free.</p>
+          </b-col>
         </b-row>
       </div>
     </b-container>
@@ -110,6 +113,7 @@ export default {
       loading: false,
       error: false,
       word: {},
+      hintGiven: false,
       lettersGuessed: [],
       alphabet: [
         { letter: "A", disable: false },
@@ -236,6 +240,19 @@ export default {
       this.win = false;
       this.word = {};
       this.lettersGuessed = [];
+      this.hintGiven = false;
+    },
+    giveHint(){
+      this.hintGiven = true;
+      let count = 0;
+      for(const letter of this.wordGuessed){
+        if(letter === '_'){
+          const letterToAdd = this.word.word[count];
+          this.wordGuessed[count] = letterToAdd;
+          return;
+        }
+        count ++;
+      }
     }
   }
 };
