@@ -22,15 +22,15 @@
           <b-col></b-col>
           <b-col>
             <div style="margin-top:5px; margin-left:50px">
-              <div v-if='guessesLeft<=5' class="rope"></div>
-              <div v-if='guessesLeft<=4' class="head"></div>
-              <div v-if='guessesLeft<=3' class="body"></div>
-              <div v-if='guessesLeft<=2' class="arm1"></div>
+              <div v-if='guessesLeft<=6' class="rope"></div>
+              <div v-if='guessesLeft<=5' class="head"></div>
+              <div v-if='guessesLeft<=4' class="body"></div>
+              <div v-if='guessesLeft<=3' class="arm1"></div>
               <div v-if='guessesLeft<=2' class="arm2"></div>
               <div v-if='guessesLeft<=1' class="leg1"></div>
-              <div v-if='guessesLeft<=1' class="leg2"></div>
-              <div v-if="guessesLeft<=5" class="crossBeam"></div>
-              <div v-if="guessesLeft<=5" class="pole"></div>
+              <div v-if='guessesLeft<=0' class="leg2"></div>
+              <div v-if="guessesLeft<=6" class="crossBeam"></div>
+              <div v-if="guessesLeft<=6" class="pole"></div>
               <div class="base"></div>
             </div>
           </b-col>
@@ -104,7 +104,7 @@ export default {
       lost: 0,
       length: 0,
       play: false,
-      guessesLeft: 5,
+      guessesLeft: 6,
       wordGuessed: [],
       win: false,
       loading: false,
@@ -230,7 +230,7 @@ export default {
       for (let item of this.alphabet) {
         item.disable = false;
       }
-      this.guessesLeft = 5;
+      this.guessesLeft = 6;
       this.length = 0;
       this.wordGuessed = [];
       this.win = false;
