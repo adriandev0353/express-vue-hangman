@@ -21,7 +21,10 @@ const router = new Router({
         {
             path: '/admin',
             name: 'admin',
-            component: Admin
+            component: Admin,
+            meta: {
+                adminAuth: true
+            }
         },
         {
             path: '/register',
@@ -83,8 +86,31 @@ router.beforeEach((to, from, next) => {
                     next();
                 }
             });
+    } else if (to.matched.some(record => record.meta.adminAuth)) {
+        const token = localStorage['token'];
+        axios
+            .post('https://hangman-webapp.herokuapp.com/api/token/check', token)
+            .then(results => {
+                const response = results.data;
+                const auth = response.success;
+                const user = response.user;
+
+                if (!auth) {
+                    next({
+                        path: '/',
+                        query: { redirect: to.fullPath }
+                    });
+                } else if (user === 'admin') {
+                    next();
+                } else {
+                    next({
+                        path: '/',
+                        query: { redirect: to.fullPath }
+                    });
+                }
+            });
     } else {
         next();
-    }
+    };
 });
 export default router;
