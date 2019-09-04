@@ -173,7 +173,7 @@ module.exports = (hangmanService) => {
 
     const checkWordsGuessed = async (req, res) => {
         const details = req.body;
-        const result = hangmanService.checkWordsGuessed(details.user, details.word);
+        const result = await hangmanService.checkWordsGuessed(details.user, details.word);
         res.json({
             status: 'success',
             result

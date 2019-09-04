@@ -40,7 +40,7 @@
       <div v-if="play">
         <div v-if="!win && guessesLeft>0">
           <b-spinner v-if="loading" label="Spinning"></b-spinner>
-          <span v-else :key="index" v-for="(letter, index) of wordGuessed">{{ letter }} </span>
+          <span v-else :key="index" v-for="(letter, index) of wordGuessed">{{ letter }}</span>
         </div>
         <div v-else-if="win">
           <h1>Congratulations!</h1>
@@ -171,8 +171,9 @@ export default {
               .then((res)=>{
                 const response = res.data;
                 const result = response.result;
-                console.log(result)
-              });
+                console.log(response)
+              })
+              .then(()=>{
             this.loading = false;
             for (let i = 0; i < word.length; i++) {
               if (word[i] === "-") {
@@ -181,6 +182,7 @@ export default {
                 this.wordGuessed.push("_");
               }
             }
+            });
           } else {
             this.error = true;
             this.loading = false;
