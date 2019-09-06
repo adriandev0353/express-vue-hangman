@@ -13,7 +13,7 @@
             <u>Longest word</u>
           </h3>
           <b-spinner v-if="statLoading" small label="Small Spinner"></b-spinner>
-          <span v-else>{{longestUser}} - {{longestWord}}</span>
+          <span v-else>{{longestUser}} - {{longestWord}} letters</span>
         </b-col>
         <b-col sm='8' style="margin-top:30px">
           <h1>The Hangman Leaderboards</h1>
@@ -57,7 +57,7 @@ export default {
             const response = res.data;
             const items = response.items;
             let countMap = {};
-            this.longestWord = items[0].word;
+            this.longestWord = (items[0].word).length;
             this.longestUser = items[0].username;
             for (const item of items) {
               if (item.complete_state === "won") {
@@ -88,7 +88,7 @@ export default {
       items: [],
       mostWords: 0,
       topUser: "",
-      longestWord: "",
+      longestWord: 0,
       longestUser: "",
       loading: true,
       statLoading: true
