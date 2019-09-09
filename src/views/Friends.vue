@@ -72,8 +72,8 @@ export default {
     .then((res)=>{
       const response = res.data;
       const requests = response.result;
-      console.log(requests);
-      
+      this.requests = requests;
+      this.$forceUpdate();
     });
   },
   data() {
@@ -110,6 +110,7 @@ export default {
           .then(res => {
             const list = [];
             const response = res.data;
+            console.log(response)
             const users = response.words;
             for (let x = 0; x < users.length; x++) {
               let item = {
