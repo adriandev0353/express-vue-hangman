@@ -17,16 +17,42 @@
               </label>
               <div>
                 <b-card-group columns>
-                  <b-card bg-variant="primary" text-variant="white" :key="index" v-for="(user, index) of results">
+                  <b-card
+                    bg-variant="primary"
+                    text-variant="white"
+                    :key="index"
+                    v-for="(user, index) of results"
+                  >
                     <b-card-text>{{user.username}} - {{user.points}} points</b-card-text>
-                    <b-button variant="outline-light">Send friend request</b-button>
+                    <b-button
+                      @click="sendRequest(user.username)"
+                      variant="outline-light"
+                    >Send friend request</b-button>
                   </b-card>
                 </b-card-group>
               </div>
             </b-card-text>
           </b-tab>
           <b-tab title="Friends list">
-            <b-card-text>Friends list</b-card-text>
+            <b-card-text>
+              <h3>Friends List</h3>
+              <div>
+                <b-card-group columns>
+                  <b-card
+                    bg-variant="primary"
+                    text-variant="white"
+                    :key="index"
+                    v-for="(user, index) of requests"
+                  >
+                    <b-card-text>{{user.username}} - {{user.points}} points</b-card-text>
+                    <b-button
+                      @click="sendRequest(user.username)"
+                      variant="outline-light"
+                    >Send friend request</b-button>
+                  </b-card>
+                </b-card-group>
+              </div>
+            </b-card-text>
           </b-tab>
           <b-tab title="Challenges">
             <b-card-text>Challenges</b-card-text>
@@ -40,10 +66,21 @@
 <script>
 import axios from "axios";
 export default {
+  beforeCreate(){
+    axios
+    .get('https://hangman-webapp.herokuapp.com/api/friend/requests/for/' + localStorage['user'])
+    .then((res)=>{
+      const response = res.data;
+      const requests = response.result;
+      console.log(requests);
+      
+    });
+  },
   data() {
     return {
       search: "",
-      results: []
+      results: [],
+      requests: []
     };
   },
   methods: {
@@ -84,6 +121,18 @@ export default {
             this.results = list;
           });
       }
+    },
+    sendRequest(receiver) {
+      axios
+        .post("https://hangman-webapp.herokuapp.com/api/add/friends", {
+          requester: localStorage["user"],
+          receiver
+        })
+        .then(res => {
+          const response = res.data;
+          const status = response.status;
+          this.results = [];
+        });
     }
   }
 };

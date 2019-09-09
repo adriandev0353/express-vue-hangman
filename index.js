@@ -3,7 +3,6 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const flash = require('express-flash');
-const session = require('express-session');
 const wordList = require('./word.json');
 const HangmanAPI = require('./hangman-api');
 const HangmanService = require('./hangman-service');
@@ -31,13 +30,6 @@ const pool = new Pool({
 
 const hangmanService = HangmanService(pool);
 const hangmanAPI = HangmanAPI(hangmanService);
-
-app.use(session({
-    secret: 'yikes',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { maxAge: 60000 }
-}));
 
 app.use(flash());
 

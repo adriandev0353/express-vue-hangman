@@ -215,6 +215,15 @@ module.exports = (pool) => {
         }
     };
 
+    const returnFriendRequests = async (receiver) => {
+        const requests = await pool.query('SELECT * FROM friend_link WHERE receiver = $1', [receiver]);
+        if (requests.rowCount > 0) {
+            return requests.rows;
+        } else {
+            return 'none';
+        }
+    };
+
     return {
         reloadData,
         listWordOfSize,
@@ -235,6 +244,7 @@ module.exports = (pool) => {
         setNewWordStatus,
         linkTableData,
         checkWordsGuessed,
-        addFriends
+        addFriends,
+        returnFriendRequests
     };
 };
