@@ -42,9 +42,9 @@ module.exports = (app, hangmanAPI) => {
             user: req.decoded.user
         });
     });
-    app.post('/api/login/check', checkUser, hangmanAPI.loginCheck);
+    app.post('/api/login/check', hangmanAPI.loginCheck);
     app.post('/api/add/word/from/user', checkUser, hangmanAPI.addNewWord);
-    app.post('/api/add/user', checkUser, hangmanAPI.addUser);
+    app.post('/api/add/user', hangmanAPI.addUser);
     app.post('/api/add/to/user', checkUser, hangmanAPI.addWordTo);
     app.post('/api/logout', checkUser, hangmanAPI.logout);
 };
