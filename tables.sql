@@ -9,7 +9,8 @@ create table user_data(
     username text not null,
     password text not null,
     points int not null,
-    win_rate real not null
+    win_rate real not null,
+    friends text
 );
 
 create table table_link(
@@ -24,5 +25,12 @@ create table new_words(
     id serial not null primary key,
     word text not null,
     username text not null,
+    status text not null
+);
+
+create table friends_link(
+    id serial not null primary key,
+    requester_id int not null,
+    receiver_id int not null,
     status text not null
 );

@@ -192,7 +192,7 @@ module.exports = (pool) => {
     };
 
     const findUser = async (user) => {
-        const result = await pool.query('SELECT username, password, points, win_rate FROM user_data WHERE username = $1', [user]);
+        const result = await pool.query('SELECT username, password, points, win_rate FROM user_data WHERE username LIKE %$1%', [user]);
         return result.rows[0];
     };
 

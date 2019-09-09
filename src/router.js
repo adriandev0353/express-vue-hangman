@@ -7,6 +7,7 @@ import Login from './views/Login.vue';
 import Register from './views/Register.vue';
 import Profile from './views/Profile.vue';
 import Admin from './views/Admin.vue';
+import Friends from './views/Friends.vue';
 import axios from 'axios';
 
 Vue.use(Router);
@@ -59,6 +60,14 @@ const router = new Router({
             path: '/profile',
             name: 'Profile',
             component: Profile,
+            meta: {
+                requiresAuth: true
+            }
+        },
+        {
+            path: '/friends',
+            name: 'Friends',
+            component: Friends,
             meta: {
                 requiresAuth: true
             }

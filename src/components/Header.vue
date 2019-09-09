@@ -19,6 +19,7 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-item-dropdown text="Other" right>
             <b-dropdown-item to="/profile">Profile</b-dropdown-item>
+            <b-dropdown-item to="/friends">Friends</b-dropdown-item>
             <b-dropdown-item v-if="user === 'admin'" to="/admin">Admin Page</b-dropdown-item>
             <b-dropdown-divider></b-dropdown-divider>
             <b-dropdown-item @click="logout">Logout</b-dropdown-item>

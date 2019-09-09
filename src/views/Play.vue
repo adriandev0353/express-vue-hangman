@@ -93,7 +93,7 @@
               variant="outline-dark"
               @click="giveHint"
             >Hint</b-button>
-            <p v-if="!hintGiven && play && !loading">Gives you one letter for free.</p>
+            <p v-if="!hintGiven && play && !loading">Gives you one letter at the cost of a guess.</p>
           </b-col>
         </b-row>
       </div>
@@ -274,6 +274,7 @@ export default {
     },
     giveHint() {
       this.hintGiven = true;
+      this.guessesLeft --;
       let count = 0;
       for (const letter of this.wordGuessed) {
         if (letter === "_") {

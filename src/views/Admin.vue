@@ -1,6 +1,5 @@
 <template>
   <div class="admin">
-    <b-container>
       <h1>Admin page</h1>
       <b-card no-body>
         <b-tabs pills card vertical>
@@ -62,7 +61,6 @@
           </b-tab>
         </b-tabs>
       </b-card>
-    </b-container>
   </div>
 </template>
 
