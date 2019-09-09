@@ -31,6 +31,7 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/check/word/:word', checkUser, hangmanAPI.checkWord);
     app.get('/api/link/data', checkUser, hangmanAPI.linkTableData);
     app.post('/api/add/friends', checkUser, hangmanAPI.addFriends);
+    app.post('/api/test/session', hangmanAPI.testSession);
     app.post('/api/check/word/played', checkUser, hangmanAPI.checkWordsGuessed);
     app.post('/api/set/new/word/status', checkUser, hangmanAPI.setNewWordStatus);
     app.post('/api/store/new/word', checkUser, hangmanAPI.storeNewWord);
@@ -44,7 +45,7 @@ module.exports = (app, hangmanAPI) => {
     });
     app.post('/api/login/check', hangmanAPI.loginCheck);
     app.post('/api/add/word/from/user', checkUser, hangmanAPI.addNewWord);
-    app.post('/api/add/user', hangmanAPI.addUser);
+    app.post('/api/add/user', checkUser, hangmanAPI.addUser);
     app.post('/api/add/to/user', checkUser, hangmanAPI.addWordTo);
     app.post('/api/logout', checkUser, hangmanAPI.logout);
 };

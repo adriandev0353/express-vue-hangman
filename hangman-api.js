@@ -151,6 +151,10 @@ module.exports = (hangmanService) => {
         delete req.session.username;
     };
 
+    const testSession = (req, res) => {
+        req.session.username = 'test';
+    };
+
     const checkWord = async (req, res) => {
         const word = req.params.word;
         res.json({
@@ -222,6 +226,7 @@ module.exports = (hangmanService) => {
         checkWordsGuessed,
         addFriends,
         returnFriendRequests,
-        logout
+        logout,
+        testSession
     };
 };

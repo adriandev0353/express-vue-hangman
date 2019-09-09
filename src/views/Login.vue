@@ -74,7 +74,11 @@ export default {
       }
     },
     registerUser() {
-      this.$router.push({ name: "register" });
+      axios
+        .post("https://hangman-webapp.herokuapp.com/api/test/session")
+        .then(res => {
+          this.$router.push({ name: "register" });
+        });
     }
   }
 };
