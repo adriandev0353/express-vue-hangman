@@ -171,6 +171,14 @@ module.exports = (hangmanService) => {
         });
     };
 
+    const addFriends = async (req, res) => {
+        const details = req.body;
+        const result = await hangmanService.addFriends(details.requester, details.receiver);
+        res.json({
+            status: result
+        });
+    };
+
     const checkWordsGuessed = async (req, res) => {
         const details = req.body;
         const result = await hangmanService.checkWordsGuessed(details.user, details.word);
@@ -198,6 +206,7 @@ module.exports = (hangmanService) => {
         newWordList,
         setNewWordStatus,
         linkTableData,
-        checkWordsGuessed
+        checkWordsGuessed,
+        addFriends
     };
 };

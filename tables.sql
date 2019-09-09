@@ -28,9 +28,9 @@ create table new_words(
     status text not null
 );
 
-create table friends_link(
+create table friend_link(
     id serial not null primary key,
-    requester_id int not null,
-    receiver_id int not null,
+    requester text not null,
+    receiver text not null,
     status text not null
 );

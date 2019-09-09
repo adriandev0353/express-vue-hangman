@@ -17,9 +17,9 @@
               </label>
               <div>
                 <b-card-group columns>
-                  <b-card :key="index" v-for="(user, index) of results">
+                  <b-card bg-variant="primary" text-variant="white" :key="index" v-for="(user, index) of results">
                     <b-card-text>{{user.username}} - {{user.points}} points</b-card-text>
-                    <b-button variant="outline-dark">Send friend request</b-button>
+                    <b-button variant="outline-light">Send friend request</b-button>
                   </b-card>
                 </b-card-group>
               </div>
@@ -48,30 +48,32 @@ export default {
   },
   methods: {
     searchUser() {
-      let user = this.search;
-      if (user != "") {
+      const search = this.search;
+      if (search != "") {
         axios
           .get(
             "https://hangman-webapp.herokuapp.com/api/find/user/" + this.search
           )
           .then(res => {
-            let response = res.data;
-            let user = response.user;
-            let item = [
-              {
-                username: user.username,
-                points: user.points
-              }
-            ];
-            this.results = item;
+            const response = res.data;
+            const user = response.user;
+            const list = [];
+            for (let x = 0; x < user.length; x++) {
+              let item = {
+                username: user[x].username,
+                points: user[x].points
+              };
+              list.push(item);
+            }
+            this.results = list;
           });
       } else {
         axios
           .get("https://hangman-webapp.herokuapp.com/api/all/users")
           .then(res => {
-            let list = [];
-            let response = res.data;
-            let users = response.words;
+            const list = [];
+            const response = res.data;
+            const users = response.words;
             for (let x = 0; x < users.length; x++) {
               let item = {
                 username: users[x].username,

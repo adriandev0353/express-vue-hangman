@@ -192,7 +192,7 @@ module.exports = (pool) => {
     };
 
     const findUser = async (user) => {
-        const result = await pool.query('SELECT username, password, points, win_rate FROM user_data WHERE username LIKE $1', ['%' + user + '%']);
+        const result = await pool.query('SELECT username, password, points, win_rate FROM user_data WHERE username LIKE $1 AND username != $2', ['%' + user + '%', 'admin']);
         return result.rows;
     };
 
@@ -203,6 +203,16 @@ module.exports = (pool) => {
         } else {
             return 'found';
         };
+    };
+
+    const addFriends = async (requester, receiver) => {
+        const check = await pool.query('SELECT * FROM friend_link WHERE (requester = $1  AND receiver = $2) OR (requester = $3 AND receiver = $4)', [requester, receiver, receiver, requester]);
+        if (check.rowCount === 0) {
+            await pool.query('INSERT INTO friend_link(requester, receiver, status) VALUES($1, $2, $3)', [requester, receiver, 'pending']);
+            return 'success';
+        } else {
+            return 'exists';
+        }
     };
 
     return {
@@ -224,6 +234,7 @@ module.exports = (pool) => {
         newWordList,
         setNewWordStatus,
         linkTableData,
-        checkWordsGuessed
+        checkWordsGuessed,
+        addFriends
     };
 };
