@@ -1,6 +1,6 @@
 'use strict';
 const express = require('express');
-// const exphbs = require('express-handlebars');
+const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const wordList = require('./word.json');
 const HangmanAPI = require('./hangman-api');
@@ -30,16 +30,16 @@ const pool = new Pool({
 const hangmanService = HangmanService(pool);
 const hangmanAPI = HangmanAPI(hangmanService);
 
-// const handlebarSetup = exphbs({
-//     partialsDir: './views',
-//     viewPath: './views',
-//     layoutsDir: './views/layouts'
-// });
+const handlebarSetup = exphbs({
+    partialsDir: './views',
+    viewPath: './views',
+    layoutsDir: './views/layouts'
+});
 
-// app.engine('handlebars', handlebarSetup);
-// app.set('view engine', 'handlebars');
+app.engine('handlebars', handlebarSetup);
+app.set('view engine', 'handlebars');
 
-// app.use(express.static('public'));
+app.use(express.static('public'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
