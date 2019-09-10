@@ -230,7 +230,7 @@ module.exports = (pool) => {
         const friendListRec = await pool.query('SELECT friends FROM user_data WHERE username = $1', [receiver]);
 
         if (friendListReq.rows[0].friends === null) {
-            await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [receiver, requester]);
+            await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [receiver + ',', requester]);
         } else {
             const friends = friendListReq.rows[0].friends;
             const newFriendList = friends + ',' + receiver;
@@ -238,7 +238,7 @@ module.exports = (pool) => {
         };
 
         if (friendListRec.rows[0].friends === null) {
-            await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [requester, receiver]);
+            await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [requester + ',', receiver]);
         } else {
             const friends = friendListRec.rows[0].friends;
             const newFriendList = friends + ',' + requester;
@@ -259,7 +259,7 @@ module.exports = (pool) => {
             console.log(friendsList, 'friendsList');
             const list = friendsList.split(',');
             console.log(list, 'list');
-            const length = list.length;
+            const length = list.length - 1;
             console.log(length, 'length');
             list.length = length;
             console.log(list, 'after cut');
