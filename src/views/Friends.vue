@@ -35,25 +35,24 @@
           </b-tab>
           <b-tab title="Friends list">
             <b-card-text>
-              <h3>Friends List</h3>
+              <h3>Friend requests</h3>
               <div>
                 <b-card-group columns>
                   <b-card
-                    bg-variant="primary"
-                    text-variant="white"
+                    bg-variant="light"
+                    text-variant="black"
                     :key="index"
                     v-for="(user, index) of requests"
                   >
-                    <b-card-text>{{user.username}} - {{user.points}} points</b-card-text>
-                    <b-button
-                      variant="outline-success"
-                    >Accept</b-button>
-                    <b-button
-                      variant="outline-danger"
-                    >Deny</b-button>
+                    <b-card-text style="font-weight: bold">{{user.requester}}</b-card-text>
+                    <b-card-text>is requesting to be your friend</b-card-text>
+                    <b-button @click="confirmRequest(user.requester)" style="margin: 5px" variant="outline-success">Accept</b-button>
+                    <b-button @click="denyRequest(user.requester)" style="margin: 5px" variant="outline-danger">Deny</b-button>
                   </b-card>
                 </b-card-group>
               </div>
+              <hr />
+              <h3>Friends list</h3>
             </b-card-text>
           </b-tab>
           <b-tab title="Challenges">
@@ -68,21 +67,33 @@
 <script>
 import axios from "axios";
 export default {
-  beforeCreate(){
+  beforeCreate() {
     axios
-    .get('https://hangman-webapp.herokuapp.com/api/friend/requests/for/' + localStorage['user'])
-    .then((res)=>{
-      const response = res.data;
-      const requests = response.result;
-      this.requests = requests;
-      this.$forceUpdate();
-    });
+      .get(
+        "https://hangman-webapp.herokuapp.com/api/friend/requests/for/" +
+          localStorage["user"]
+      )
+      .then(res => {
+        const response = res.data;
+        const requests = response.result;
+        this.requests = requests;
+        this.$forceUpdate();
+
+        axios
+        .get('https://hangman-webapp.herokuapp.com/api/friend/list/' + localStorage['user'])
+        .then((res)=>{
+          const response = res.data;
+          const list = response.list;
+          console.log(list);
+        });
+      });
   },
   data() {
     return {
       search: "",
       results: [],
-      requests: []
+      requests: [],
+      friendList: []
     };
   },
   methods: {
@@ -112,7 +123,7 @@ export default {
           .then(res => {
             const list = [];
             const response = res.data;
-            console.log(response)
+            console.log(response);
             const users = response.words;
             for (let x = 0; x < users.length; x++) {
               let item = {
@@ -136,6 +147,26 @@ export default {
           const status = response.status;
           this.results = [];
         });
+    },
+    confirmRequest(requester){
+      axios
+      .post('https://hangman-webapp.herokuapp.com/api/confirm/friend/request', {
+        requester,
+        receiver: localStorage['user']
+      })
+      .then((res)=>{
+        console.log(res);
+      });
+    },
+    denyRequest(requester){
+      axios
+      .post('https://hangman-webapp.herokuapp.com/api/deny/friend/request', {
+        requester,
+        receiver: localStorage['user']
+      })
+      .then((res)=>{
+        console.log(res);
+      });
     }
   }
 };

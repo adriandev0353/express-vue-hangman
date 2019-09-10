@@ -51,12 +51,6 @@ export default {
       localStorage.clear();
       this.user = "";
       this.$router.push({ name: "login" });
-
-      axios
-        .post("https://hangman-webapp.herokuapp.com/api/logout")
-        .then(res => {
-          console.log("logged out");
-        });
     },
     setUser(value) {
       this.user = value;

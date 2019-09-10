@@ -14,7 +14,10 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/get/user/data/user/:user/choice/:choice', hangmanAPI.choiceFilter);
     app.get('/api/check/word/:word', hangmanAPI.checkWord);
     app.get('/api/link/data', hangmanAPI.linkTableData);
+    app.get('/api/friend/list/:user', hangmanAPI.friendList);
     app.post('/api/add/friends', hangmanAPI.addFriends);
+    app.post('/api/confirm/friend/request', hangmanAPI.confirmRequest);
+    app.post('/api/deny/friend/request', hangmanAPI.denyRequest);
     app.post('/api/check/word/played', hangmanAPI.checkWordsGuessed);
     app.post('/api/set/new/word/status', hangmanAPI.setNewWordStatus);
     app.post('/api/store/new/word', hangmanAPI.storeNewWord);

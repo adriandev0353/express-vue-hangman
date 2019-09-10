@@ -196,6 +196,31 @@ module.exports = (hangmanService) => {
         });
     };
 
+    const confirmRequest = async (req, res) => {
+        const details = req.body;
+        await hangmanService.confirmRequest(details.requester, details.receiver);
+        res.json({
+            status: 'success'
+        });
+    };
+
+    const denyRequest = async (req, res) => {
+        const details = req.body;
+        await hangmanService.denyRequest(details.requester, details.receiver);
+        res.json({
+            status: 'success'
+        });
+    };
+
+    const friendList = async (req, res) => {
+        const user = req.params.user;
+        const list = await hangmanService.friendList(user);
+        res.json({
+            status: 'success',
+            list
+        });
+    };
+
     return {
         allWords,
         listWordOfSize,
@@ -216,6 +241,9 @@ module.exports = (hangmanService) => {
         linkTableData,
         checkWordsGuessed,
         addFriends,
-        returnFriendRequests
+        returnFriendRequests,
+        confirmRequest,
+        denyRequest,
+        friendList
     };
 };

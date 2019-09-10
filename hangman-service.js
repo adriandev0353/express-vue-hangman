@@ -224,6 +224,43 @@ module.exports = (pool) => {
         }
     };
 
+    const confirmRequest = async (requester, receiver) => {
+        await pool.query('UPDATE friend_link SET status = $1 WHERE (requester = $2 AND receiver = $3) OR (requester = $3 AND receiver = $2)', ['confirmed', requester, receiver]);
+        const friendListReq = await pool.query('SELECT friends FROM user_data WHERE username = $1', [requester]);
+        const friendListRec = await pool.query('SELECT friends FROM user_data WHERE username = $1', [receiver]);
+
+        if (friendListReq.rows[0].friends === null) {
+            await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [receiver, requester]);
+        } else {
+            const friends = friendListReq.rows[0].friends;
+            const newFriendList = friends + ',' + receiver;
+            await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [newFriendList, requester]);
+        };
+
+        if (friendListRec.rows[0].friends === null) {
+            await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [requester, receiver]);
+        } else {
+            const friends = friendListRec.rows[0].friends;
+            const newFriendList = friends + ',' + requester;
+            await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [newFriendList, receiver]);
+        }
+    };
+
+    const denyRequest = async (requester, receiver) => { await pool.query('DELETE FROM friend_link WHERE (requester = $1 AND receiver = $2) OR (requester = $2 AND receiver = $1)', [requester, receiver]); };
+
+    const friendList = async (user) => {
+        const friends = await pool.query('SELECT friends FROM user_data WHERE username = $1', [user]);
+        if (friends.rows[0].friends === null) {
+            return 'none';
+        } else {
+            const friendList = friends.rows[0].friends;
+            const list = friendList.split(',');
+            const length = list.length - 1;
+            list.length = length;
+            return list;
+        }
+    };
+
     return {
         reloadData,
         listWordOfSize,
@@ -245,6 +282,9 @@ module.exports = (pool) => {
         linkTableData,
         checkWordsGuessed,
         addFriends,
-        returnFriendRequests
+        returnFriendRequests,
+        friendList,
+        confirmRequest,
+        denyRequest
     };
 };
