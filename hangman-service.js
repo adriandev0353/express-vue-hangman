@@ -258,8 +258,8 @@ module.exports = (pool) => {
             const friendsList = friends.rows[0].friends;
             console.log(friendsList, 'friendsList');
             const list = friendsList.split(',');
-            console.log(list, list);
-            const length = list.length - 1;
+            console.log(list, 'list');
+            const length = list.length;
             console.log(length, 'length');
             list.length = length;
             console.log(list, 'after cut');
