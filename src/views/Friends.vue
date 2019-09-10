@@ -74,6 +74,7 @@
                     :key="index" v-for="(friend, index) of friendList"
                   >
                     <b-card-text>{{friend}}</b-card-text>
+                    <b-button variant="outline-light">Challenge</b-button>
                   </b-card>
                 </b-card-group>
               </div>
