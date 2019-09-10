@@ -46,9 +46,11 @@
                   >
                     <b-card-text>{{user.username}} - {{user.points}} points</b-card-text>
                     <b-button
-                      @click="sendRequest(user.username)"
-                      variant="outline-light"
-                    >Send friend request</b-button>
+                      variant="outline-success"
+                    >Accept</b-button>
+                    <b-button
+                      variant="outline-danger"
+                    >Deny</b-button>
                   </b-card>
                 </b-card-group>
               </div>

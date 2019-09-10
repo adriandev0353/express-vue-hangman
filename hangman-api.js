@@ -80,7 +80,6 @@ module.exports = (hangmanService) => {
                 token = jwt.sign({ user }, config.secret, {
                     expiresIn: 86400 // expires in 24 hours
                 });
-                req.session.username = user;
                 res.json({
                     auth: result,
                     token
@@ -145,14 +144,6 @@ module.exports = (hangmanService) => {
             status: 'success',
             words: await hangmanService.newWordList()
         });
-    };
-
-    const logout = (req, res) => {
-        delete req.session.username;
-    };
-
-    const testSession = (req, res) => {
-        req.session.username = 'test';
     };
 
     const checkWord = async (req, res) => {
@@ -225,8 +216,6 @@ module.exports = (hangmanService) => {
         linkTableData,
         checkWordsGuessed,
         addFriends,
-        returnFriendRequests,
-        logout,
-        testSession
+        returnFriendRequests
     };
 };
