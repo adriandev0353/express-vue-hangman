@@ -233,7 +233,7 @@ module.exports = (pool) => {
             await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [receiver + ',', requester]);
         } else {
             const friends = friendListReq.rows[0].friends;
-            const newFriendList = friends + ',' + receiver;
+            const newFriendList = friends + receiver + ',';
             await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [newFriendList, requester]);
         };
 
@@ -241,7 +241,7 @@ module.exports = (pool) => {
             await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [requester + ',', receiver]);
         } else {
             const friends = friendListRec.rows[0].friends;
-            const newFriendList = friends + ',' + requester;
+            const newFriendList = friends + requester + ',';
             await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [newFriendList, receiver]);
         }
     };

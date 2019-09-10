@@ -36,7 +36,7 @@
           <b-tab title="Friends list">
             <b-card-text>
               <h3>Friend requests</h3>
-              <div v-if="requests != 'none'">
+              <div v-if="requests != 'none' || requests.length === 0">
                 <b-card-group columns>
                   <b-card
                     bg-variant="light"
@@ -64,11 +64,19 @@
               </div>
               <hr />
               <h3>Friends list</h3>
-              <div v-if="friendList != 'none'">
-                <div :key="index" v-for="(friend, index) of friendList">
-                  <b-card>
+              <div v-if="friendList != 'none' || friendList.length === 0">
+                <div >
+                 <div>
+                <b-card-group columns>
+                  <b-card
+                    bg-variant="info"
+                    text-variant="white"
+                    :key="index" v-for="(friend, index) of friendList"
+                  >
                     <b-card-text>{{friend}}</b-card-text>
                   </b-card>
+                </b-card-group>
+              </div>
                 </div>
               </div>
               <div v-else>
