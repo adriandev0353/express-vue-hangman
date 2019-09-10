@@ -250,13 +250,19 @@ module.exports = (pool) => {
 
     const friendList = async (user) => {
         const friends = await pool.query('SELECT friends FROM user_data WHERE username = $1', [user]);
+        console.log(friends.rows, 'friends.rows');
         if (friends.rows[0].friends === null) {
+            console.log('no friends');
             return 'none';
         } else {
-            const friendList = friends.rows[0].friends;
-            const list = friendList.split(',');
+            const friendsList = friends.rows[0].friends;
+            console.log(friendsList, 'friendsList');
+            const list = friendsList.split(',');
+            console.log(list, list);
             const length = list.length - 1;
+            console.log(length, 'length');
             list.length = length;
+            console.log(list, 'after cut');
             return list;
         }
     };

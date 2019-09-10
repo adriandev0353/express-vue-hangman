@@ -215,6 +215,7 @@ module.exports = (hangmanService) => {
     const friendList = async (req, res) => {
         const user = req.params.user;
         const list = await hangmanService.friendList(user);
+        console.log(list, 'api');
         res.json({
             status: 'success',
             list

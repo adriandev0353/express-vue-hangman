@@ -102,6 +102,7 @@ export default {
         this.$forceUpdate();
       })
       .then(() => {
+        console.log('retreiving friend data for', localStorage['user']);
         axios
           .get(
             "https://hangman-webapp.herokuapp.com/api/friend/list/" +
@@ -110,6 +111,7 @@ export default {
           .then(res => {
             const response = res.data;
             const list = response.list;
+            console.log(response)
             this.friendList = list;
           });
       });
