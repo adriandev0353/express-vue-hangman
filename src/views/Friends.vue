@@ -36,7 +36,7 @@
           <b-tab title="Friends list">
             <b-card-text>
               <h3>Friend requests</h3>
-              <div>
+              <div v-if="requests != 'none'">
                 <b-card-group columns>
                   <b-card
                     bg-variant="light"
@@ -46,13 +46,35 @@
                   >
                     <b-card-text style="font-weight: bold">{{user.requester}}</b-card-text>
                     <b-card-text>is requesting to be your friend</b-card-text>
-                    <b-button @click="confirmRequest(user.requester)" style="margin: 5px" variant="outline-success">Accept</b-button>
-                    <b-button @click="denyRequest(user.requester)" style="margin: 5px" variant="outline-danger">Deny</b-button>
+                    <b-button
+                      @click="confirmRequest(user.requester, index)"
+                      style="margin: 5px"
+                      variant="outline-success"
+                    >Accept</b-button>
+                    <b-button
+                      @click="denyRequest(user.requester, index)"
+                      style="margin: 5px"
+                      variant="outline-danger"
+                    >Deny</b-button>
                   </b-card>
                 </b-card-group>
               </div>
+              <div v-else>
+                <h3 style="color:grey">No requests</h3>
+              </div>
               <hr />
               <h3>Friends list</h3>
+              <div v-if="friendList != 'none'">
+                <div :key="index" v-for="(friend, index) of friendList">
+                  <b-card>
+                    <b-card-text>{{friend}}</b-card-text>
+                  </b-card>
+                </div>
+              </div>
+              <div v-else>
+                <h3 style="color:grey">No friends</h3>
+                <h5 style="color:grey">Find some using our search tab!</h5>
+              </div>
             </b-card-text>
           </b-tab>
           <b-tab title="Challenges">
@@ -78,14 +100,18 @@ export default {
         const requests = response.result;
         this.requests = requests;
         this.$forceUpdate();
-
+      })
+      .then(() => {
         axios
-        .get('https://hangman-webapp.herokuapp.com/api/friend/list/' + localStorage['user'])
-        .then((res)=>{
-          const response = res.data;
-          const list = response.list;
-          console.log(list);
-        });
+          .get(
+            "https://hangman-webapp.herokuapp.com/api/friend/list/" +
+              localStorage["user"]
+          )
+          .then(res => {
+            const response = res.data;
+            const list = response.list;
+            this.friendList = list;
+          });
       });
   },
   data() {
@@ -123,7 +149,6 @@ export default {
           .then(res => {
             const list = [];
             const response = res.data;
-            console.log(response);
             const users = response.words;
             for (let x = 0; x < users.length; x++) {
               let item = {
@@ -148,25 +173,41 @@ export default {
           this.results = [];
         });
     },
-    confirmRequest(requester){
+    confirmRequest(requester, index) {
       axios
-      .post('https://hangman-webapp.herokuapp.com/api/confirm/friend/request', {
-        requester,
-        receiver: localStorage['user']
-      })
-      .then((res)=>{
-        console.log(res);
-      });
+        .post(
+          "https://hangman-webapp.herokuapp.com/api/confirm/friend/request",
+          {
+            requester,
+            receiver: localStorage["user"]
+          }
+        )
+        .then(res => {
+          this.requests.splice(index, 1);
+        })
+        .then(() => {
+          axios
+            .get(
+              "https://hangman-webapp.herokuapp.com/api/friend/list/" +
+                localStorage["user"]
+            )
+            .then(res => {
+              const response = res.data;
+              const list = response.list;
+              this.friendList = list;
+            });
+        });
     },
-    denyRequest(requester){
+    denyRequest(requester, index) {
       axios
-      .post('https://hangman-webapp.herokuapp.com/api/deny/friend/request', {
-        requester,
-        receiver: localStorage['user']
-      })
-      .then((res)=>{
-        console.log(res);
-      });
+        .post("https://hangman-webapp.herokuapp.com/api/deny/friend/request", {
+          requester,
+          receiver: localStorage["user"]
+        })
+        .then(res => {
+          this.requests.splice(index, 1);
+          console.log(res, index);
+        });
     }
   }
 };

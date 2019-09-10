@@ -216,7 +216,7 @@ module.exports = (pool) => {
     };
 
     const returnFriendRequests = async (receiver) => {
-        const requests = await pool.query('SELECT * FROM friend_link WHERE receiver = $1', [receiver]);
+        const requests = await pool.query('SELECT * FROM friend_link WHERE receiver = $1 AND status = $2', [receiver, 'pending']);
         if (requests.rowCount > 0) {
             return requests.rows;
         } else {
