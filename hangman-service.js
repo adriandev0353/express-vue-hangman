@@ -172,7 +172,7 @@ module.exports = (pool) => {
     };
 
     const allUsers = async () => {
-        const result = await pool.query('SELECT username, password, points, win_rate FROM user_data WHERE username != $1 ORDER BY points DESC, win_rate DESC', ['admin']);
+        const result = await pool.query('SELECT username, password, points, win_rate, friends FROM user_data WHERE username != $1 ORDER BY points DESC, win_rate DESC', ['admin']);
         return result.rows;
     };
 
@@ -192,7 +192,7 @@ module.exports = (pool) => {
     };
 
     const findUser = async (user) => {
-        const result = await pool.query('SELECT username, password, points, win_rate FROM user_data WHERE username LIKE $1 AND username != $2', ['%' + user + '%', 'admin']);
+        const result = await pool.query('SELECT username, password, points, win_rate, friends FROM user_data WHERE username LIKE $1 AND username != $2', ['%' + user + '%', 'admin']);
         return result.rows;
     };
 

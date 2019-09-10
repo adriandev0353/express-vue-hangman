@@ -135,7 +135,7 @@ describe('Testing hangman game', () => {
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { username: 'dyllanhope', password: '123', points: 0, win_rate: 0 }
+                { username: 'dyllanhope', password: '123', points: 0, win_rate: 0, friends: null }
             ]);
         });
         it("Should return a list of users, 'dyllanhope' being the only one as it was added, even though a it was attempted to add again", async () => {
@@ -145,7 +145,7 @@ describe('Testing hangman game', () => {
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { username: 'dyllanhope', password: '123', points: 0, win_rate: 0 }
+                { username: 'dyllanhope', password: '123', points: 0, win_rate: 0, friends: null }
             ]);
         });
         it("Should return a list of users, 'dyllanhope', with updated points", async () => {
@@ -161,7 +161,7 @@ describe('Testing hangman game', () => {
 
             const list = await hangmanInstance.allUsers();
             assert.strict.deepEqual(list, [
-                { username: 'dyllanhope', password: '123', points: 9, win_rate: 100 }
+                { username: 'dyllanhope', password: '123', points: 9, win_rate: 100, friends: null }
             ]);
         });
 
@@ -197,7 +197,7 @@ describe('Testing hangman game', () => {
             await hangmanInstance.addUser('dyllanhope', '123');
             await hangmanInstance.addUser('michael', '123');
 
-            assert.strict.deepEqual(await hangmanInstance.findUser('dyllanhope'), { username: 'dyllanhope', password: '123', points: 0, win_rate: 0 });
+            assert.strict.deepEqual(await hangmanInstance.findUser('dyllanhope'), [{ username: 'dyllanhope', password: '123', points: 0, win_rate: 0, friends: null }]);
         });
         it('Should return michaels data with his points remaining zero after losing points', async () => {
             const hangmanInstance = HangmanService(pool);
@@ -211,10 +211,10 @@ describe('Testing hangman game', () => {
             await hangmanInstance.addUser('michael', '123');
 
             await hangmanInstance.addWordTo('michael', 'car', 'lost');
-            const result = await pool.query('SELECT username,password,points,win_rate FROM user_data WHERE username = $1', ['michael']);
+            const result = await pool.query('SELECT username,password,points,win_rate,friends FROM user_data WHERE username = $1', ['michael']);
 
             assert.strict.deepEqual(result.rows[0],
-                { username: 'michael', password: '123', points: 0, win_rate: 0 });
+                { username: 'michael', password: '123', points: 0, win_rate: 0, friends: null });
         });
         it('Should return dyllanhopes password', async () => {
             const hangmanInstance = HangmanService(pool);
@@ -336,11 +336,9 @@ describe('Testing hangman game', () => {
             await hangmanInstance.addUser('dyllanhope', '123');
             await hangmanInstance.addUser('michael', '123');
 
-            let id = await pool.query('SELECT id FROM user_data WHERE username = $1', ['dyllanhope']);
-            id = id.rows[0].id;
-            await hangmanInstance.delUser(id);
+            await hangmanInstance.delUser('dyllanhope');
 
-            assert.strict.deepEqual(await hangmanInstance.allUsers(), [{ username: 'michael', password: '123', points: 0, win_rate: 0 }]);
+            assert.strict.deepEqual(await hangmanInstance.allUsers(), [{ username: 'michael', password: '123', points: 0, win_rate: 0, friends: null }]);
         });
         it('Should return that the words "plane" and select already exist and "machine" is new', async () => {
             const hangmanInstance = HangmanService(pool);
