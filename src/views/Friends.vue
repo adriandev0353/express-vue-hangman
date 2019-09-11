@@ -1,6 +1,5 @@
 <template>
   <div class="friends">
-    <h1>Friends</h1>
     <div>
       <b-card no-body>
         <b-tabs pills card vertical>
@@ -15,7 +14,7 @@
                   </b-input-group-append>
                 </b-input-group>
               </label>
-              <div>
+              <div v-if="results.length > 0 && !error">
                 <b-card-group columns>
                   <b-card
                     bg-variant="primary"
@@ -30,6 +29,9 @@
                     >Send friend request</b-button>
                   </b-card>
                 </b-card-group>
+              </div>
+              <div v-else-if="error">
+                <h3 style="color:grey">No results</h3>
               </div>
             </b-card-text>
           </b-tab>
@@ -76,6 +78,11 @@
                       >
                         <b-card-text>{{friend}}</b-card-text>
                         <b-button variant="outline-light">Challenge</b-button>
+                        <b-button
+                          @click="deleteFriend(friend)"
+                          style="margin-left: 5px"
+                          variant="outline-danger"
+                        >Remove friend</b-button>
                       </b-card>
                     </b-card-group>
                   </div>
@@ -148,17 +155,17 @@ export default {
                     };
                     list.push(item);
                   } else {
-                  for (const friend of this.friendList) {
-                    if (users[x].username === friend) {
-                      item = {
-                        Rank: x + 1,
-                        Username: users[x].username,
-                        Points: users[x].points,
-                        Ratio: users[x].win_rate
-                      };
-                      list.push(item);
+                    for (const friend of this.friendList) {
+                      if (users[x].username === friend) {
+                        item = {
+                          Rank: x + 1,
+                          Username: users[x].username,
+                          Points: users[x].points,
+                          Ratio: users[x].win_rate
+                        };
+                        list.push(item);
+                      }
                     }
-                  }
                   }
                 }
                 this.items = list;
@@ -173,11 +180,13 @@ export default {
       search: "",
       results: [],
       requests: [],
-      friendList: []
+      friendList: [],
+      error: false
     };
   },
   methods: {
     searchUser() {
+      this.error = false;
       const search = this.search;
       if (search != "") {
         axios
@@ -185,15 +194,32 @@ export default {
             "https://hangman-webapp.herokuapp.com/api/find/user/" + this.search
           )
           .then(res => {
+            let found = false;
+            const list = [];
             const response = res.data;
             const user = response.user;
-            const list = [];
             for (let x = 0; x < user.length; x++) {
-              let item = {
-                username: user[x].username,
-                points: user[x].points
-              };
-              list.push(item);
+              if (user[x].username === localStorage["user"]) {
+                found = true;
+              } else {
+                for (const friend of this.friendList) {
+                  if (user[x].username === friend) {
+                    found = true;
+                  }
+                }
+              }
+              if (!found) {
+                let item = {
+                  username: user[x].username,
+                  points: user[x].points
+                };
+                list.push(item);
+              } else {
+                found = false;
+              }
+            }
+            if (list.length === 0) {
+              this.error = true;
             }
             this.results = list;
           });
@@ -201,15 +227,32 @@ export default {
         axios
           .get("https://hangman-webapp.herokuapp.com/api/all/users")
           .then(res => {
+            let found = false;
             const list = [];
             const response = res.data;
-            const users = response.words;
-            for (let x = 0; x < users.length; x++) {
-              let item = {
-                username: users[x].username,
-                points: users[x].points
-              };
-              list.push(item);
+            const user = response.words;
+            for (let x = 0; x < user.length; x++) {
+              if (user[x].username === localStorage["user"]) {
+                found = true;
+              } else {
+                for (const friend of this.friendList) {
+                  if (user[x].username === friend) {
+                    found = true;
+                  }
+                }
+              }
+              if (!found) {
+                let item = {
+                  username: user[x].username,
+                  points: user[x].points
+                };
+                list.push(item);
+              } else {
+                found = false;
+              }
+            }
+            if (list.length === 0) {
+              this.error = true;
             }
             this.results = list;
           });
@@ -260,7 +303,25 @@ export default {
         })
         .then(res => {
           this.requests.splice(index, 1);
-          console.log(res, index);
+        });
+    },
+    deleteFriend(friend) {
+      axios
+        .post("https://hangman-webapp.herokuapp.com/api/remove/friend", {
+          user: localStorage["user"],
+          friend
+        })
+        .then(res => {
+          axios
+            .get(
+              "https://hangman-webapp.herokuapp.com/api/friend/list/" +
+                localStorage["user"]
+            )
+            .then(res => {
+              const response = res.data;
+              const list = response.list;
+              this.friendList = list;
+            });
         });
     }
   }

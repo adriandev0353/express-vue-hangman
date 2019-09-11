@@ -246,23 +246,35 @@ module.exports = (pool) => {
         }
     };
 
+    const deleteFriend = async (user, friend) => {
+        const friends = await pool.query('SELECT friends FROM user_data WHERE username = $1', [user]);
+        const list = friends.rows[0].friends;
+        const friendList = list.split(',');
+        const length = friendList.length - 1;
+        for (let i = 0; i < length; i++) {
+            if (friend === friendList[i]) {
+                friendList.splice(i, 1);
+            };
+        };
+        let newfriendsList = '';
+        for (const item of friendList) {
+            newfriendsList += item + ',';
+        };
+        await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [newfriendsList, user]);
+        await pool.query('DELETE FROM friend_link WHERE (requester = $1 AND receiver = $2) OR (requester = $2 AND receiver = $1)', [user, friend]);
+    };
+
     const denyRequest = async (requester, receiver) => { await pool.query('DELETE FROM friend_link WHERE (requester = $1 AND receiver = $2) OR (requester = $2 AND receiver = $1)', [requester, receiver]); };
 
     const friendList = async (user) => {
         const friends = await pool.query('SELECT friends FROM user_data WHERE username = $1', [user]);
-        console.log(friends.rows, 'friends.rows');
         if (friends.rows[0].friends === null) {
-            console.log('no friends');
             return 'none';
         } else {
             const friendsList = friends.rows[0].friends;
-            console.log(friendsList, 'friendsList');
             const list = friendsList.split(',');
-            console.log(list, 'list');
             const length = list.length - 1;
-            console.log(length, 'length');
             list.length = length;
-            console.log(list, 'after cut');
             return list;
         }
     };
@@ -291,6 +303,7 @@ module.exports = (pool) => {
         returnFriendRequests,
         friendList,
         confirmRequest,
-        denyRequest
+        denyRequest,
+        deleteFriend
     };
 };

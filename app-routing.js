@@ -15,6 +15,7 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/check/word/:word', hangmanAPI.checkWord);
     app.get('/api/link/data', hangmanAPI.linkTableData);
     app.get('/api/friend/list/:user', hangmanAPI.friendList);
+    app.post('/api/remove/friend', hangmanAPI.deleteFriend);
     app.post('/api/add/friends', hangmanAPI.addFriends);
     app.post('/api/confirm/friend/request', hangmanAPI.confirmRequest);
     app.post('/api/deny/friend/request', hangmanAPI.denyRequest);

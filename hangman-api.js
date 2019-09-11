@@ -212,6 +212,14 @@ module.exports = (hangmanService) => {
         });
     };
 
+    const deleteFriend = async (req, res) => {
+        const details = req.body;
+        await hangmanService.deleteFriend(details.user, details.friend);
+        res.json({
+            status: 'success'
+        });
+    };
+
     const friendList = async (req, res) => {
         const user = req.params.user;
         const list = await hangmanService.friendList(user);
@@ -245,6 +253,7 @@ module.exports = (hangmanService) => {
         returnFriendRequests,
         confirmRequest,
         denyRequest,
-        friendList
+        friendList,
+        deleteFriend
     };
 };
