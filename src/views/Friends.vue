@@ -94,7 +94,7 @@
               </div>
               <hr />
               <h3>Leaderboard</h3>
-              <b-table sticky-header v-if="items.length > 0" info :items="items" :fields="fields"></b-table>
+              <b-table sticky-header v-if="items.length > 1" info :items="items" :fields="fields"></b-table>
               <div v-else>
                 <h3 style="color:grey">No friends</h3>
                 <h5 style="color:grey">Find some using our search tab!</h5>
@@ -112,7 +112,7 @@
 
 <script>
 import axios from "axios";
-import { log } from 'util';
+import { log } from "util";
 export default {
   beforeCreate() {
     axios
@@ -127,7 +127,6 @@ export default {
         this.$forceUpdate();
       })
       .then(() => {
-        console.log("retreiving friend data for", localStorage["user"]);
         axios
           .get(
             "https://hangman-webapp.herokuapp.com/api/friend/list/" +
@@ -293,6 +292,40 @@ export default {
               const response = res.data;
               const list = response.list;
               this.friendList = list;
+            })
+            .then(() => {
+              axios
+                .get("https://hangman-webapp.herokuapp.com/api/all/users")
+                .then(res => {
+                  const list = [];
+                  let item = {};
+                  const response = res.data;
+                  const users = response.words;
+                  for (let x = 0; x < users.length; x++) {
+                    if (users[x].username === localStorage["user"]) {
+                      item = {
+                        Rank: x + 1,
+                        Username: users[x].username,
+                        Points: users[x].points,
+                        Ratio: users[x].win_rate
+                      };
+                      list.push(item);
+                    } else {
+                      for (const friend of this.friendList) {
+                        if (users[x].username === friend) {
+                          item = {
+                            Rank: x + 1,
+                            Username: users[x].username,
+                            Points: users[x].points,
+                            Ratio: users[x].win_rate
+                          };
+                          list.push(item);
+                        }
+                      }
+                    }
+                  }
+                  this.items = list;
+                });
             });
         });
     },
@@ -322,6 +355,40 @@ export default {
               const response = res.data;
               const list = response.list;
               this.friendList = list;
+            })
+            .then(() => {
+              axios
+                .get("https://hangman-webapp.herokuapp.com/api/all/users")
+                .then(res => {
+                  const list = [];
+                  let item = {};
+                  const response = res.data;
+                  const users = response.words;
+                  for (let x = 0; x < users.length; x++) {
+                    if (users[x].username === localStorage["user"]) {
+                      item = {
+                        Rank: x + 1,
+                        Username: users[x].username,
+                        Points: users[x].points,
+                        Ratio: users[x].win_rate
+                      };
+                      list.push(item);
+                    } else {
+                      for (const friend of this.friendList) {
+                        if (users[x].username === friend) {
+                          item = {
+                            Rank: x + 1,
+                            Username: users[x].username,
+                            Points: users[x].points,
+                            Ratio: users[x].win_rate
+                          };
+                          list.push(item);
+                        }
+                      }
+                    }
+                  }
+                  this.items = list;
+                });
             });
         });
     }

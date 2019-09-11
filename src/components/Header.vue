@@ -17,8 +17,11 @@
           </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
+          <!-- <b-nav-text v-if='points > 0'>{{user}} points:</b-nav-text> -->
+          <b-nav-text v-if='points > 0'><span style='color:yellow'>{{points}}</span> Points</b-nav-text>
+
           <b-nav-item-dropdown text="Other" right>
-            <b-dropdown-item to="/profile">Profile</b-dropdown-item>
+            <b-dropdown-item to="/profile">{{user}}</b-dropdown-item>
             <b-dropdown-item to="/friends">Friends</b-dropdown-item>
             <b-dropdown-item v-if="user === 'admin'" to="/admin">Admin Page</b-dropdown-item>
             <b-dropdown-divider></b-dropdown-divider>
@@ -37,19 +40,45 @@ import axios from "axios";
 export default {
   data() {
     return {
-      user: ""
+      user: "",
+      points: 0
     };
   },
   mounted() {
+    this.user = localStorage["user"];
     // Listen for the 'clicked-event' and its payload.
     EventBus.$on("userData", name => {
       this.user = name;
+      axios
+        .get(
+          "https://hangman-webapp.herokuapp.com/api/find/user/" +
+            localStorage["user"]
+        )
+        .then(res => {
+          const response = res.data;
+          const user = response.user;
+          this.points = user[0].points;
+          this.$forceUpdate();
+        });
     });
+
+    axios
+      .get(
+        "https://hangman-webapp.herokuapp.com/api/find/user/" +
+          localStorage["user"]
+      )
+      .then(res => {
+        const response = res.data;
+        const user = response.user;
+        this.points = user[0].points;
+        this.$forceUpdate();
+      });
   },
   methods: {
     logout() {
       localStorage.clear();
       this.user = "";
+      this.points = 0;
       this.$router.push({ name: "login" });
     },
     setUser(value) {
