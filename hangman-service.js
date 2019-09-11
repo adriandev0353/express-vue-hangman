@@ -261,10 +261,13 @@ module.exports = (pool) => {
         };
 
         console.log(newUserList, 'newUserList');
-
         let newUserFriendsList = '';
-        for (const item of newUserList) {
-            newUserFriendsList += item + ',';
+        if (newUserList.length !== 0) {
+            for (const item of newUserList) {
+                newUserFriendsList += item + ',';
+            }
+        } else {
+            newUserFriendsList = null;
         }
         // updating the friends friend list without the user in it
         const friendFriends = await pool.query('SELECT friends FROM user_data WHERE username = $1', [friend]);
@@ -274,7 +277,7 @@ module.exports = (pool) => {
         const friendFriendList = friendList.split(',');
         friendFriendList.length -= 1;
         for (let i = 0; i < friendFriendList.length; i++) {
-            if (friend !== friendFriendList[i]) {
+            if (user !== friendFriendList[i]) {
                 newFriendList.push(friendFriendList[i]);
             };
         };
@@ -282,8 +285,12 @@ module.exports = (pool) => {
         console.log(newFriendList, 'newFriendList');
 
         let newFriendFriendsList = '';
-        for (const item of newFriendList) {
-            newFriendFriendsList += item + ',';
+        if (newFriendList.length !== 0) {
+            for (const item of newFriendList) {
+                newFriendFriendsList += item + ',';
+            }
+        } else {
+            newFriendFriendsList = null;
         }
 
         console.log(newFriendFriendsList, 'friend');
