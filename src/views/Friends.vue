@@ -112,6 +112,7 @@
 
 <script>
 import axios from "axios";
+import { log } from 'util';
 export default {
   beforeCreate() {
     axios

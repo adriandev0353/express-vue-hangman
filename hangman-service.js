@@ -247,20 +247,42 @@ module.exports = (pool) => {
     };
 
     const deleteFriend = async (user, friend) => {
-        const friends = await pool.query('SELECT friends FROM user_data WHERE username = $1', [user]);
-        const list = friends.rows[0].friends;
-        const friendList = list.split(',');
-        const length = friendList.length - 1;
-        for (let i = 0; i < length; i++) {
-            if (friend === friendList[i]) {
-                friendList.splice(i, 1);
+        // updating users friend list without the friend in it
+        const userFriends = await pool.query('SELECT friends FROM user_data WHERE username = $1', [user]);
+        const userList = userFriends.rows[0].friends;
+        const newUserList = [];
+        const userFriendList = userList.split(',');
+        userFriendList.length -= 1;
+        for (let i = 0; i < userFriendList.length; i++) {
+            if (friend !== userFriendList[i]) {
+                newUserList.push(userFriendList[i]);
             };
         };
-        let newfriendsList = '';
-        for (const item of friendList) {
-            newfriendsList += item + ',';
+
+        let newUserFriendsList = '';
+        for (const item of newUserList) {
+            newUserFriendsList += item + ',';
+        }
+        // updating the friends friend list without the user in it
+        const friendFriends = await pool.query('SELECT friends FROM user_data WHERE username = $1', [friend]);
+        const friendList = friendFriends.rows[0].friends;
+        const newFriendList = [];
+        const friendFriendList = friendList.split(',');
+        friendFriendList.length -= 1;
+        for (let i = 0; i < friendFriendList.length; i++) {
+            if (friend !== friendFriendList[i]) {
+                newFriendList.push(friendFriendList[i]);
+            };
         };
-        await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [newfriendsList, user]);
+
+        let newFriendFriendsList = '';
+        for (const item of newFriendList) {
+            newFriendFriendsList += item + ',';
+        }
+
+        await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [newUserFriendsList, user]);
+        await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [newFriendFriendsList, friend]);
+
         await pool.query('DELETE FROM friend_link WHERE (requester = $1 AND receiver = $2) OR (requester = $2 AND receiver = $1)', [user, friend]);
     };
 
