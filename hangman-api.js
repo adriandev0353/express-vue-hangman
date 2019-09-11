@@ -220,6 +220,32 @@ module.exports = (hangmanService) => {
         });
     };
 
+    const sendChallenge = async (req, res) => {
+        const details = req.body;
+        const status = await hangmanService.sendChallenge(details.challenger, details.opponent, details.word, details.hint);
+        res.json({
+            status
+        });
+    };
+
+    const fetchChallengesFor = async (req, res) => {
+        const user = req.params.user;
+        const challenges = await hangmanService.fetchChallengesFor(user);
+        res.json({
+            status: 'success',
+            challenges
+        });
+    };
+
+    const fetchChallengesSentBy = async (req, res) => {
+        const user = req.params.user;
+        const challenges = await hangmanService.fetchChallengesSentBy(user);
+        res.json({
+            status: 'success',
+            challenges
+        });
+    };
+
     const friendList = async (req, res) => {
         const user = req.params.user;
         const list = await hangmanService.friendList(user);
@@ -254,6 +280,9 @@ module.exports = (hangmanService) => {
         confirmRequest,
         denyRequest,
         friendList,
-        deleteFriend
+        deleteFriend,
+        sendChallenge,
+        fetchChallengesFor,
+        fetchChallengesSentBy
     };
 };

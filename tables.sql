@@ -34,3 +34,12 @@ create table friend_link(
     receiver text not null,
     status text not null
 );
+
+create table user_challenges(
+    id serial not null primary key,
+    challenger text not null,
+    opponent text not null,
+    word text not null,
+    hint text not null,
+    status text not null
+);

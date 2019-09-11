@@ -317,6 +317,33 @@ module.exports = (pool) => {
         }
     };
 
+    const sendChallenge = async (challenger, opponent, word, hint) => {
+        let savedHint = '';
+        if (hint === '') {
+            savedHint = 'none';
+        } else {
+            savedHint = hint;
+        }
+
+        const check = await pool.query('SELECT * FROM user_challenges WHERE challenger = $1', [challenger]);
+        if (check.rowCount !== 3) {
+            await pool.query('INSERT INTO user_challenges(challenger, opponent, word, hint, status) VALUES($1, $2, $3, $4, $5)', [challenger, opponent, word, savedHint, 'pending']);
+            return 'challenge sent';
+        } else {
+            return 'challenge limit reached';
+        };
+    };
+
+    const fetchChallengesFor = async (user) => {
+        const results = await pool.query('SELECT * FROM user_challenges WHERE opponent = $1', [user]);
+        return results.rows;
+    };
+
+    const fetchChallengesSentBy = async (user) => {
+        const results = await pool.query('SELECT * FROM user_challenges WHERE challenger = $1', [user]);
+        return results.rows;
+    };
+
     return {
         reloadData,
         listWordOfSize,
@@ -342,6 +369,9 @@ module.exports = (pool) => {
         friendList,
         confirmRequest,
         denyRequest,
-        deleteFriend
+        deleteFriend,
+        sendChallenge,
+        fetchChallengesFor,
+        fetchChallengesSentBy
     };
 };

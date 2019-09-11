@@ -77,7 +77,14 @@
                         v-for="(friend, index) of friendList"
                       >
                         <b-card-text>{{friend}}</b-card-text>
-                        <b-button variant="outline-light">Challenge</b-button>
+                        <b-button variant="outline-light" @click="modalShow = !modalShow">Challenge</b-button>
+                        <b-modal @show="resetModal" @ok="handleOk" v-model="modalShow" centered>
+                          <template v-slot:modal-title>Challenge {{friend}}</template>
+                          <label>Word:</label>
+                          <b-form-input v-model="word" required></b-form-input>
+                          <label>Hint:</label>
+                          <b-form-input v-model="hint" placeholder="Optional"></b-form-input>
+                        </b-modal>
                         <b-button
                           @click="deleteFriend(friend)"
                           style="margin-left: 5px"
@@ -181,10 +188,27 @@ export default {
       results: [],
       requests: [],
       friendList: [],
-      error: false
+      error: false,
+      modalShow: false,
+      word: "",
+      hint: ""
     };
   },
   methods: {
+    handleOk(bvModalEvt) {
+      bvModalEvt.preventDefault();
+      const word = this.word;
+      if (word === "") {
+        console.log("ERROR NO WORD");
+      } else {
+        console.log("You're cool i guess");
+        this.modalShow = false;
+      }
+    },
+    resetModal() {
+      this.word = "";
+      this.hint = "";
+    },
     searchUser() {
       this.error = false;
       const search = this.search;
