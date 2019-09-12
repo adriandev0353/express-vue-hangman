@@ -4,154 +4,175 @@
       <b-card no-body>
         <b-tabs pills card vertical>
           <b-tab title="Search" active>
-            <b-card-text>
-              <label>
-                <h3>Search for someone:</h3>
-                <b-input-group style="margin-bottom:10px; width:200px" class="mt-3">
-                  <b-form-input v-model="search"></b-form-input>
-                  <b-input-group-append>
-                    <b-button @click="searchUser" variant="outline-dark">Search</b-button>
-                  </b-input-group-append>
-                </b-input-group>
-              </label>
-              <div v-if="results.length > 0 && !error">
-                <b-card-group columns>
-                  <b-card
-                    bg-variant="primary"
-                    text-variant="white"
-                    :key="index"
-                    v-for="(user, index) of results"
-                  >
-                    <b-card-text>{{user.username}} - {{user.points}} points</b-card-text>
-                    <b-button
-                      @click="sendRequest(user.username)"
-                      variant="outline-light"
-                    >Send friend request</b-button>
-                  </b-card>
-                </b-card-group>
-              </div>
-              <div v-else-if="error">
-                <h3 style="color:grey">No results</h3>
-              </div>
-            </b-card-text>
+            <div style="max-height:500px;overflow-y: auto;">
+              <b-card-text>
+                <label>
+                  <h3>Search for someone:</h3>
+                  <b-input-group style="margin-bottom:10px; width:200px" class="mt-3">
+                    <b-form-input v-model="search"></b-form-input>
+                    <b-input-group-append>
+                      <b-button @click="searchUser" variant="outline-dark">Search</b-button>
+                    </b-input-group-append>
+                  </b-input-group>
+                </label>
+                <div v-if="results.length > 0 && !error">
+                  <b-card-group columns>
+                    <b-card
+                      bg-variant="primary"
+                      text-variant="white"
+                      :key="index"
+                      v-for="(user, index) of results"
+                    >
+                      <b-card-text>{{user.username}} - {{user.points}} points</b-card-text>
+                      <b-button
+                        @click="sendRequest(user.username)"
+                        variant="outline-light"
+                      >Send friend request</b-button>
+                    </b-card>
+                  </b-card-group>
+                </div>
+                <div v-else-if="error">
+                  <h3 style="color:grey">No results</h3>
+                </div>
+              </b-card-text>
+            </div>
           </b-tab>
           <b-tab title="Friends list">
-            <b-card-text>
-              <h3>Friend requests</h3>
-              <div v-if="requests != 'none' || requests.length === 0">
-                <b-card-group columns>
-                  <b-card
-                    bg-variant="light"
-                    text-variant="black"
-                    :key="index"
-                    v-for="(user, index) of requests"
-                  >
-                    <b-card-text style="font-weight: bold">{{user.requester}}</b-card-text>
-                    <b-card-text>is requesting to be your friend</b-card-text>
-                    <b-button
-                      @click="confirmRequest(user.requester, index)"
-                      style="margin: 5px"
-                      variant="outline-success"
-                    >Accept</b-button>
-                    <b-button
-                      @click="denyRequest(user.requester, index)"
-                      style="margin: 5px"
-                      variant="outline-danger"
-                    >Deny</b-button>
-                  </b-card>
-                </b-card-group>
-              </div>
-              <div v-else>
-                <h3 style="color:grey">No requests</h3>
-              </div>
-              <hr />
-              <h3>Friends list</h3>
-              <div v-if="friendList != 'none' || friendList.length === 0">
-                <div>
+            <div style="max-height:500px;overflow-y: auto;">
+              <b-card-text>
+                <h3>Friend requests</h3>
+                <div v-if="requests != 'none' || requests.length === 0">
+                  <b-card-group columns>
+                    <b-card
+                      bg-variant="light"
+                      text-variant="black"
+                      :key="index"
+                      v-for="(user, index) of requests"
+                    >
+                      <b-card-text style="font-weight: bold">{{user.requester}}</b-card-text>
+                      <b-card-text>is requesting to be your friend</b-card-text>
+                      <b-button
+                        @click="confirmRequest(user.requester, index)"
+                        style="margin: 5px"
+                        variant="outline-success"
+                      >Accept</b-button>
+                      <b-button
+                        @click="denyRequest(user.requester, index)"
+                        style="margin: 5px"
+                        variant="outline-danger"
+                      >Deny</b-button>
+                    </b-card>
+                  </b-card-group>
+                </div>
+                <div v-else>
+                  <h3 style="color:grey">No requests</h3>
+                </div>
+                <hr />
+                <h3>Friends list</h3>
+                <div v-if="friendList != 'none' || friendList.length === 0">
                   <div>
-                    <b-card-group columns>
-                      <b-card
-                        bg-variant="info"
-                        text-variant="white"
-                        :key="index"
-                        v-for="(friend, index) of friendList"
-                      >
-                        <b-card-text>{{friend}}</b-card-text>
-                        <b-button
-                          variant="outline-light"
-                          @click="assignFriendChallenge(friend)"
-                        >Challenge</b-button>
-                        <b-modal @show="resetModal" @ok="handleOk" v-model="modalShow" centered>
-                          <template v-slot:modal-title>Challenge {{friend}}</template>
-                          <label>Word:</label>
-                          <b-form-input v-model="word" :state="wordState" required></b-form-input>
-                          <br />
-                          <label>Hint:</label>
-                          <b-form-input v-model="hint" placeholder="Optional"></b-form-input>
-                        </b-modal>
-                        <b-button
-                          @click="deleteFriend(friend)"
-                          style="margin-left: 5px"
-                          variant="outline-danger"
-                        >Remove friend</b-button>
-                      </b-card>
-                    </b-card-group>
+                    <div>
+                      <b-card-group columns>
+                        <b-card
+                          bg-variant="info"
+                          text-variant="white"
+                          :key="index"
+                          v-for="(friend, index) of friendList"
+                        >
+                          <b-card-text>{{friend}}</b-card-text>
+                          <b-button
+                            variant="outline-light"
+                            @click="assignFriendChallenge(friend)"
+                          >Challenge</b-button>
+                          <b-modal @show="resetModal" @ok="handleOk" v-model="modalShow" centered>
+                            <template v-slot:modal-title>Challenge {{friend}}</template>
+                            <label>Word:</label>
+                            <b-form-input v-model="word" :state="wordState" required></b-form-input>
+                            <br />
+                            <label>Hint:</label>
+                            <b-form-input v-model="hint" placeholder="Optional"></b-form-input>
+                          </b-modal>
+                          <b-button
+                            @click="deleteFriend(friend)"
+                            style="margin-left: 5px"
+                            variant="outline-danger"
+                          >Remove friend</b-button>
+                        </b-card>
+                      </b-card-group>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div v-else>
-                <h3 style="color:grey">No friends</h3>
-                <h5 style="color:grey">Find some using our search tab!</h5>
-              </div>
-              <hr />
-              <h3>Leaderboard</h3>
-              <b-table sticky-header v-if="items.length > 1" info :items="items" :fields="fields"></b-table>
-              <div v-else>
-                <h3 style="color:grey">No friends</h3>
-                <h5 style="color:grey">Find some using our search tab!</h5>
-              </div>
-            </b-card-text>
+                <div v-else>
+                  <h3 style="color:grey">No friends</h3>
+                  <h5 style="color:grey">Find some using our search tab!</h5>
+                </div>
+                <hr />
+                <h3>Leaderboard</h3>
+                <b-table sticky-header v-if="items.length > 1" info :items="items" :fields="fields"></b-table>
+                <div v-else>
+                  <h3 style="color:grey">No friends</h3>
+                  <h5 style="color:grey">Find some using our search tab!</h5>
+                </div>
+              </b-card-text>
+            </div>
           </b-tab>
           <b-tab title="Challenges">
-            <b-card-text>
-              <h3>Challenges</h3>
-              <div v-if="challenges.length > 0">
-                <b-card-group columns>
-                  <b-card
-                    bg-variant="warning"
-                    text-variant="black"
-                    :key="index"
-                    v-for="(challenge, index) of challenges"
-                  >
-                    <b-card-text style="font-weight: bold">{{challenge.challenger}}</b-card-text>
-                    <b-card-text>has challenged you with a {{challenge.word.length}} letter word!</b-card-text>
-                    <b-button style="margin-left: 5px" variant="outline-success">Accept</b-button>
-                    <b-button style="margin-left: 5px" variant="outline-danger">Reject</b-button>
-                  </b-card>
-                </b-card-group>
-              </div>
-              <div v-else>
-                <h4 style="color:grey">No Challenges</h4>
-              </div>
-              <hr />
-              <h3>Challenges sent</h3>
-              <div v-if="challengesSent.length > 0">
-                <b-table
-                  sticky-header
-                  style="margin-top:50px"
-                  info
-                  :items="challengesSent"
-                  :fields="columns"
-                  :tbody-tr-class="rowClass"
-                ></b-table>
-              </div>
-              <div v-else>
-                <h4 style="color:grey">No Challenges sent</h4>
-              </div>
-              <hr />
-              <h3>Complete challenges</h3>
-              <div></div>
-            </b-card-text>
+            <div style="max-height:500px;overflow-y: auto;">
+              <b-card-text>
+                <h3>
+                  <u>Challenges</u>
+                </h3>
+                <div v-if="challenges.length > 0">
+                  <b-card-group columns>
+                    <b-card
+                      bg-variant="warning"
+                      text-variant="black"
+                      :key="index"
+                      v-for="(challenge, index) of challenges"
+                    >
+                      <b-card-text style="font-weight: bold">{{challenge.challenger}}</b-card-text>
+                      <b-card-text>has challenged you with a {{challenge.word.length}} letter word!</b-card-text>
+                      <b-button style="margin-left: 5px" variant="outline-success">Accept</b-button>
+                      <b-button style="margin-left: 5px" variant="outline-danger">Reject</b-button>
+                    </b-card>
+                  </b-card-group>
+                </div>
+                <div v-else>
+                  <h4 style="color:grey">No Challenges</h4>
+                </div>
+                <h3>
+                  <u>Challenges sent</u>
+                </h3>
+                <div v-if="challengesSent.length > 0">
+                  <b-table
+                    sticky-header
+                    info
+                    :items="challengesSent"
+                    :fields="columns"
+                    :tbody-tr-class="rowClass"
+                  ></b-table>
+                </div>
+                <div v-else>
+                  <h4 style="color:grey">No Challenges sent</h4>
+                </div>
+                <h3>
+                  <u>Complete challenges</u>
+                </h3>
+                <div v-if="challengesCompleted.length>0">
+                  <b-table
+                    sticky-header
+                    style="margin-top:50px"
+                    info
+                    :items="challengesCompleted"
+                    :fields="challengeFields"
+                    :tbody-tr-class="rowClass"
+                  ></b-table>
+                </div>
+                <div v-else>
+                  <h4 style="color:grey">No Challenges completed</h4>
+                </div>
+              </b-card-text>
+            </div>
           </b-tab>
         </b-tabs>
       </b-card>
@@ -252,12 +273,24 @@ export default {
                       })
                       .then(() => {
                         axios
-                        .get('https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/' + localStorage['user'])
-                        .then(res => {
-                          const response = res.data;
-                          const results = response.results;
-                          console.log(results);
-                        });
+                          .get(
+                            "https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" +
+                              localStorage["user"]
+                          )
+                          .then(res => {
+                            const response = res.data;
+                            const results = response.results;
+                            const list = [];
+                            for (const i of results) {
+                              const item = {
+                                Challenger: i.challenger,
+                                Word: i.word,
+                                Status: i.status
+                              };
+                              list.push(item);
+                            }
+                            this.challengesCompleted = list;
+                          });
                       });
                   });
               });
@@ -270,6 +303,8 @@ export default {
       items: [],
       columns: ["Opponent", "Word", "Status"],
       challengesSent: [],
+      challengeFields: ["Challenger", "Word", "Status"],
+      challengesCompleted: [],
       search: "",
       results: [],
       requests: [],
@@ -535,3 +570,14 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+</style>

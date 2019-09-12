@@ -265,6 +265,19 @@ module.exports = (hangmanService) => {
         });
     };
 
+    const setChallengeStatus = async (req, res) => {
+        const details = req.body;
+        await hangmanService.setChallengeStatus(details.opponent, details.status);
+        res.json({
+            status: 'success'
+        });
+    };
+
+    const removeChallenge = async (req, res) => {
+        const details = req.body;
+        await hangmanService.removeChallenge(details.opponent, details.word);
+    };
+
     return {
         allWords,
         listWordOfSize,
@@ -293,6 +306,8 @@ module.exports = (hangmanService) => {
         sendChallenge,
         fetchChallengesFor,
         fetchChallengesSentBy,
-        fetchCompleteChallenges
+        fetchCompleteChallenges,
+        setChallengeStatus,
+        removeChallenge
     };
 };
