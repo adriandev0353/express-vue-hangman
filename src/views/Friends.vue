@@ -133,7 +133,11 @@
                       <b-card-text style="font-weight: bold">{{challenge.challenger}}</b-card-text>
                       <b-card-text>has challenged you with a {{challenge.word.length}} letter word!</b-card-text>
                       <b-button style="margin-left: 5px" variant="outline-success">Accept</b-button>
-                      <b-button style="margin-left: 5px" variant="outline-danger">Reject</b-button>
+                      <b-button
+                        @click="rejectChallenge(challenge.word)"
+                        style="margin-left: 5px"
+                        variant="outline-danger"
+                      >Reject</b-button>
                     </b-card>
                   </b-card-group>
                 </div>
@@ -319,8 +323,27 @@ export default {
     };
   },
   methods: {
+    rejectChallenge(word) {
+      axios
+        .post("https://hangman-webapp.herokuapp.com/api/remove/challenge", {
+          opponent: localStorage["user"],
+          word
+        })
+        .then(res => {
+          axios
+            .get(
+              "https://hangman-webapp.herokuapp.com/api/fetch/challenges/for/" +
+                localStorage["user"]
+            )
+            .then(res => {
+              const response = res.data;
+              const challenges = response.challenges;
+              this.challenges = challenges;
+              this.$forceUpdate();
+            });
+        });
+    },
     rowClass(item, type) {
-      console.log(item, type);
       if (!item) return;
       if (item.Status === "won") {
         return "table-success";
@@ -350,7 +373,6 @@ export default {
           .then(res => {
             const response = res.data;
             const status = response.status;
-            console.log(status);
           });
         this.modalShow = false;
       }
@@ -573,11 +595,11 @@ export default {
 
 <style scoped>
 html {
-    overflow: scroll;
-    overflow-x: hidden;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
+  width: 0px;
+  background: transparent;
 }
 </style>

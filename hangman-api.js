@@ -258,7 +258,6 @@ module.exports = (hangmanService) => {
     const friendList = async (req, res) => {
         const user = req.params.user;
         const list = await hangmanService.friendList(user);
-        console.log(list, 'api');
         res.json({
             status: 'success',
             list
@@ -276,6 +275,9 @@ module.exports = (hangmanService) => {
     const removeChallenge = async (req, res) => {
         const details = req.body;
         await hangmanService.removeChallenge(details.opponent, details.word);
+        res.json({
+            status: 'success'
+        });
     };
 
     return {
