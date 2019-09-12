@@ -77,11 +77,12 @@
                         v-for="(friend, index) of friendList"
                       >
                         <b-card-text>{{friend}}</b-card-text>
-                        <b-button variant="outline-light" @click="modalShow = !modalShow">Challenge</b-button>
+                        <b-button variant="outline-light" @click="assignFriendChallenge(friend)">Challenge</b-button>
                         <b-modal @show="resetModal" @ok="handleOk" v-model="modalShow" centered>
                           <template v-slot:modal-title>Challenge {{friend}}</template>
                           <label>Word:</label>
-                          <b-form-input v-model="word" required></b-form-input>
+                          <b-form-input v-model="word" :state='wordState' required></b-form-input>
+                          <br>
                           <label>Hint:</label>
                           <b-form-input v-model="hint" placeholder="Optional"></b-form-input>
                         </b-modal>
@@ -110,6 +111,19 @@
           </b-tab>
           <b-tab title="Challenges">
             <b-card-text>Challenges</b-card-text>
+            <div v-if="requests != 'none' || requests.length === 0">
+                <b-card-group columns>
+                  <b-card
+                    bg-variant="warning"
+                    text-variant="black"
+                    :key="index"
+                    v-for="(challenge, index) of challenges"
+                  >
+                    <b-card-text style="font-weight: bold">{{challenge.challenger}}</b-card-text>
+                    <b-card-text>has challenged you with a {{length}} letter word!</b-card-text>
+                  </b-card>
+                </b-card-group>
+              </div>
           </b-tab>
         </b-tabs>
       </b-card>
@@ -176,6 +190,13 @@ export default {
                   }
                 }
                 this.items = list;
+              })
+              .then(() => {
+                axios
+                .get('https://hangman-webapp.herokuapp.com/api/fetch/challenges/for')
+                .then(res => {
+
+                })
               });
           });
       });
@@ -188,24 +209,43 @@ export default {
       results: [],
       requests: [],
       friendList: [],
+      challenges: [],
       error: false,
       modalShow: false,
       word: "",
-      hint: ""
+      hint: "",
+      friend: '',
+      wordState: null
     };
   },
   methods: {
+    assignFriendChallenge(friend){
+      this.modalShow = !this.modalShow;
+      this.friend = friend;
+    },
     handleOk(bvModalEvt) {
       bvModalEvt.preventDefault();
       const word = this.word;
       if (word === "") {
-        console.log("ERROR NO WORD");
+        this.wordState = false;
       } else {
-        console.log("You're cool i guess");
+        axios
+        .post('https://hangman-webapp.herokuapp.com/api/send/challenge', {
+          challenger: localStorage['user'],
+          opponent: this.friend,
+          word: this.word,
+          hint: this.hint
+        })
+        .then(res => {
+          const response = res.data;
+          const status = response. status;
+          console.log(status);
+        });
         this.modalShow = false;
       }
     },
     resetModal() {
+      this.wordState = null;
       this.word = "";
       this.hint = "";
     },
