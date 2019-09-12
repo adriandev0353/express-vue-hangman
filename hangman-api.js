@@ -237,6 +237,15 @@ module.exports = (hangmanService) => {
         });
     };
 
+    const fetchCompleteChallenges = async (req, res) => {
+        const user = req.params.user;
+        const results = await hangmanService.fetchCompleteChallenges(user);
+        res.json({
+            status: 'success',
+            results
+        });
+    };
+
     const fetchChallengesSentBy = async (req, res) => {
         const user = req.params.user;
         const challenges = await hangmanService.fetchChallengesSentBy(user);
@@ -283,6 +292,7 @@ module.exports = (hangmanService) => {
         deleteFriend,
         sendChallenge,
         fetchChallengesFor,
-        fetchChallengesSentBy
+        fetchChallengesSentBy,
+        fetchCompleteChallenges
     };
 };

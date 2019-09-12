@@ -17,6 +17,7 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/friend/list/:user', hangmanAPI.friendList);
     app.get('/api/fetch/challenges/for/:user', hangmanAPI.fetchChallengesFor);
     app.get('/api/fetch/challenges/sent/by/:user', hangmanAPI.fetchChallengesSentBy);
+    app.get('/api/fetch/complete/challenges/by/:user', hangmanAPI.fetchCompleteChallenges);
     app.post('/api/send/challenge', hangmanAPI.sendChallenge);
     app.post('/api/remove/friend', hangmanAPI.deleteFriend);
     app.post('/api/add/friends', hangmanAPI.addFriends);

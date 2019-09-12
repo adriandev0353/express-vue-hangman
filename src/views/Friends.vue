@@ -77,12 +77,15 @@
                         v-for="(friend, index) of friendList"
                       >
                         <b-card-text>{{friend}}</b-card-text>
-                        <b-button variant="outline-light" @click="assignFriendChallenge(friend)">Challenge</b-button>
+                        <b-button
+                          variant="outline-light"
+                          @click="assignFriendChallenge(friend)"
+                        >Challenge</b-button>
                         <b-modal @show="resetModal" @ok="handleOk" v-model="modalShow" centered>
                           <template v-slot:modal-title>Challenge {{friend}}</template>
                           <label>Word:</label>
-                          <b-form-input v-model="word" :state='wordState' required></b-form-input>
-                          <br>
+                          <b-form-input v-model="word" :state="wordState" required></b-form-input>
+                          <br />
                           <label>Hint:</label>
                           <b-form-input v-model="hint" placeholder="Optional"></b-form-input>
                         </b-modal>
@@ -110,8 +113,9 @@
             </b-card-text>
           </b-tab>
           <b-tab title="Challenges">
-            <b-card-text>Challenges</b-card-text>
-            <div v-if="requests != 'none' || requests.length === 0">
+            <b-card-text>
+              <h3>Challenges</h3>
+              <div v-if="challenges.length > 0">
                 <b-card-group columns>
                   <b-card
                     bg-variant="warning"
@@ -120,10 +124,34 @@
                     v-for="(challenge, index) of challenges"
                   >
                     <b-card-text style="font-weight: bold">{{challenge.challenger}}</b-card-text>
-                    <b-card-text>has challenged you with a {{length}} letter word!</b-card-text>
+                    <b-card-text>has challenged you with a {{challenge.word.length}} letter word!</b-card-text>
+                    <b-button style="margin-left: 5px" variant="outline-success">Accept</b-button>
+                    <b-button style="margin-left: 5px" variant="outline-danger">Reject</b-button>
                   </b-card>
                 </b-card-group>
               </div>
+              <div v-else>
+                <h4 style="color:grey">No Challenges</h4>
+              </div>
+              <hr />
+              <h3>Challenges sent</h3>
+              <div v-if="challengesSent.length > 0">
+                <b-table
+                  sticky-header
+                  style="margin-top:50px"
+                  info
+                  :items="challengesSent"
+                  :fields="columns"
+                  :tbody-tr-class="rowClass"
+                ></b-table>
+              </div>
+              <div v-else>
+                <h4 style="color:grey">No Challenges sent</h4>
+              </div>
+              <hr />
+              <h3>Complete challenges</h3>
+              <div></div>
+            </b-card-text>
           </b-tab>
         </b-tabs>
       </b-card>
@@ -193,10 +221,45 @@ export default {
               })
               .then(() => {
                 axios
-                .get('https://hangman-webapp.herokuapp.com/api/fetch/challenges/for')
-                .then(res => {
-
-                })
+                  .get(
+                    "https://hangman-webapp.herokuapp.com/api/fetch/challenges/for/" +
+                      localStorage["user"]
+                  )
+                  .then(res => {
+                    const response = res.data;
+                    const challenges = response.challenges;
+                    this.challenges = challenges;
+                  })
+                  .then(() => {
+                    axios
+                      .get(
+                        "https://hangman-webapp.herokuapp.com/api/fetch/challenges/sent/by/" +
+                          localStorage["user"]
+                      )
+                      .then(res => {
+                        const response = res.data;
+                        const challenges = response.challenges;
+                        const list = [];
+                        for (const challenge of challenges) {
+                          const item = {
+                            Opponent: challenge.opponent,
+                            Word: challenge.word,
+                            Status: challenge.status
+                          };
+                          list.push(item);
+                        }
+                        this.challengesSent = list;
+                      })
+                      .then(() => {
+                        axios
+                        .get('https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/' + localStorage['user'])
+                        .then(res => {
+                          const response = res.data;
+                          const results = response.results;
+                          console.log(results);
+                        });
+                      });
+                  });
               });
           });
       });
@@ -205,6 +268,8 @@ export default {
     return {
       fields: ["Rank", "Username", "Points", "Ratio"],
       items: [],
+      columns: ["Opponent", "Word", "Status"],
+      challengesSent: [],
       search: "",
       results: [],
       requests: [],
@@ -214,12 +279,23 @@ export default {
       modalShow: false,
       word: "",
       hint: "",
-      friend: '',
+      friend: "",
       wordState: null
     };
   },
   methods: {
-    assignFriendChallenge(friend){
+    rowClass(item, type) {
+      console.log(item, type);
+      if (!item) return;
+      if (item.Status === "won") {
+        return "table-success";
+      } else if (item.Status === "lost") {
+        return "table-danger";
+      } else if (item.Status === "pending") {
+        return "table-warning";
+      }
+    },
+    assignFriendChallenge(friend) {
       this.modalShow = !this.modalShow;
       this.friend = friend;
     },
@@ -230,17 +306,17 @@ export default {
         this.wordState = false;
       } else {
         axios
-        .post('https://hangman-webapp.herokuapp.com/api/send/challenge', {
-          challenger: localStorage['user'],
-          opponent: this.friend,
-          word: this.word,
-          hint: this.hint
-        })
-        .then(res => {
-          const response = res.data;
-          const status = response. status;
-          console.log(status);
-        });
+          .post("https://hangman-webapp.herokuapp.com/api/send/challenge", {
+            challenger: localStorage["user"],
+            opponent: this.friend,
+            word: this.word,
+            hint: this.hint
+          })
+          .then(res => {
+            const response = res.data;
+            const status = response.status;
+            console.log(status);
+          });
         this.modalShow = false;
       }
     },

@@ -335,7 +335,12 @@ module.exports = (pool) => {
     };
 
     const fetchChallengesFor = async (user) => {
-        const results = await pool.query('SELECT * FROM user_challenges WHERE opponent = $1', [user]);
+        const results = await pool.query('SELECT * FROM user_challenges WHERE opponent = $1 AND status = $2', [user, 'pending']);
+        return results.rows;
+    };
+
+    const fetchCompleteChallenges = async (user) => {
+        const results = await pool.query('SELECT * FROM user_challenges WHERE opponent = $1 AND (status = $2 OR status = $3)', [user, 'won', 'lost']);
         return results.rows;
     };
 
@@ -372,6 +377,7 @@ module.exports = (pool) => {
         deleteFriend,
         sendChallenge,
         fetchChallengesFor,
-        fetchChallengesSentBy
+        fetchChallengesSentBy,
+        fetchCompleteChallenges
     };
 };
