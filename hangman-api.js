@@ -266,7 +266,7 @@ module.exports = (hangmanService) => {
 
     const setChallengeStatus = async (req, res) => {
         const details = req.body;
-        await hangmanService.setChallengeStatus(details.opponent, details.status);
+        await hangmanService.setChallengeStatus(details.opponent, details.status, details.word);
         res.json({
             status: 'success'
         });

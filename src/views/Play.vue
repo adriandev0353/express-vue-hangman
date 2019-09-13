@@ -2,7 +2,6 @@
   <div class="play">
     <b-container>
       <div>
-        <!-- <img src="../assets/logo.png" alt /> -->
         <h1>Hangman</h1>
         <div v-if="!play">
           <p>Enter a word length:</p>

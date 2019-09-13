@@ -349,7 +349,7 @@ module.exports = (pool) => {
         return results.rows;
     };
 
-    const setChallengeStatus = async (opponent, status) => { await pool.query('UPDATE user_challenges SET status = $1 WHERE opponent = $2', [status, opponent]); };
+    const setChallengeStatus = async (opponent, status, word) => { await pool.query('UPDATE user_challenges SET status = $1 WHERE opponent = $2 AND word = $3', [status, opponent, word]); };
 
     const removeChallenge = async (opponent, word) => { await pool.query('DELETE FROM user_challenges WHERE opponent = $1 AND word = $2', [opponent, word]); };
 
