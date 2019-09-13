@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div>
-      <b-navbar style="position: relative" type="dark" variant="dark">
+      <b-navbar  type="dark" variant="dark">
         <b-navbar-brand href="#">
           <img src="../assets/hangman-game.svg" class="d-inline-block align-top" alt="logo" />
         </b-navbar-brand>

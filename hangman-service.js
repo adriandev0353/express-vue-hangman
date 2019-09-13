@@ -325,7 +325,7 @@ module.exports = (pool) => {
             savedHint = hint;
         }
 
-        const check = await pool.query('SELECT * FROM user_challenges WHERE challenger = $1', [challenger]);
+        const check = await pool.query('SELECT * FROM user_challenges WHERE challenger = $1 AND status = $2', [challenger, 'pending']);
         if (check.rowCount !== 3) {
             await pool.query('INSERT INTO user_challenges(challenger, opponent, word, hint, status) VALUES($1, $2, $3, $4, $5)', [challenger, opponent, word, savedHint, 'pending']);
             return 'challenge sent';

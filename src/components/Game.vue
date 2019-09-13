@@ -22,7 +22,7 @@
       <div>
         <div v-if="!win && guessesLeft>0">
           <b-spinner v-if="loading" label="Spinning"></b-spinner>
-          <span v-else :key="index" v-for="(letter, index) of wordGuessed">{{ letter }}</span>
+          <span v-else :key="index" v-for="(letter, index) of wordGuessed">{{ letter }} </span>
         </div>
         <div v-else-if="win">
           <h1 class="points">Congratulations!</h1>

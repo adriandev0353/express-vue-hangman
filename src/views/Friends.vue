@@ -2,7 +2,7 @@
   <div class="friends">
     <div v-if="play">
       <h1>Challenge!</h1>
-      <Game v-on:endChallenge='play = false' v-bind:word="word" :hint="hint"/>
+      <Game v-on:endChallenge="updateChallenges" v-bind:word="word" :hint="hint" />
     </div>
     <div v-if="!play">
       <b-card no-body>
@@ -75,14 +75,14 @@
                   <div>
                     <b-card-group columns>
                       <b-card
-                        bg-variant="info"
-                        text-variant="white"
+                        bg-variant="light"
+                        text-variant="black"
                         :key="index"
                         v-for="(friend, index) of friendList"
                       >
                         <b-card-text>{{friend}}</b-card-text>
                         <b-button
-                          variant="outline-light"
+                          variant="outline-dark"
                           @click="assignFriendChallenge(friend)"
                         >Challenge</b-button>
                         <b-modal @show="resetModal" @ok="handleOk" v-model="modalShow" centered>
@@ -122,27 +122,32 @@
                 <u>Challenges</u>
               </h3>
               <div v-if="challenges.length > 0">
-                <b-card-group columns>
-                  <b-card
-                    bg-variant="warning"
-                    text-variant="black"
-                    :key="index"
-                    v-for="(challenge, index) of challenges"
-                  >
-                    <b-card-text style="font-weight: bold">{{challenge.challenger}}</b-card-text>
-                    <b-card-text>has challenged you with a {{challenge.word.length}} letter word!</b-card-text>
-                    <b-button
-                      @click="acceptChallenge(challenge.word, challenge.hint)"
-                      style="margin-left: 5px"
-                      variant="outline-success"
-                    >Accept</b-button>
-                    <b-button
-                      @click="rejectChallenge(challenge.word)"
-                      style="margin-left: 5px"
-                      variant="outline-danger"
-                    >Reject</b-button>
-                  </b-card>
-                </b-card-group>
+                <div v-if="!challengeLoading">
+                  <b-card-group columns>
+                    <b-card
+                      bg-variant="warning"
+                      text-variant="black"
+                      :key="index"
+                      v-for="(challenge, index) of challenges"
+                    >
+                      <b-card-text style="font-weight: bold">{{challenge.challenger}}</b-card-text>
+                      <b-card-text>has challenged you with a {{challenge.word.length}} letter word!</b-card-text>
+                      <b-button
+                        @click="acceptChallenge(challenge.word, challenge.hint)"
+                        style="margin-left: 5px"
+                        variant="outline-success"
+                      >Accept</b-button>
+                      <b-button
+                        @click="rejectChallenge(challenge.word)"
+                        style="margin-left: 5px"
+                        variant="outline-danger"
+                      >Reject</b-button>
+                    </b-card>
+                  </b-card-group>
+                </div>
+                <div v-else>
+                  <b-spinner label="Loading..."></b-spinner>
+                </div>
               </div>
               <div v-else>
                 <h4 style="color:grey">No Challenges</h4>
@@ -150,33 +155,42 @@
               <h3>
                 <u>Challenges sent</u>
               </h3>
-              <div v-if="challengesSent.length > 0">
-                <b-table
-                  sticky-header
-                  info
-                  :items="challengesSent"
-                  :fields="columns"
-                  :tbody-tr-class="rowClass"
-                ></b-table>
+              <div v-if="!sentChallengesLoading">
+                <div v-if="challengesSent.length > 0">
+                  <b-table
+                    sticky-header
+                    info
+                    :items="challengesSent"
+                    :fields="columns"
+                    :tbody-tr-class="rowClass"
+                  ></b-table>
+                </div>
+                <div v-else>
+                  <h4 style="color:grey">No Challenges sent</h4>
+                </div>
               </div>
               <div v-else>
-                <h4 style="color:grey">No Challenges sent</h4>
+                <b-spinner label="Loading..."></b-spinner>
               </div>
               <h3>
                 <u>Complete challenges</u>
               </h3>
-              <div v-if="challengesCompleted.length>0">
-                <b-table
-                  sticky-header
-                  style="margin-top:50px"
-                  info
-                  :items="challengesCompleted"
-                  :fields="challengeFields"
-                  :tbody-tr-class="rowClass"
-                ></b-table>
+              <div v-if="!completeChallengesLoad">
+                <div v-if="challengesCompleted.length>0">
+                  <b-table
+                    sticky-header
+                    info
+                    :items="challengesCompleted"
+                    :fields="challengeFields"
+                    :tbody-tr-class="rowClass"
+                  ></b-table>
+                </div>
+                <div v-else>
+                  <h4 style="color:grey">No Challenges completed</h4>
+                </div>
               </div>
               <div v-else>
-                <h4 style="color:grey">No Challenges completed</h4>
+                <b-spinner label="Loading..."></b-spinner>
               </div>
             </b-card-text>
           </b-tab>
@@ -261,6 +275,7 @@ export default {
                     const response = res.data;
                     const challenges = response.challenges;
                     this.challenges = challenges;
+                    this.challengeLoading = false;
                   })
                   .then(() => {
                     axios
@@ -280,6 +295,7 @@ export default {
                           };
                           list.push(item);
                         }
+                        this.sentChallengesLoading = false;
                         this.challengesSent = list;
                       })
                       .then(() => {
@@ -301,6 +317,7 @@ export default {
                               list.push(item);
                             }
                             this.challengesCompleted = list;
+                            this.completeChallengesLoad = false;
                           });
                       });
                   });
@@ -316,6 +333,9 @@ export default {
       challengesSent: [],
       challengeFields: ["Challenger", "Word", "Status"],
       challengesCompleted: [],
+      challengeLoading: true,
+      sentChallengesLoading: true,
+      completeChallengesLoad: true,
       search: "",
       results: [],
       requests: [],
@@ -331,6 +351,42 @@ export default {
     };
   },
   methods: {
+    updateChallenges() {
+      this.play = false;
+      this.completeChallengesLoad = true;
+      axios
+        .get(
+          "https://hangman-webapp.herokuapp.com/api/fetch/challenges/for/" +
+            localStorage["user"]
+        )
+        .then(res => {
+          const response = res.data;
+          const challenges = response.challenges;
+          this.challenges = challenges;
+          this.completeChallengesLoad = false;
+        })
+        .then(() => {
+          axios
+            .get(
+              "https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" +
+                localStorage["user"]
+            )
+            .then(res => {
+              const response = res.data;
+              const results = response.results;
+              const list = [];
+              for (const i of results) {
+                const item = {
+                  Challenger: i.challenger,
+                  Word: i.word,
+                  Status: i.status
+                };
+                list.push(item);
+              }
+              this.challengesCompleted = list;
+            });
+        });
+    },
     acceptChallenge(word, hint) {
       this.word = word;
       this.hint = hint;
@@ -376,6 +432,7 @@ export default {
       if (word === "") {
         this.wordState = false;
       } else {
+        this.sentChallengesLoading = true;
         axios
           .post("https://hangman-webapp.herokuapp.com/api/send/challenge", {
             challenger: localStorage["user"],
@@ -386,6 +443,28 @@ export default {
           .then(res => {
             const response = res.data;
             const status = response.status;
+          })
+          .then(() => {
+            axios
+              .get(
+                "https://hangman-webapp.herokuapp.com/api/fetch/challenges/sent/by/" +
+                  localStorage["user"]
+              )
+              .then(res => {
+                const response = res.data;
+                const challenges = response.challenges;
+                const list = [];
+                for (const challenge of challenges) {
+                  const item = {
+                    Opponent: challenge.opponent,
+                    Word: challenge.word,
+                    Status: challenge.status
+                  };
+                  list.push(item);
+                }
+                this.challengesSent = list;
+                this.sentChallengesLoading = false;
+              });
           });
         this.modalShow = false;
       }
