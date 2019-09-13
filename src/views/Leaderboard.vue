@@ -104,3 +104,24 @@ export default {
   }
 };
 </script>
+<style scoped>
+html {
+  overflow: scroll;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(114, 100, 100); 
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #353030; 
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 10px;
+}
+</style>

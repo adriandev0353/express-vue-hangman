@@ -20,6 +20,7 @@
             <option :value="null">Game history</option>
             <option value="won">Words won</option>
             <option value="lost">Words lost</option>
+            <option value="challenges">Challenges</option>
           </b-form-select>
           <hr />
           <h2>
@@ -33,7 +34,28 @@
           <div style="margin-top:100px" v-if="history">
             <b-spinner variant="success" label="Spinning"></b-spinner>
           </div>
-          <b-table sticky-header style='margin-top:50px' v-else info :items="items" :fields="fields" :tbody-tr-class="rowClass"></b-table>
+          <div v-else>
+            <div v-if="!challengesChosen">
+              <b-table
+                sticky-header
+                style="margin-top:50px"
+                info
+                :items="items"
+                :fields="fields"
+                :tbody-tr-class="rowClass"
+              ></b-table>
+            </div>
+            <div v-else>
+              <b-table
+                sticky-header
+                style="margin-top:50px"
+                info
+                :items="challengesCompleted"
+                :fields="challengeFields"
+                :tbody-tr-class="rowClass"
+              ></b-table>
+            </div>
+          </div>
         </b-col>
       </b-row>
     </b-container>
@@ -110,7 +132,10 @@ export default {
       selected: null,
       loading: true,
       statLoading: true,
-      history: true
+      history: true,
+      challengeFields: ["Challenger", "Word", "Result"],
+      challengesCompleted: [],
+      challengesChosen: false
     };
   },
   methods: {
@@ -118,7 +143,7 @@ export default {
       if (!item) return;
       if (item.Result === "won") {
         return "table-success";
-      } else {
+      } else if (item.Result === "lost"){
         return "table-danger";
       }
     },
@@ -127,32 +152,54 @@ export default {
       this.history = true;
       this.$forceUpdate();
       if (this.selected) {
-        axios
-          .get(
-            "https://hangman-webapp.herokuapp.com/api/get/user/data/user/" +
-              localStorage["user"] +
-              "/choice/" +
-              this.selected
-          )
-          .then(res => {
-            let response = res.data;
-            let data = response.data;
-            let list = [];
+        if (this.selected !== "challenges") {
+          this.challengesChosen = false;
+          axios
+            .get(
+              "https://hangman-webapp.herokuapp.com/api/get/user/data/user/" +
+                localStorage["user"] +
+                "/choice/" +
+                this.selected
+            )
+            .then(res => {
+              let response = res.data;
+              let data = response.data;
+              let list = [];
 
-            for (let i = 0; i < data.length; i++) {
-              this.totalPoints += data[i].points;
-              let item = {
-                Total_points: this.totalPoints,
-                Word: data[i].word,
-                Result: data[i].complete_state,
-                Pts: data[i].points
-              };
-              list.push(item);
-            }
-            this.items = list;
-            this.$forceUpdate();
-            this.history = false;
-          });
+              for (let i = 0; i < data.length; i++) {
+                this.totalPoints += data[i].points;
+                let item = {
+                  Total_points: this.totalPoints,
+                  Word: data[i].word,
+                  Result: data[i].complete_state,
+                  Pts: data[i].points
+                };
+                list.push(item);
+              }
+              this.items = list;
+              this.$forceUpdate();
+              this.history = false;
+            });
+        } else {
+          this.challengesChosen = true;
+          axios
+            .get("https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" + localStorage["user"])
+            .then(res => {
+              const response = res.data;
+              const results = response.results;
+              const list = [];
+              for (const i of results) {
+                const item = {
+                  Challenger: i.challenger,
+                  Word: i.word,
+                  Result: i.status
+                };
+                list.push(item);
+              }
+              this.challengesCompleted = list;
+              this.history = false;
+            });
+        }
       } else {
         axios
           .get(
@@ -195,5 +242,24 @@ export default {
 }
 .loseRate {
   color: crimson;
+}
+html {
+  overflow: scroll;
+  overflow-x: hidden;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(114, 100, 100); 
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #353030; 
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 10px;
 }
 </style>

@@ -102,6 +102,7 @@
 
 <script>
 import axios from "axios";
+import { EventBus } from "../event-bus";
 
 export default {
   name: "play",
@@ -238,7 +239,9 @@ export default {
             word: this.word.word,
             state: "won"
           })
-          .then(res => {});
+          .then(res => {
+            EventBus.$emit("userData", localStorage['user']);
+          });
       }
       if (!isCorrect) {
         this.guessesLeft--;
@@ -250,7 +253,9 @@ export default {
               word: this.word.word,
               state: "lost"
             })
-            .then(res => {});
+            .then(res => {
+              EventBus.$emit("userData", localStorage['user']);
+            });
         }
       }
     },

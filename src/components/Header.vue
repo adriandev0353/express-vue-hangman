@@ -17,8 +17,7 @@
           </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
-          <!-- <b-nav-text v-if='points > 0'>{{user}} points:</b-nav-text> -->
-          <b-nav-text v-if='points > 0'><span style='color:yellow'>{{points}}</span> Points</b-nav-text>
+          <b-nav-text v-if='user.length > 0'><span style='color:yellow'>{{points}}</span> Points</b-nav-text>
 
           <b-nav-item-dropdown text="Other" right>
             <b-dropdown-item to="/profile">{{user}}</b-dropdown-item>
