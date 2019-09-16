@@ -56,8 +56,8 @@ if (process.env.RELOAD_DATA) {
 
 AppRouting(app, hangmanAPI);
 
-io.on('connect', socket => {
-    console.log('User connected');
+io.on('connection', socket => {
+    socket.emit('message', 'Hello World');
 });
 
 var PORT = process.env.PORT || 3000;
