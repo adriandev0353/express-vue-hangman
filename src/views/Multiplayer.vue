@@ -37,7 +37,7 @@
                 <div v-if="playerTwoGuesses<=6" class="pole"></div>
                 <div class="base"></div>
               </div>
-              <div v-if ='localStorage["user"] === playerTwo'>
+              <div v-if="userCheck(playerOne)">
                 <b-button
                   @click="letterCheck(letter.letter)"
                   class="letter"
@@ -67,7 +67,7 @@
                 <div v-if="playerTwoGuesses<=6" class="pole"></div>
                 <div class="base"></div>
               </div>
-              <div v-if='localStorage["user"] === playerTwo'>
+              <div v-if="userCheck(playerTwo)">
                 <b-button
                   @click="letterCheck(letter.letter)"
                   class="letter"
@@ -138,7 +138,6 @@ export default {
   mounted() {
     this.socket.emit("check", localStorage["user"]);
     this.socket.on("checkResponse", data => {
-      console.log(data, "checkResponse");
       if (data !== "already connected") {
         if (data.users.playerOne) {
           this.playerOne = data.users.playerOne;
@@ -149,7 +148,6 @@ export default {
       }
     });
     this.socket.on("lobbyFull", data => {
-      console.log(data, "lobbyFull");
       if (data.users.playerOne) {
         this.playerOne = data.users.playerOne;
       }
@@ -161,6 +159,15 @@ export default {
     });
   },
   methods: {
+    userCheck(player) {
+      let bool = false;
+      if (localStorage["user"] === player) {
+        bool = true;
+      } else {
+        bool = false;
+      }
+      return bool;
+    },
     isDisabled(index) {
       return this.alphabet[index].disable;
     },
