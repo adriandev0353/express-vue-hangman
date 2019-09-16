@@ -85,6 +85,8 @@ io.on('connection', socket => {
         playersWords = data;
     });
     socket.on('letterCheck', data => {
+        guesses.wordGuessedOne = data.guessOne;
+        guesses.wordGuessedTwo = data.guessTwo;
         const letter = data.letter;
         const user = data.user;
         let word = playersWords[user];
@@ -99,18 +101,6 @@ io.on('connection', socket => {
                     guesses.wordGuessedTwo[i] = guess;
                 }
                 isCorrect = true;
-            } else if (word[i] === '-') {
-                if (user === 'one') {
-                    guesses.wordGuessedOne[i] = '_';
-                } else if (user === 'two') {
-                    guesses.wordGuessedTwo[i] = '_';
-                }
-            } else {
-                if (user === 'one') {
-                    guesses.wordGuessedOne[i] = '_';
-                } else if (user === 'two') {
-                    guesses.wordGuessedTwo[i] = '_';
-                }
             }
         }
         io.emit('guesses', { one: guesses.wordGuessedOne, two: guesses.wordGuessedTwo, isCorrect });
