@@ -54,11 +54,11 @@ if (process.env.RELOAD_DATA) {
     console.log('Data not reloaded');
 };
 
-io.on('connection', socket => {
+AppRouting(app, hangmanAPI);
+
+io.on('connect', socket => {
     console.log('User connected');
 });
-
-AppRouting(app, hangmanAPI);
 
 var PORT = process.env.PORT || 3000;
 
