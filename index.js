@@ -99,6 +99,18 @@ io.on('connection', socket => {
                     guesses.wordGuessedTwo[i] = guess;
                 }
                 isCorrect = true;
+            } else if (word[i] === '-') {
+                if (user === 'one') {
+                    guesses.wordGuessedOne[i] = '_';
+                } else if (user === 'two') {
+                    guesses.wordGuessedTwo[i] = '_';
+                }
+            } else {
+                if (user === 'one') {
+                    guesses.wordGuessedOne[i] = '_';
+                } else if (user === 'two') {
+                    guesses.wordGuessedTwo[i] = '_';
+                }
             }
         }
         io.emit('guesses', { one: guesses.wordGuessedOne, two: guesses.wordGuessedTwo, isCorrect });
@@ -111,22 +123,8 @@ io.on('connection', socket => {
         guesses = { wordGuessedOne: [], wordGuessedTwo: [] };
     });
     socket.on('lengthReq', () => {
-        guesses.wordGuessedOne = [];
-        guesses.wordGuessedTwo = [];
         if (wordLength === 0) {
             wordLength = Math.floor(Math.random() * 10) + 2;
-        };
-        for (let i = 0; i < wordLength; i++) {
-            if (playersWords.one[i] === '-') {
-                guesses.wordGuessedOne.push('-');
-            } else {
-                guesses.wordGuessedOne.push('_');
-            }
-            if (playersWords.two[i] === '-') {
-                guesses.wordGuessedTwo.push('-');
-            } else {
-                guesses.wordGuessedTwo.push('_');
-            }
         };
         socket.emit('lengthRes', wordLength);
     });
