@@ -2,7 +2,7 @@
   <div class="multiplayer">
     <b-container>
       <h1>Multiplayer</h1>
-      <b-row>
+      <b-row v-if="!lobbyFull">
         <b-col sm>
           <h2>{{playerOne}}</h2>
         </b-col>
@@ -13,7 +13,7 @@
           <h2 v-else>{{playerTwo}}</h2>
         </b-col>
       </b-row>
-      <b-row>
+      <b-row v-if="!lobbyFull">
         <b-col sm></b-col>
         <b-col sm>
           <h5 v-if="!lobbyFull">Waiting for opponent..</h5>
@@ -25,26 +25,30 @@
           <b-row>
             <b-col sm></b-col>
             <b-col sm>
+              <h2>{{playerOne}}</h2>
               <div style="margin-top:5px; margin-left:50px">
-                <div v-if="playerTwoGuesses<=6" class="rope"></div>
-                <div v-if="playerTwoGuesses<=5" class="head"></div>
-                <div v-if="playerTwoGuesses<=4" class="body"></div>
-                <div v-if="playerTwoGuesses<=3" class="arm1"></div>
-                <div v-if="playerTwoGuesses<=2" class="arm2"></div>
-                <div v-if="playerTwoGuesses<=1" class="leg1"></div>
-                <div v-if="playerTwoGuesses<=0" class="leg2"></div>
-                <div v-if="playerTwoGuesses<=6" class="crossBeam"></div>
-                <div v-if="playerTwoGuesses<=6" class="pole"></div>
+                <div v-if="playerOneGuesses<=6" class="rope"></div>
+                <div v-if="playerOneGuesses<=5" class="head"></div>
+                <div v-if="playerOneGuesses<=4" class="body"></div>
+                <div v-if="playerOneGuesses<=3" class="arm1"></div>
+                <div v-if="playerOneGuesses<=2" class="arm2"></div>
+                <div v-if="playerOneGuesses<=1" class="leg1"></div>
+                <div v-if="playerOneGuesses<=0" class="leg2"></div>
+                <div v-if="playerOneGuesses<=6" class="crossBeam"></div>
+                <div v-if="playerOneGuesses<=6" class="pole"></div>
                 <div class="base"></div>
+              </div>
+              <div>
+                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerOne)">
                 <b-button
-                  @click="letterCheck(letter.letter)"
+                  @click="letterCheck(letter.letter, 'one')"
                   class="letter"
                   variant="light"
                   :key="index"
                   v-for="(letter, index) of alphabet"
-                  :disabled="isDisabled(index)"
+                  :disabled="isDisabled(index, 'one')"
                 >{{ letter.letter }}</b-button>
               </div>
             </b-col>
@@ -55,6 +59,7 @@
           <b-row>
             <b-col sm></b-col>
             <b-col sm>
+              <h2>{{playerTwo}}</h2>
               <div style="margin-top:5px; margin-left:50px">
                 <div v-if="playerTwoGuesses<=6" class="rope"></div>
                 <div v-if="playerTwoGuesses<=5" class="head"></div>
@@ -67,14 +72,17 @@
                 <div v-if="playerTwoGuesses<=6" class="pole"></div>
                 <div class="base"></div>
               </div>
+              <div>
+                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }}</span>
+              </div>
               <div v-if="userCheck(playerTwo)">
                 <b-button
-                  @click="letterCheck(letter.letter)"
+                  @click="letterCheck(letter.letter, 'two')"
                   class="letter"
                   variant="light"
                   :key="index"
                   v-for="(letter, index) of alphabet"
-                  :disabled="isDisabled(index)"
+                  :disabled="isDisabled(index, 'two')"
                 >{{ letter.letter }}</b-button>
               </div>
             </b-col>
@@ -97,45 +105,80 @@ export default {
   name: "multiplayer",
   data() {
     return {
+      wordGuessedOne: [],
+      lettersGuessedOne: [],
+      wordGuessedTwo: [],
+      lettersGuessedTwo: [],
+      wordLength: 0,
       playerOne: "",
+      playerOneWord: "",
       playerOneGuesses: 6,
       playerTwo: "",
+      playerTwoWord: "",
       playerTwoGuesses: 6,
       lobbyFull: false,
       alphabet: [
-        { letter: "Q", disable: false },
-        { letter: "W", disable: false },
-        { letter: "E", disable: false },
-        { letter: "R", disable: false },
-        { letter: "T", disable: false },
-        { letter: "Y", disable: false },
-        { letter: "U", disable: false },
-        { letter: "I", disable: false },
-        { letter: "O", disable: false },
-        { letter: "P", disable: false },
-        { letter: "A", disable: false },
-        { letter: "S", disable: false },
-        { letter: "D", disable: false },
-        { letter: "F", disable: false },
-        { letter: "G", disable: false },
-        { letter: "H", disable: false },
-        { letter: "J", disable: false },
-        { letter: "K", disable: false },
-        { letter: "L", disable: false },
-        { letter: "Z", disable: false },
-        { letter: "X", disable: false },
-        { letter: "C", disable: false },
-        { letter: "V", disable: false },
-        { letter: "B", disable: false },
-        { letter: "N", disable: false },
-        { letter: "M", disable: false }
+        { letter: "Q", one: false, two: false },
+        { letter: "W", one: false, two: false },
+        { letter: "E", one: false, two: false },
+        { letter: "R", one: false, two: false },
+        { letter: "T", one: false, two: false },
+        { letter: "Y", one: false, two: false },
+        { letter: "U", one: false, two: false },
+        { letter: "I", one: false, two: false },
+        { letter: "O", one: false, two: false },
+        { letter: "P", one: false, two: false },
+        { letter: "A", one: false, two: false },
+        { letter: "S", one: false, two: false },
+        { letter: "D", one: false, two: false },
+        { letter: "F", one: false, two: false },
+        { letter: "G", one: false, two: false },
+        { letter: "H", one: false, two: false },
+        { letter: "J", one: false, two: false },
+        { letter: "K", one: false, two: false },
+        { letter: "L", one: false, two: false },
+        { letter: "Z", one: false, two: false },
+        { letter: "X", one: false, two: false },
+        { letter: "C", one: false, two: false },
+        { letter: "V", one: false, two: false },
+        { letter: "B", one: false, two: false },
+        { letter: "N", one: false, two: false },
+        { letter: "M", one: false, two: false }
       ]
     };
   },
   created() {
     this.socket = io("https://hangman-webapp.herokuapp.com");
+    this.wordLength = Math.floor(Math.random() * 10) + 2;
   },
   mounted() {
+    for (let i = 0; i < this.wordLength; i++) {
+      if (this.playerOneWord[i] === "-") {
+        this.wordGuessedOne.push("-");
+      } else {
+        this.wordGuessedOne.push("_");
+      }
+    }
+    for (let i = 0; i < this.wordLength; i++) {
+      if (this.playerTwoWord[i] === "-") {
+        this.wordGuessedTwo.push("-");
+      } else {
+        this.wordGuessedTwo.push("_");
+      }
+    }
+    axios
+      .get(
+        "https://hangman-webapp.herokuapp.com/api/list/size/" + this.wordLength
+      )
+      .then(res => {
+        const response = res.data;
+        const words = response.words;
+        const indexOne = Math.ceil(Math.random() * this.wordLength) - 1;
+        this.playerOneWord = words[indexOne];
+        const indexTwo = Math.ceil(Math.random() * this.wordLength) - 1;
+        this.playerTwoWord = words[indexTwo];
+      });
+      this.$forceUpdate();
     this.socket.emit("check", localStorage["user"]);
     this.socket.on("checkResponse", data => {
       if (data !== "already connected") {
@@ -168,8 +211,54 @@ export default {
       }
       return bool;
     },
-    isDisabled(index) {
-      return this.alphabet[index].disable;
+    isDisabled(index, user) {
+      return this.alphabet[index][user];
+    },
+    letterCheck(letter, user) {
+      for (let item of this.alphabet) {
+        if (item.letter === letter) {
+          item[user] = true;
+        }
+      }
+      let word = "";
+      if (user === "one") {
+        this.lettersGuessedOne.push(letter);
+        word = this.playerOneWord;
+      } else if (user === "two") {
+        this.lettersGuessedTwo.push(letter);
+        word = this.playerTwoWord;
+      }
+      let isCorrect = false;
+      word = word.toLowerCase();
+      let guess = letter.toLowerCase();
+      for (let i = 0; i < word.length; i++) {
+        if (guess === word[i]) {
+          if (user === "one") {
+            this.wordGuessedOne[i] = guess;
+          } else if (user === "two") {
+            this.wordGuessedTwo[i] = guess;
+          }
+          this.$forceUpdate();
+          isCorrect = true;
+        }
+      }
+      let wordSoFar = "";
+      if (user === "one") {
+        for (let letter of this.wordGuessedOne) {
+          wordSoFar += letter;
+        }
+      } else if (user === "two") {
+        for (let letter of this.wordGuessedTwo) {
+          wordSoFar += letter;
+        }
+      }
+      if (!isCorrect) {
+        if (user === "one") {
+          this.playerOneGuesses--;
+        } else if (user === "two") {
+          this.playerTwoGuesses--;
+        }
+      }
     },
     clearServerData() {
       this.playerOne = "";
