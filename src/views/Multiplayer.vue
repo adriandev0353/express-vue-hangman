@@ -39,7 +39,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }}</span>
+                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }} </span>
               </div>
               <div v-if="userCheck(playerOne)">
                 <b-button
@@ -73,7 +73,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }}</span>
+                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }} </span>
               </div>
               <div v-if="userCheck(playerTwo)">
                 <b-button
@@ -154,33 +154,35 @@ export default {
     this.socket.emit("lengthReq");
     this.socket.on("lengthRes", data => {
       this.wordLength = data;
+      for (let i = 0; i < this.wordLength; i++) {
+        if (this.playerOneWord[i] === "-") {
+          this.wordGuessedOne.push("-");
+        } else {
+          this.wordGuessedOne.push("_");
+        }
+      }
+      for (let i = 0; i < this.wordLength; i++) {
+        if (this.playerTwoWord[i] === "-") {
+          this.wordGuessedTwo.push("-");
+        } else {
+          this.wordGuessedTwo.push("_");
+        }
+      }
+      axios
+        .get(
+          "https://hangman-webapp.herokuapp.com/api/list/size/" +
+            this.wordLength
+        )
+        .then(res => {
+          const response = res.data;
+          const words = response.words;
+          console.log(response);
+          const indexOne = Math.ceil(Math.random() * this.wordLength) - 1;
+          this.playerOneWord = words[indexOne].word;
+          const indexTwo = Math.ceil(Math.random() * this.wordLength) - 1;
+          this.playerTwoWord = words[indexTwo].word;
+        });
     });
-    for (let i = 0; i < this.wordLength; i++) {
-      if (this.playerOneWord[i] === "-") {
-        this.wordGuessedOne.push("-");
-      } else {
-        this.wordGuessedOne.push("_");
-      }
-    }
-    for (let i = 0; i < this.wordLength; i++) {
-      if (this.playerTwoWord[i] === "-") {
-        this.wordGuessedTwo.push("-");
-      } else {
-        this.wordGuessedTwo.push("_");
-      }
-    }
-    axios
-      .get(
-        "https://hangman-webapp.herokuapp.com/api/list/size/" + this.wordLength
-      )
-      .then(res => {
-        const response = res.data;
-        const words = response.words;
-        const indexOne = Math.ceil(Math.random() * this.wordLength) - 1;
-        this.playerOneWord = words[indexOne].word;
-        const indexTwo = Math.ceil(Math.random() * this.wordLength) - 1;
-        this.playerTwoWord = words[indexTwo].word;
-      });
     this.$forceUpdate();
     this.socket.emit("check", localStorage["user"]);
     this.socket.on("checkResponse", data => {
