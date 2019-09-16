@@ -83,24 +83,24 @@ io.on('connection', socket => {
     });
     socket.on('playersWords', data => {
         playersWords = data;
-    });
-    socket.on('letterCheck', data => {
-        const letter = data.letter;
-        const user = data.user;
         for (let i = 0; i < wordLength; i++) {
-            if (playersWords[user][i] === '-') {
+            if (playersWords['one'][i] === '-') {
                 guesses.wordGuessedOne.push('-');
             } else {
                 guesses.wordGuessedOne.push('_');
             }
         }
         for (let i = 0; i < wordLength; i++) {
-            if (playersWords[user][i] === '-') {
+            if (playersWords['two'][i] === '-') {
                 guesses.wordGuessedTwo.push('-');
             } else {
                 guesses.wordGuessedTwo.push('_');
             }
         }
+    });
+    socket.on('letterCheck', data => {
+        const letter = data.letter;
+        const user = data.user;
         let word = playersWords[user];
         var isCorrect = false;
         word = word.toLowerCase();
