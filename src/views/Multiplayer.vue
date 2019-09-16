@@ -228,7 +228,7 @@ export default {
           item[user] = true;
         }
       }
-      this.socket.emit("letterCheck", { letter, user, guessOne: this.wordGuessedOne, guessTwo: wordGuessedTwo });
+      this.socket.emit("letterCheck", { letter, user, guessOne: this.wordGuessedOne, guessTwo: this.wordGuessedTwo });
       this.socket.on("guesses", data => {
           this.wordGuessedOne = data.one;
           this.wordGuessedTwo = data.two;
