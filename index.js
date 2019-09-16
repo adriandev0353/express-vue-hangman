@@ -57,7 +57,7 @@ if (process.env.RELOAD_DATA) {
 AppRouting(app, hangmanAPI);
 
 let players = 0;
-const users = { playerOne: '', playerTwo: '', spectators: [] };
+let users = { playerOne: '', playerTwo: '', spectators: [] };
 
 io.on('connection', socket => {
     socket.on('check', data => {
@@ -72,6 +72,10 @@ io.on('connection', socket => {
             users.spectators.push(data);
         }
         socket.emit('checkResponse', { players, users });
+    });
+    socket.on('clear', () => {
+        players = 0;
+        users = { playerOne: '', playerTwo: '', spectators: [] };
     });
 });
 
