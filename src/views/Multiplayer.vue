@@ -22,8 +22,6 @@ export default {
   },
   created() {
     this.socket = io("https://hangman-webapp.herokuapp.com");
-  },
-  mounted() {
     this.socket.emit("check", localStorage["user"]);
     this.socket.on("checkResponse", data => {
       console.log(data);
@@ -31,7 +29,7 @@ export default {
   },
   methods: {
     clearServerData() {
-      socket.emit("clear");
+      this.socket.emit("clear");
       console.log('data cleared');
     }
   }
