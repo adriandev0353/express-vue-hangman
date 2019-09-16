@@ -1,5 +1,5 @@
 'use strict';
-const express = require('express');
+const express = require('express')();
 const exphbs = require('express-handlebars');
 const bodyParser = require('body-parser');
 const wordList = require('./word.json');
@@ -9,6 +9,9 @@ const AppRouting = require('./app-routing');
 const cors = require('cors');
 
 const app = express();
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+
 app.use(cors());
 
 const pg = require('pg');
@@ -51,10 +54,14 @@ if (process.env.RELOAD_DATA) {
     console.log('Data not reloaded');
 };
 
+io.on('connection', socket => {
+    console.log('User connected');
+});
+
 AppRouting(app, hangmanAPI);
 
 var PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+http.listen(PORT, () => {
     console.log('App started on port:', PORT);
 });
