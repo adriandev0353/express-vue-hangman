@@ -48,6 +48,7 @@ export default {
   mounted() {
     this.socket.emit("check", localStorage["user"]);
     this.socket.on("checkResponse", data => {
+        console.log(data, 'checkResponse');
       if (data !== "already connected") {
         if (data.users.playerOne) {
           this.playerOne = data.users.playerOne;
@@ -55,10 +56,10 @@ export default {
         if (data.users.playerTwo) {
           this.playerTwo = data.users.playerTwo;
         }
-        console.log(data.playerOne);
       }
     });
     this.socket.on("lobbyFull", data => {
+        console.log(data, 'lobbyFull');
       if (data.users.playerOne) {
         this.playerOne = data.users.playerOne;
       }
