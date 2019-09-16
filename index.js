@@ -61,17 +61,22 @@ let users = { playerOne: '', playerTwo: '', spectators: [] };
 
 io.on('connection', socket => {
     socket.on('check', data => {
-        if (players < 2) {
-            players++;
-            if (players === 1) {
-                users.playerOne = data;
-            } else if (players === 2) {
-                users.playerTwo = data;
-            };
+        if (data !== users.playerOne) {
+            if (players < 2) {
+                players++;
+                if (players === 1) {
+                    users.playerOne = data;
+                } else if (players === 2) {
+                    users.playerTwo = data;
+                    socket.emit('lobbyFull', players, users);
+                };
+            } else {
+                users.spectators.push(data);
+            }
+            socket.emit('checkResponse', { players, users });
         } else {
-            users.spectators.push(data);
+            socket.emit('checkResponse', 'already connected');
         }
-        socket.emit('checkResponse', { players, users });
     });
     socket.on('clear', () => {
         players = 0;

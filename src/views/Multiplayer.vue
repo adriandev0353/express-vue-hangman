@@ -17,8 +17,8 @@
       <b-row>
         <b-col sm></b-col>
         <b-col sm>
-            <h5 v-if='!lobbyFull'>Waiting for opponent..</h5>
-            <h5 v-else>Opponent found!</h5>
+          <h5 v-if="!lobbyFull">Waiting for opponent..</h5>
+          <h5 v-else>Opponent found!</h5>
           <b-button @click="clearServerData">Clear Server data</b-button>
         </b-col>
         <b-col sm></b-col>
@@ -44,22 +44,36 @@ export default {
   },
   created() {
     this.socket = io("https://hangman-webapp.herokuapp.com");
+  },
+  mounted() {
     this.socket.emit("check", localStorage["user"]);
     this.socket.on("checkResponse", data => {
+      if (data !== "already connected") {
+        if (data.users.playerOne) {
+          this.playerOne = data.users.playerOne;
+        }
+        if (data.users.playerTwo) {
+          this.playerTwo = data.users.playerTwo;
+        }
+        console.log(data.playerOne);
+      }
+    });
+    this.socket.on("lobbyFull", data => {
       if (data.users.playerOne) {
         this.playerOne = data.users.playerOne;
       }
       if (data.users.playerTwo) {
         this.playerTwo = data.users.playerTwo;
       }
-      if (data.players === 2) {
-        this.lobbyFull = true;
-      }
-      console.log(data.playerOne);
+      this.lobbyFull = true;
+      this.$forceUpdate();
     });
   },
   methods: {
     clearServerData() {
+      this.playerOne = "";
+      this.playerTwo = "";
+      this.lobbyFull = false;
       this.socket.emit("clear");
       console.log("data cleared");
     }
