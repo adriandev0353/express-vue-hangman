@@ -60,18 +60,18 @@ let players = 0;
 let users = { playerOne: '', playerTwo: '', spectators: [] };
 
 io.on('connection', socket => {
-    socket.on('check', data => {
-        if (data !== users.playerOne) {
+    socket.on('check', user => {
+        if (user !== users.playerOne) {
             if (players < 2) {
                 players++;
                 if (players === 1) {
-                    users.playerOne = data;
+                    users.playerOne = user;
                 } else if (players === 2) {
-                    users.playerTwo = data;
+                    users.playerTwo = user;
                     io.emit('lobbyFull', { players, users });
                 };
             } else {
-                users.spectators.push(data);
+                users.spectators.push(user);
             }
             socket.emit('checkResponse', { players, users });
         } else {
