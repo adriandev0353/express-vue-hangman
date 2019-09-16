@@ -15,7 +15,13 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-button @click="clearServerData">Clear Server data</b-button>
+        <b-col sm></b-col>
+        <b-col sm>
+            <h5 v-if='!lobbyFull'>Waiting for opponent..</h5>
+            <h5 v-else>Opponent found!</h5>
+          <b-button @click="clearServerData">Clear Server data</b-button>
+        </b-col>
+        <b-col sm></b-col>
       </b-row>
     </b-container>
   </div>
