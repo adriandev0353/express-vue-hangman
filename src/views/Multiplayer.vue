@@ -1,7 +1,23 @@
 <template>
   <div class="multiplayer">
-    <h1>Multiplayer</h1>
-    <b-button @click="clearServerData">Clear Server data</b-button>
+    <b-container>
+      <h1>Multiplayer</h1>
+      <b-row>
+        <b-col sm>
+          <h2>{{playerOne}}</h2>
+        </b-col>
+        <b-col sm></b-col>
+        <b-col sm>
+          <div v-if="playerTwo === ''">
+            <b-spinner label="Loading..."></b-spinner>
+          </div>
+          <h2 v-else>{{playerTwo}}</h2>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-button @click="clearServerData">Clear Server data</b-button>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
@@ -24,13 +40,22 @@ export default {
     this.socket = io("https://hangman-webapp.herokuapp.com");
     this.socket.emit("check", localStorage["user"]);
     this.socket.on("checkResponse", data => {
-      console.log(data);
+      if (data.users.playerOne) {
+        this.playerOne = data.users.playerOne;
+      }
+      if (data.users.playerTwo) {
+        this.playerTwo = data.users.playerTwo;
+      }
+      if (data.players === 2) {
+        this.lobbyFull = true;
+      }
+      console.log(data.playerOne);
     });
   },
   methods: {
     clearServerData() {
       this.socket.emit("clear");
-      console.log('data cleared');
+      console.log("data cleared");
     }
   }
 };
