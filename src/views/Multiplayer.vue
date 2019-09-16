@@ -39,7 +39,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }}</span>
+                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }} </span>
               </div>
               <div v-if="userCheck(playerOne)">
                 <b-button
@@ -73,7 +73,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }}</span>
+                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }} </span>
               </div>
               <div v-if="userCheck(playerTwo)">
                 <b-button
@@ -174,9 +174,9 @@ export default {
         const response = res.data;
         const words = response.words;
         const indexOne = Math.ceil(Math.random() * this.wordLength) - 1;
-        this.playerOneWord = words[indexOne];
+        this.playerOneWord = words[indexOne].word;
         const indexTwo = Math.ceil(Math.random() * this.wordLength) - 1;
-        this.playerTwoWord = words[indexTwo];
+        this.playerTwoWord = words[indexTwo].word;
       });
       this.$forceUpdate();
     this.socket.emit("check", localStorage["user"]);
