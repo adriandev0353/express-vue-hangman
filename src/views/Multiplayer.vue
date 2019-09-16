@@ -39,7 +39,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerOne)">
                 <b-button
@@ -73,7 +73,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerTwo)">
                 <b-button
@@ -149,9 +149,12 @@ export default {
   },
   created() {
     this.socket = io("https://hangman-webapp.herokuapp.com");
-    this.wordLength = Math.floor(Math.random() * 10) + 2;
   },
   mounted() {
+    this.socket.emit("lengthReq");
+    this.socket.on("lengthRes", data => {
+      this.wordLength = data;
+    });
     for (let i = 0; i < this.wordLength; i++) {
       if (this.playerOneWord[i] === "-") {
         this.wordGuessedOne.push("-");
@@ -178,7 +181,7 @@ export default {
         const indexTwo = Math.ceil(Math.random() * this.wordLength) - 1;
         this.playerTwoWord = words[indexTwo].word;
       });
-      this.$forceUpdate();
+    this.$forceUpdate();
     this.socket.emit("check", localStorage["user"]);
     this.socket.on("checkResponse", data => {
       if (data !== "already connected") {

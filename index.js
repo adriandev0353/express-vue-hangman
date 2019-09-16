@@ -58,6 +58,7 @@ AppRouting(app, hangmanAPI);
 
 let players = 0;
 let users = { playerOne: '', playerTwo: '', spectators: [] };
+let wordLength = 0;
 
 io.on('connection', socket => {
     socket.on('check', user => {
@@ -81,6 +82,13 @@ io.on('connection', socket => {
     socket.on('clear', () => {
         players = 0;
         users = { playerOne: '', playerTwo: '', spectators: [] };
+        wordLength = 0;
+    });
+    socket.on('lengthReq', () => {
+        if (wordLength === 0) {
+            wordLength = Math.floor(Math.random() * 10) + 2;
+        };
+        socket.emit('lengthRes', wordLength);
     });
 });
 
