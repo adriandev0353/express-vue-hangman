@@ -39,7 +39,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerOne)">
                 <b-button
@@ -73,7 +73,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerTwo)">
                 <b-button
@@ -106,9 +106,7 @@ export default {
   data() {
     return {
       wordGuessedOne: [],
-      lettersGuessedOne: [],
       wordGuessedTwo: [],
-      lettersGuessedTwo: [],
       wordLength: 0,
       playerOne: "",
       playerOneWord: "",
@@ -181,6 +179,11 @@ export default {
           this.playerOneWord = words[indexOne].word;
           const indexTwo = Math.ceil(Math.random() * this.wordLength) - 1;
           this.playerTwoWord = words[indexTwo].word;
+
+          this.socket.emit("playersWords", {
+            one: this.playerOneWord,
+            two: this.playerTwoWord
+          });
         });
     });
     this.$forceUpdate();
@@ -220,50 +223,23 @@ export default {
       return this.alphabet[index][user];
     },
     letterCheck(letter, user) {
-      for (let item of this.alphabet) {
+      for (const item of this.alphabet) {
         if (item.letter === letter) {
           item[user] = true;
         }
       }
-      let word = "";
-      if (user === "one") {
-        this.lettersGuessedOne.push(letter);
-        word = this.playerOneWord;
-      } else if (user === "two") {
-        this.lettersGuessedTwo.push(letter);
-        word = this.playerTwoWord;
-      }
-      let isCorrect = false;
-      word = word.toLowerCase();
-      let guess = letter.toLowerCase();
-      for (let i = 0; i < word.length; i++) {
-        if (guess === word[i]) {
+      this.socket.emit("letterCheck", { letter, user });
+      this.socket.on("guesses", data => {
+          this.wordGuessedOne = data.one;
+          this.wordGuessedTwo = data.two;
+        if (!data.isCorrect) {
           if (user === "one") {
-            this.wordGuessedOne[i] = guess;
+            this.playerOneGuesses--;
           } else if (user === "two") {
-            this.wordGuessedTwo[i] = guess;
+            this.playerTwoGuesses--;
           }
-          this.$forceUpdate();
-          isCorrect = true;
         }
-      }
-      let wordSoFar = "";
-      if (user === "one") {
-        for (let letter of this.wordGuessedOne) {
-          wordSoFar += letter;
-        }
-      } else if (user === "two") {
-        for (let letter of this.wordGuessedTwo) {
-          wordSoFar += letter;
-        }
-      }
-      if (!isCorrect) {
-        if (user === "one") {
-          this.playerOneGuesses--;
-        } else if (user === "two") {
-          this.playerTwoGuesses--;
-        }
-      }
+      });
     },
     clearServerData() {
       this.playerOne = "";

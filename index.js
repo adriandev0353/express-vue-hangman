@@ -42,7 +42,7 @@ const handlebarSetup = exphbs({
 app.engine('handlebars', handlebarSetup);
 app.set('view engine', 'handlebars');
 
-app.use(express.static('public'));
+app.use(express.static('dist'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -59,6 +59,8 @@ AppRouting(app, hangmanAPI);
 let players = 0;
 let users = { playerOne: '', playerTwo: '', spectators: [] };
 let wordLength = 0;
+let playersWords = {};
+let guesses = { wordGuessedOne: [], wordGuessedTwo: [] };
 
 io.on('connection', socket => {
     socket.on('check', user => {
@@ -79,10 +81,48 @@ io.on('connection', socket => {
             socket.emit('checkResponse', 'already connected');
         }
     });
+    socket.on('playersWords', data => {
+        playersWords = data;
+    });
+    socket.on('letterCheck', data => {
+        const letter = data.letter;
+        const user = data.user;
+        for (let i = 0; i < wordLength; i++) {
+            if (playersWords[user][i] === '-') {
+                guesses.wordGuessedOne.push('-');
+            } else {
+                guesses.wordGuessedOne.push('_');
+            }
+        }
+        for (let i = 0; i < wordLength; i++) {
+            if (playersWords[user][i] === '-') {
+                guesses.wordGuessedTwo.push('-');
+            } else {
+                guesses.wordGuessedTwo.push('_');
+            }
+        }
+        let word = playersWords[user];
+        var isCorrect = false;
+        word = word.toLowerCase();
+        const guess = letter.toLowerCase();
+        for (let i = 0; i < word.length; i++) {
+            if (guess === word[i]) {
+                if (user === 'one') {
+                    guesses.wordGuessedOne[i] = guess;
+                } else if (user === 'two') {
+                    guesses.wordGuessedTwo[i] = guess;
+                }
+                isCorrect = true;
+            }
+        }
+        io.emit('guesses', { one: guesses.wordGuessedOne, two: guesses.wordGuessedTwo, isCorrect });
+    });
     socket.on('clear', () => {
         players = 0;
         users = { playerOne: '', playerTwo: '', spectators: [] };
         wordLength = 0;
+        playersWords = {};
+        guesses = { wordGuessedOne: [], wordGuessedTwo: [] };
     });
     socket.on('lengthReq', () => {
         if (wordLength === 0) {
