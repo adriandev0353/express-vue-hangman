@@ -68,7 +68,7 @@ io.on('connection', socket => {
                     users.playerOne = data;
                 } else if (players === 2) {
                     users.playerTwo = data;
-                    socket.emit('lobbyFull', { players, users });
+                    io.emit('lobbyFull', { players, users });
                 };
             } else {
                 users.spectators.push(data);
