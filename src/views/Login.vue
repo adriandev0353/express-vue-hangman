@@ -33,16 +33,9 @@
 <script>
 import axios from "axios";
 import { EventBus } from "../event-bus";
-import io from "socket.io-client";
 
 export default {
   name: "login",
-  beforeMount() {
-    this.socket = io("https://hangman-webapp.herokuapp.com");
-    this.socket.on('message', data => {
-      console.log(data);
-    });
-  },
   data() {
     return {
       user: "",

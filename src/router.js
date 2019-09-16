@@ -8,6 +8,7 @@ import Register from './views/Register.vue';
 import Profile from './views/Profile.vue';
 import Admin from './views/Admin.vue';
 import Friends from './views/Friends.vue';
+import Multiplayer from './views/Multiplayer.vue';
 import axios from 'axios';
 
 Vue.use(Router);
@@ -18,6 +19,11 @@ const router = new Router({
             path: '/',
             name: 'login',
             component: Login
+        },
+        {
+            path: '/multiplayer',
+            name: 'multiplayer',
+            component: Multiplayer
         },
         {
             path: '/admin',

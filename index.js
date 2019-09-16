@@ -56,8 +56,23 @@ if (process.env.RELOAD_DATA) {
 
 AppRouting(app, hangmanAPI);
 
+let players = 0;
+const users = { playerOne: '', playerTwo: '', spectators: [] };
+
 io.on('connection', socket => {
-    socket.emit('message', 'Hello World');
+    socket.on('check', data => {
+        if (players < 2) {
+            players++;
+            if (players === 1) {
+                users.playerOne = data;
+            } else if (players === 2) {
+                users.playerTwo = data;
+            };
+        } else {
+            users.spectators.push(data);
+        }
+        socket.emit('checkResponse', { players, users });
+    });
 });
 
 var PORT = process.env.PORT || 3000;

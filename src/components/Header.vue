@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div>
-      <b-navbar  type="dark" variant="dark">
+      <b-navbar type="dark" variant="dark">
         <b-navbar-brand href="#">
           <img src="../assets/hangman-game.svg" class="d-inline-block align-top" alt="logo" />
         </b-navbar-brand>
@@ -17,7 +17,9 @@
           </b-nav-item>
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
-          <b-nav-text v-if='user.length > 0'><span style='color:yellow'>{{points}}</span> Points</b-nav-text>
+          <b-nav-text v-if="user.length > 0">
+            <span style="color:yellow">{{points}}</span> Points
+          </b-nav-text>
 
           <b-nav-item-dropdown text="Other" right>
             <b-dropdown-item to="/profile">{{user}}</b-dropdown-item>
@@ -44,10 +46,24 @@ export default {
     };
   },
   mounted() {
-    this.user = localStorage["user"];
-    // Listen for the 'clicked-event' and its payload.
-    EventBus.$on("userData", name => {
-      this.user = name;
+    if (localStorage["user"]) {
+      this.user = localStorage["user"];
+      // Listen for the 'clicked-event' and its payload.
+      EventBus.$on("userData", name => {
+        this.user = name;
+        axios
+          .get(
+            "https://hangman-webapp.herokuapp.com/api/find/user/" +
+              localStorage["user"]
+          )
+          .then(res => {
+            const response = res.data;
+            const user = response.user;
+            this.points = user[0].points;
+            this.$forceUpdate();
+          });
+      });
+
       axios
         .get(
           "https://hangman-webapp.herokuapp.com/api/find/user/" +
@@ -59,19 +75,7 @@ export default {
           this.points = user[0].points;
           this.$forceUpdate();
         });
-    });
-
-    axios
-      .get(
-        "https://hangman-webapp.herokuapp.com/api/find/user/" +
-          localStorage["user"]
-      )
-      .then(res => {
-        const response = res.data;
-        const user = response.user;
-        this.points = user[0].points;
-        this.$forceUpdate();
-      });
+    }
   },
   methods: {
     logout() {
