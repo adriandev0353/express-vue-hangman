@@ -158,7 +158,29 @@ export default {
   created() {
     this.socket = io("https://hangman-webapp.herokuapp.com");
   },
-  mounted() {},
+  mounted() {
+    this.socket.emit("check", localStorage["user"]);
+      this.socket.on("checkResponse", data => {
+        if (data !== "already connected") {
+          if (data.users.playerOne) {
+            this.playerOne = data.users.playerOne;
+          }
+          if (data.users.playerTwo) {
+            this.playerTwo = data.users.playerTwo;
+          }
+        }
+      });
+      this.socket.on("lobbyFull", data => {
+        if (data.users.playerOne) {
+          this.playerOne = data.users.playerOne;
+        }
+        if (data.users.playerTwo) {
+          this.playerTwo = data.users.playerTwo;
+        }
+        this.lobbyFull = true;
+        this.$forceUpdate();
+      });
+  },
   methods: {
     ready(user) {
       if (user === "one") {
@@ -211,27 +233,6 @@ export default {
           });
       });
       this.$forceUpdate();
-      this.socket.emit("check", localStorage["user"]);
-      this.socket.on("checkResponse", data => {
-        if (data !== "already connected") {
-          if (data.users.playerOne) {
-            this.playerOne = data.users.playerOne;
-          }
-          if (data.users.playerTwo) {
-            this.playerTwo = data.users.playerTwo;
-          }
-        }
-      });
-      this.socket.on("lobbyFull", data => {
-        if (data.users.playerOne) {
-          this.playerOne = data.users.playerOne;
-        }
-        if (data.users.playerTwo) {
-          this.playerTwo = data.users.playerTwo;
-        }
-        this.lobbyFull = true;
-        this.$forceUpdate();
-      });
     },
     userCheck(player) {
       let bool = false;
