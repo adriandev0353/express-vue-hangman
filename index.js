@@ -84,13 +84,10 @@ io.on('connection', socket => {
         }
     });
     socket.on('ready', user => {
-        console.log('initiated');
         if (user === 'one') {
             playerOneReady = true;
-            console.log('one');
         } else {
             playerTwoReady = true;
-            console.log('two');
         };
         if (playerOneReady && playerTwoReady) {
             for (let i = 0; i < wordLength; i++) {
@@ -107,6 +104,7 @@ io.on('connection', socket => {
                     guesses.wordGuessedTwo.push('_');
                 }
             }
+            console.log(guesses, 'guesses in ready');
             console.log('both ready');
             io.emit('bothReady');
         };
