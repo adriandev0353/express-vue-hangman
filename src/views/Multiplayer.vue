@@ -20,7 +20,7 @@
         </b-col>
         <b-col sm></b-col>
       </b-row>
-      <b-row v-if="lobbyFull">
+      <b-row v-if="lobbyFull && !playersReady">
         <b-col sm>
           <b-button @click="ready('one')">Ready</b-button>
         </b-col>
@@ -28,7 +28,7 @@
           <b-button @click="ready('two')">Ready</b-button>
         </b-col>
       </b-row>
-      <b-row v-if="ready">
+      <b-row v-if="playersReady">
         <b-col class="playGround" sm>
           <b-row>
             <b-col sm></b-col>
@@ -113,7 +113,7 @@ export default {
   name: "multiplayer",
   data() {
     return {
-      ready: false,
+      playersReady: false,
       wordGuessedOne: [],
       wordGuessedTwo: [],
       wordLength: 0,
@@ -182,12 +182,14 @@ export default {
   },
   methods: {
     ready(user) {
+      console.log(user)
       if (user === "one") {
         this.socket.emit("ready", "one");
       } else {
         this.socket.emit("ready", "two");
       }
       this.socket.on("bothReady", () => {
+        this.playersReady = true;
         this.socket.emit("lengthReq");
         this.socket.on("lengthRes", data => {
           this.wordLength = data;
@@ -280,8 +282,7 @@ export default {
       });
     },
     clearServerData() {
-      this.playerOneReady = false;
-      this.playerTwoReady = false;
+      this.playersReady = true;
       this.playerOne = "";
       this.playerTwo = "";
       this.lobbyFull = false;
