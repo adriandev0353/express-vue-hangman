@@ -182,6 +182,7 @@ export default {
   },
   methods: {
     ready(user) {
+      console.log(user)
       if (user === "one") {
         this.socket.emit("ready", "one");
       } else {
@@ -192,6 +193,21 @@ export default {
         this.socket.emit("lengthReq");
         this.socket.on("lengthRes", data => {
           this.wordLength = data;
+          for (let i = 0; i < this.wordLength; i++) {
+            if (this.playerOneWord[i] === "-") {
+              this.wordGuessedOne.push("-");
+            } else {
+              this.wordGuessedOne.push("_");
+            }
+          }
+          for (let i = 0; i < this.wordLength; i++) {
+            if (this.playerTwoWord[i] === "-") {
+              this.wordGuessedTwo.push("-");
+            } else {
+              this.wordGuessedTwo.push("_");
+            }
+          }
+          socket.emit('wordsSetup', {one: this.wordGuessedOne, two: this.wordGuessedTwo});
           axios
             .get(
               "https://hangman-webapp.herokuapp.com/api/list/size/" +
@@ -229,11 +245,15 @@ export default {
     letterCheck(letter, user) {
       console.log({
         letter,
-        user
+        user,
+        guessOne: this.wordGuessedOne,
+        guessTwo: this.wordGuessedTwo
       });
       this.socket.emit("letterCheck", {
         letter,
-        user
+        user,
+        guessOne: this.wordGuessedOne,
+        guessTwo: this.wordGuessedTwo
       });
       this.socket.on("guesses", data => {
         console.log(data);
@@ -241,14 +261,14 @@ export default {
         this.wordGuessedOne = data.one;
         this.wordGuessedTwo = data.two;
         console.log(this.wordGuessedOne, this.wordGuessedTwo);
-        // if (!data.isCorrect) {
-        //   if (user === "one") {
-        //     this.playerOneGuesses--;
-        //   } else if (user === "two") {
-        //     this.playerTwoGuesses--;
-        //   }
-        // }
-        // console.log(this.playerOneGuesses, this.playerTwoGuesses);
+        if (!data.isCorrect) {
+          if (user === "one") {
+            this.playerOneGuesses--;
+          } else if (user === "two") {
+            this.playerTwoGuesses--;
+          }
+        }
+        console.log(this.playerOneGuesses, this.playerTwoGuesses);
         for (const item of this.alphabet) {
           if (item.letter === letter) {
             console.log(item);

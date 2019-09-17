@@ -83,6 +83,12 @@ io.on('connection', socket => {
             io.emit('checkResponse', 'already connected');
         }
     });
+    socket.on('wordsSetup', data => {
+        console.log(data);
+        guesses.wordGuessedOne = data.one;
+        guesses.wordGuessedTwo = data.two;
+        console.log(guesses);
+    });
     socket.on('ready', user => {
         if (user === 'one') {
             playerOneReady = true;
@@ -90,25 +96,6 @@ io.on('connection', socket => {
             playerTwoReady = true;
         };
         if (playerOneReady && playerTwoReady) {
-            for (let i = 0; i < wordLength; i++) {
-                console.log(playersWords.one);
-                if (playersWords.one[i] === '-') {
-                    guesses.wordGuessedOne.push('-');
-                } else {
-                    guesses.wordGuessedOne.push('_');
-                }
-            }
-            for (let i = 0; i < wordLength; i++) {
-                console.log(playersWords.two);
-                console.log(playersWords.two[i]);
-                if (playersWords.two[i] === '-') {
-                    guesses.wordGuessedTwo.push('-');
-                } else {
-                    guesses.wordGuessedTwo.push('_');
-                }
-            }
-            console.log(guesses, 'guesses in ready');
-            console.log('both ready');
             io.emit('bothReady');
         };
     });
