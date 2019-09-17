@@ -193,6 +193,8 @@ export default {
         this.socket.emit("lengthReq");
         this.socket.on("lengthRes", data => {
           this.wordLength = data;
+          this.wordGuessedOne = [];
+          this.wordGuessedTwo = [];
           for (let i = 0; i < this.wordLength; i++) {
             if (this.playerOneWord[i] === "-") {
               this.wordGuessedOne.push("-");
