@@ -174,7 +174,6 @@ export default {
         .then(res => {
           const response = res.data;
           const words = response.words;
-          console.log(response);
           const indexOne = Math.ceil(Math.random() * this.wordLength) - 1;
           this.playerOneWord = words[indexOne].word;
           const indexTwo = Math.ceil(Math.random() * this.wordLength) - 1;
@@ -223,20 +222,36 @@ export default {
       return this.alphabet[index][user];
     },
     letterCheck(letter, user) {
-      for (const item of this.alphabet) {
-        if (item.letter === letter) {
-          item[user] = true;
-        }
-      }
-      this.socket.emit("letterCheck", { letter, user, guessOne: this.wordGuessedOne, guessTwo: this.wordGuessedTwo });
+      console.log({
+        letter,
+        user,
+        guessOne: this.wordGuessedOne,
+        guessTwo: this.wordGuessedTwo
+      });
+      this.socket.emit("letterCheck", {
+        letter,
+        user,
+        guessOne: this.wordGuessedOne,
+        guessTwo: this.wordGuessedTwo
+      });
       this.socket.on("guesses", data => {
-          this.wordGuessedOne = data.one;
-          this.wordGuessedTwo = data.two;
+        this.wordGuessedOne = data.one;
+        this.wordGuessedTwo = data.two;
         if (!data.isCorrect) {
           if (user === "one") {
             this.playerOneGuesses--;
           } else if (user === "two") {
             this.playerTwoGuesses--;
+          }
+        }
+        for (const item of this.alphabet) {
+          if (item.letter === letter) {
+            console.log(item);
+            if (user === "one") {
+              item.one = true;
+            } else if (user === "two") {
+              item.two = true;
+            }
           }
         }
       });

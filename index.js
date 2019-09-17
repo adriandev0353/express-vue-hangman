@@ -82,11 +82,17 @@ io.on('connection', socket => {
         }
     });
     socket.on('playersWords', data => {
+        console.log(data, 'data playersWords');
+        console.log(playersWords, 'playersWords playersWords');
         playersWords = data;
+        console.log(playersWords, 'playersWords playersWords');
     });
     socket.on('letterCheck', data => {
+        console.log(playersWords, 'playersWords letterCheck');
         guesses.wordGuessedOne = data.guessOne;
         guesses.wordGuessedTwo = data.guessTwo;
+        console.log(guesses, 'guesses letterCheck');
+        console.log(data, 'data');
         const letter = data.letter;
         const user = data.user;
         let word = playersWords[user];
@@ -103,6 +109,7 @@ io.on('connection', socket => {
                 isCorrect = true;
             }
         }
+        console.log(guesses, 'guesses letterCheck');
         io.emit('guesses', { one: guesses.wordGuessedOne, two: guesses.wordGuessedTwo, isCorrect });
     });
     socket.on('clear', () => {
