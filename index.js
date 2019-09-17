@@ -90,6 +90,7 @@ io.on('connection', socket => {
             playerTwoReady = true;
         };
         if (playerOneReady && playerTwoReady) {
+            console.log(wordLength);
             for (let i = 0; i < wordLength; i++) {
                 console.log(playersWords.one);
                 console.log(playersWords.one[i]);
