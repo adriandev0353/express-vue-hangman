@@ -21,6 +21,14 @@
         <b-col sm></b-col>
       </b-row>
       <b-row v-if="lobbyFull">
+        <b-col sm>
+          <b-button @click="ready('one')">Ready</b-button>
+        </b-col>
+        <b-col sm>
+          <b-button @click="ready('two')">Ready</b-button>
+        </b-col>
+      </b-row>
+      <b-row v-if="playerOneReady && playerTwoReady">
         <b-col class="playGround" sm>
           <b-row>
             <b-col sm></b-col>
@@ -105,6 +113,8 @@ export default {
   name: "multiplayer",
   data() {
     return {
+      playerOneReady: false,
+      playerTwoReady: false,
       wordGuessedOne: [],
       wordGuessedTwo: [],
       wordLength: 0,
@@ -148,67 +158,81 @@ export default {
   created() {
     this.socket = io("https://hangman-webapp.herokuapp.com");
   },
-  mounted() {
-    this.socket.emit("lengthReq");
-    this.socket.on("lengthRes", data => {
-      this.wordLength = data;
-      for (let i = 0; i < this.wordLength; i++) {
-        if (this.playerOneWord[i] === "-") {
-          this.wordGuessedOne.push("-");
-        } else {
-          this.wordGuessedOne.push("_");
+  mounted() {},
+  methods: {
+    ready(user) {
+      if (user === "one") {
+        this.playerOneReady = true;
+        if (this.playerTwoReady === true) {
+          this.bothReady();
+        }
+      } else {
+        this.playerTwoReady = true;
+        if (this.playerOneReady === true) {
+          this.bothReady();
         }
       }
-      for (let i = 0; i < this.wordLength; i++) {
-        if (this.playerTwoWord[i] === "-") {
-          this.wordGuessedTwo.push("-");
-        } else {
-          this.wordGuessedTwo.push("_");
+    },
+    bothReady() {
+      this.socket.emit("lengthReq");
+      this.socket.on("lengthRes", data => {
+        this.wordLength = data;
+        for (let i = 0; i < this.wordLength; i++) {
+          if (this.playerOneWord[i] === "-") {
+            this.wordGuessedOne.push("-");
+          } else {
+            this.wordGuessedOne.push("_");
+          }
         }
-      }
-      axios
-        .get(
-          "https://hangman-webapp.herokuapp.com/api/list/size/" +
-            this.wordLength
-        )
-        .then(res => {
-          const response = res.data;
-          const words = response.words;
-          const indexOne = Math.ceil(Math.random() * this.wordLength) - 1;
-          this.playerOneWord = words[indexOne].word;
-          const indexTwo = Math.ceil(Math.random() * this.wordLength) - 1;
-          this.playerTwoWord = words[indexTwo].word;
+        for (let i = 0; i < this.wordLength; i++) {
+          if (this.playerTwoWord[i] === "-") {
+            this.wordGuessedTwo.push("-");
+          } else {
+            this.wordGuessedTwo.push("_");
+          }
+        }
+        axios
+          .get(
+            "https://hangman-webapp.herokuapp.com/api/list/size/" +
+              this.wordLength
+          )
+          .then(res => {
+            const response = res.data;
+            const words = response.words;
+            const indexOne = Math.ceil(Math.random() * this.wordLength) - 1;
+            this.playerOneWord = words[indexOne].word;
+            const indexTwo = Math.ceil(Math.random() * this.wordLength) - 1;
+            this.playerTwoWord = words[indexTwo].word;
 
-          this.socket.emit("playersWords", {
-            one: this.playerOneWord,
-            two: this.playerTwoWord
+            this.socket.emit("playersWords", {
+              one: this.playerOneWord,
+              two: this.playerTwoWord
+            });
           });
-        });
-    });
-    this.$forceUpdate();
-    this.socket.emit("check", localStorage["user"]);
-    this.socket.on("checkResponse", data => {
-      if (data !== "already connected") {
+      });
+      this.$forceUpdate();
+      this.socket.emit("check", localStorage["user"]);
+      this.socket.on("checkResponse", data => {
+        if (data !== "already connected") {
+          if (data.users.playerOne) {
+            this.playerOne = data.users.playerOne;
+          }
+          if (data.users.playerTwo) {
+            this.playerTwo = data.users.playerTwo;
+          }
+        }
+      });
+      this.socket.on("lobbyFull", data => {
         if (data.users.playerOne) {
           this.playerOne = data.users.playerOne;
         }
         if (data.users.playerTwo) {
           this.playerTwo = data.users.playerTwo;
         }
-      }
-    });
-    this.socket.on("lobbyFull", data => {
-      if (data.users.playerOne) {
-        this.playerOne = data.users.playerOne;
-      }
-      if (data.users.playerTwo) {
-        this.playerTwo = data.users.playerTwo;
-      }
-      this.lobbyFull = true;
-      this.$forceUpdate();
-    });
-  },
-  methods: {
+        this.lobbyFull = true;
+        this.$forceUpdate();
+      });
+    },
     userCheck(player) {
       let bool = false;
       if (localStorage["user"] === player) {
@@ -262,6 +286,8 @@ export default {
       });
     },
     clearServerData() {
+      this.playerOneReady = false;
+      this.playerTwoReady = false;
       this.playerOne = "";
       this.playerTwo = "";
       this.lobbyFull = false;
