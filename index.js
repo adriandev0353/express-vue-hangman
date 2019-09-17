@@ -84,12 +84,16 @@ io.on('connection', socket => {
         }
     });
     socket.on('ready', user => {
+        console.log('initiated');
         if (user === 'one') {
             playerOneReady = true;
+            console.log('one');
         } else {
             playerTwoReady = true;
+            console.log('two');
         };
         if (playerOneReady && playerTwoReady) {
+            console.log('both ready');
             io.emit('bothReady');
         };
     });
