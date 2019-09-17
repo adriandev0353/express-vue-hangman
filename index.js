@@ -76,9 +76,9 @@ io.on('connection', socket => {
             } else {
                 users.spectators.push(user);
             }
-            socket.emit('checkResponse', { players, users });
+            io.emit('checkResponse', { players, users });
         } else {
-            socket.emit('checkResponse', 'already connected');
+            io.emit('checkResponse', 'already connected');
         }
     });
     socket.on('playersWords', data => {
@@ -120,7 +120,7 @@ io.on('connection', socket => {
         if (wordLength === 0) {
             wordLength = Math.floor(Math.random() * 10) + 2;
         };
-        socket.emit('lengthRes', wordLength);
+        io.emit('lengthRes', wordLength);
     });
 });
 
