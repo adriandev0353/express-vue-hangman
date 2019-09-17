@@ -82,10 +82,7 @@ io.on('connection', socket => {
         }
     });
     socket.on('playersWords', data => {
-        console.log(data, 'data playersWords');
-        console.log(playersWords, 'playersWords playersWords');
         playersWords = data;
-        console.log(playersWords, 'playersWords playersWords');
     });
     socket.on('letterCheck', data => {
         console.log(playersWords, 'playersWords letterCheck');

@@ -236,6 +236,7 @@ export default {
       });
       this.socket.on("guesses", data => {
         console.log(data);
+        console.log(this.wordGuessedOne, this.wordGuessedTwo);
         this.wordGuessedOne = data.one;
         this.wordGuessedTwo = data.two;
         console.log(this.wordGuessedOne, this.wordGuessedTwo);
@@ -257,6 +258,7 @@ export default {
             }
           }
         }
+        this.$forceUpdate();
       });
     },
     clearServerData() {
