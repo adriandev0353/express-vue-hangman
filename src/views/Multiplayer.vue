@@ -230,15 +230,11 @@ export default {
     letterCheck(letter, user) {
       console.log({
         letter,
-        user,
-        guessOne: this.wordGuessedOne,
-        guessTwo: this.wordGuessedTwo
+        user
       });
       this.socket.emit("letterCheck", {
         letter,
-        user,
-        guessOne: this.wordGuessedOne,
-        guessTwo: this.wordGuessedTwo
+        user
       });
       this.socket.on("guesses", data => {
         console.log(data);
@@ -246,14 +242,14 @@ export default {
         this.wordGuessedOne = data.one;
         this.wordGuessedTwo = data.two;
         console.log(this.wordGuessedOne, this.wordGuessedTwo);
-        if (!data.isCorrect) {
-          if (user === "one") {
-            this.playerOneGuesses--;
-          } else if (user === "two") {
-            this.playerTwoGuesses--;
-          }
-        }
-        console.log(this.playerOneGuesses, this.playerTwoGuesses);
+        // if (!data.isCorrect) {
+        //   if (user === "one") {
+        //     this.playerOneGuesses--;
+        //   } else if (user === "two") {
+        //     this.playerTwoGuesses--;
+        //   }
+        // }
+        // console.log(this.playerOneGuesses, this.playerTwoGuesses);
         for (const item of this.alphabet) {
           if (item.letter === letter) {
             console.log(item);

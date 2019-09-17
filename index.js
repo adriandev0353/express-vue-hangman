@@ -114,8 +114,6 @@ io.on('connection', socket => {
     });
     socket.on('letterCheck', data => {
         console.log(playersWords, 'playersWords letterCheck');
-        guesses.wordGuessedOne = data.guessOne;
-        guesses.wordGuessedTwo = data.guessTwo;
         console.log(guesses, 'guesses letterCheck');
         console.log(data, 'data');
         const letter = data.letter;
