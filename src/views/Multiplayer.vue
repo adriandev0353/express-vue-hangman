@@ -49,7 +49,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }}</span>
+                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }} </span>
               </div>
               <div v-if="userCheck(playerOne)">
                 <b-button
@@ -83,7 +83,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }}</span>
+                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }} </span>
               </div>
               <div v-if="userCheck(playerTwo)">
                 <b-button
@@ -101,9 +101,13 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-modal v-if='gameOver' centered hide-footer title="Game Over">
+        <b-modal v-model="gameOver" centered hide-footer title="Game Over">
           <div class="d-block text-center">
-            <h3>{{winner}}</h3>
+            <h3>{{winner}} wins!</h3>
+            <h3>
+              The word was
+              <span>{{winningWord}}</span>
+            </h3>
           </div>
           <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close Me</b-button>
         </b-modal>
@@ -122,7 +126,8 @@ export default {
   data() {
     return {
       winner: "",
-      gameOver:false,
+      winningWord: "",
+      gameOver: false,
       playersReady: false,
       wordGuessedOne: [],
       wordGuessedTwo: [],
@@ -190,16 +195,19 @@ export default {
       this.$forceUpdate();
     });
     this.socket.on("gameOver", data => {
-      this.gameOver = true;
-      if(data === 'one'){
+      this.winningWord = data.word;
+      if (data.user === "one") {
         this.winner = this.playerOne;
-      } else if ('two'){
+      } else if (data.user === "two") {
         this.winner = this.playerTwo;
-      };
-
+      }
+      this.gameOver = true;
     });
   },
   methods: {
+    hideModal() {
+      this.gameOver = false;
+    },
     ready(user) {
       if (user === "one") {
         this.socket.emit("ready", "one");
