@@ -22,11 +22,11 @@
       </b-row>
       <b-row v-if="lobbyFull && !playersReady">
         <b-col sm>
-          <b-button v-if="userCheck(playerOne)" @click="ready('one')">Ready</b-button>
+          <b-button v-if="userCheck(playerOne)" @click="ready('one')" variant="success">Ready</b-button>
           <h3 v-else>Waiting to ready..</h3>
         </b-col>
         <b-col sm>
-          <b-button v-if="userCheck(playerTwo)" @click="ready('two')">Ready</b-button>
+          <b-button v-if="userCheck(playerTwo)" @click="ready('two')" variant="success">Ready</b-button>
           <h3 v-else>Waiting to ready..</h3>
         </b-col>
       </b-row>
@@ -266,14 +266,9 @@ export default {
         this.wordGuessedOne = data.one;
         this.wordGuessedTwo = data.two;
         console.log(this.wordGuessedOne, this.wordGuessedTwo);
-        // if (!data.isCorrect) {
-        //   if (user === "one") {
-        //     this.playerOneGuesses--;
-        //   } else if (user === "two") {
-        //     this.playerTwoGuesses--;
-        //   }
-        // }
-        // console.log(this.playerOneGuesses, this.playerTwoGuesses);
+        this.playerOneGuesses = data.guessOne;
+        this.playerTwoGuesses = data.guessTwo;
+        console.log(this.playerOneGuesses, this.playerTwoGuesses);
         for (const item of this.alphabet) {
           if (item.letter === letter) {
             console.log(item);
@@ -302,7 +297,7 @@ export default {
 <style scoped>
 .playGround {
   border: 1px solid black;
-  height: 500px;
+  height: 550;
   margin: 8px;
   border-radius: 5px;
 }

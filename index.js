@@ -58,6 +58,8 @@ AppRouting(app, hangmanAPI);
 
 let players = 0;
 let playerOneReady = false;
+let playerOneGuesses = 6;
+let playerTwoGuesses = 6;
 let playerTwoReady = false;
 let users = { playerOne: '', playerTwo: '', spectators: [] };
 let wordLength = 0;
@@ -122,8 +124,15 @@ io.on('connection', socket => {
                 isCorrect = true;
             }
         }
+        if (!isCorrect) {
+            if (user === 'one') {
+                playerOneGuesses--;
+            } else if (user === 'two') {
+                playerTwoGuesses--;
+            };
+        };
         console.log(guesses, 'guesses letterCheck');
-        io.emit('guesses', { one: guesses.wordGuessedOne, two: guesses.wordGuessedTwo, isCorrect });
+        io.emit('guesses', { one: guesses.wordGuessedOne, two: guesses.wordGuessedTwo, isCorrect, guessOne: playerOneGuesses, guessTwo: playerTwoGuesses });
     });
     socket.on('clear', () => {
         players = 0;
@@ -133,6 +142,8 @@ io.on('connection', socket => {
         guesses = { wordGuessedOne: [], wordGuessedTwo: [] };
         playerOneReady = false;
         playerTwoReady = false;
+        playerOneGuesses = 6;
+        playerTwoGuesses = 6;
     });
     socket.on('lengthReq', () => {
         if (wordLength === 0) {
