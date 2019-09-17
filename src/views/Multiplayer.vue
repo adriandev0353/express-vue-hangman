@@ -22,10 +22,12 @@
       </b-row>
       <b-row v-if="lobbyFull && !playersReady">
         <b-col sm>
-          <b-button @click="ready('one')">Ready</b-button>
+          <b-button v-if="userCheck(playerOne)" @click="ready('one')">Ready</b-button>
+          <h3 v-else>Waiting to ready..</h3>
         </b-col>
         <b-col sm>
-          <b-button @click="ready('two')">Ready</b-button>
+          <b-button v-if="userCheck(playerTwo)" @click="ready('two')">Ready</b-button>
+          <h3 v-else>Waiting to ready..</h3>
         </b-col>
       </b-row>
       <b-row v-if="playersReady">
@@ -264,14 +266,14 @@ export default {
         this.wordGuessedOne = data.one;
         this.wordGuessedTwo = data.two;
         console.log(this.wordGuessedOne, this.wordGuessedTwo);
-        if (!data.isCorrect) {
-          if (user === "one") {
-            this.playerOneGuesses--;
-          } else if (user === "two") {
-            this.playerTwoGuesses--;
-          }
-        }
-        console.log(this.playerOneGuesses, this.playerTwoGuesses);
+        // if (!data.isCorrect) {
+        //   if (user === "one") {
+        //     this.playerOneGuesses--;
+        //   } else if (user === "two") {
+        //     this.playerTwoGuesses--;
+        //   }
+        // }
+        // console.log(this.playerOneGuesses, this.playerTwoGuesses);
         for (const item of this.alphabet) {
           if (item.letter === letter) {
             console.log(item);
@@ -286,7 +288,7 @@ export default {
       });
     },
     clearServerData() {
-      this.playersReady = true;
+      this.playersReady = false;
       this.playerOne = "";
       this.playerTwo = "";
       this.lobbyFull = false;
