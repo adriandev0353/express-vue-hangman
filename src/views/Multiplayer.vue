@@ -207,7 +207,8 @@ export default {
               this.wordGuessedTwo.push("_");
             }
           }
-          socket.emit('wordsSetup', {one: this.wordGuessedOne, two: this.wordGuessedTwo});
+          console.log(this.wordGuessedOne, this.wordGuessedTwo, 'guesses setup');
+          this.socket.emit('wordsSetup', {one: this.wordGuessedOne, two: this.wordGuessedTwo});
           axios
             .get(
               "https://hangman-webapp.herokuapp.com/api/list/size/" +
