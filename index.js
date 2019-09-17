@@ -153,6 +153,7 @@ io.on('connection', socket => {
         if (wordLength === 0) {
             wordLength = Math.floor(Math.random() * 10) + 2;
         };
+        console.log(wordLength);
         io.emit('lengthRes', wordLength);
     });
 });
