@@ -57,6 +57,8 @@ if (process.env.RELOAD_DATA) {
 AppRouting(app, hangmanAPI);
 
 let players = 0;
+let playerOneReady = false;
+let playerTwoReady = false;
 let users = { playerOne: '', playerTwo: '', spectators: [] };
 let wordLength = 0;
 let playersWords = {};
@@ -80,6 +82,16 @@ io.on('connection', socket => {
         } else {
             io.emit('checkResponse', 'already connected');
         }
+    });
+    socket.on('ready', user => {
+        if (user === 'one') {
+            playerOneReady = true;
+        } else {
+            playerTwoReady = true;
+        };
+        if (playerOneReady && playerTwoReady) {
+            io.emit('bothReady');
+        };
     });
     socket.on('playersWords', data => {
         playersWords = data;
