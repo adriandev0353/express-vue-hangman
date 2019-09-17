@@ -86,10 +86,8 @@ io.on('connection', socket => {
         }
     });
     socket.on('wordsSetup', data => {
-        console.log(data);
         guesses.wordGuessedOne = data.one;
         guesses.wordGuessedTwo = data.two;
-        console.log(guesses);
     });
     socket.on('ready', user => {
         if (user === 'one') {
@@ -105,9 +103,7 @@ io.on('connection', socket => {
         playersWords = data;
     });
     socket.on('letterCheck', data => {
-        console.log(playersWords, 'playersWords letterCheck');
-        console.log(guesses, 'guesses letterCheck');
-        console.log(data, 'data');
+        console.log(playersWords);
         const letter = data.letter;
         const user = data.user;
         let word = playersWords[user];
@@ -131,7 +127,22 @@ io.on('connection', socket => {
                 playerTwoGuesses--;
             };
         };
-        console.log(guesses, 'guesses letterCheck');
+        let guessedWord = '';
+        for (const letter of guesses.wordGuessedOne) {
+            guessedWord += letter;
+        };
+        if (guessedWord === playersWords.one) {
+            io.emit('gameOver', 'one');
+            return;
+        };
+        guessedWord = '';
+        for (const letter of guesses.wordGuessedTwo) {
+            guessedWord += letter;
+        };
+        if (guessedWord === playersWords.two) {
+            io.emit('gameOver', 'two');
+            return;
+        };
         io.emit('guesses', { one: guesses.wordGuessedOne, two: guesses.wordGuessedTwo, isCorrect, guessOne: playerOneGuesses, guessTwo: playerTwoGuesses });
     });
     socket.on('clear', () => {

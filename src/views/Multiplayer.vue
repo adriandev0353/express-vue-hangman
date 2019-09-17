@@ -49,7 +49,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerOne)">
                 <b-button
@@ -83,7 +83,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerTwo)">
                 <b-button
@@ -101,6 +101,12 @@
         </b-col>
       </b-row>
       <b-row>
+        <b-modal v-if='gameOver' centered hide-footer title="Game Over">
+          <div class="d-block text-center">
+            <h3>{{winner}}</h3>
+          </div>
+          <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close Me</b-button>
+        </b-modal>
         <b-button class="mx-auto" @click="clearServerData">Clear Server data</b-button>
       </b-row>
     </b-container>
@@ -115,6 +121,8 @@ export default {
   name: "multiplayer",
   data() {
     return {
+      winner: "",
+      gameOver:false,
       playersReady: false,
       wordGuessedOne: [],
       wordGuessedTwo: [],
@@ -181,10 +189,18 @@ export default {
       this.lobbyFull = true;
       this.$forceUpdate();
     });
+    this.socket.on("gameOver", data => {
+      this.gameOver = true;
+      if(data === 'one'){
+        this.winner = this.playerOne;
+      } else if ('two'){
+        this.winner = this.playerTwo;
+      };
+
+    });
   },
   methods: {
     ready(user) {
-      console.log(user)
       if (user === "one") {
         this.socket.emit("ready", "one");
       } else {
@@ -211,8 +227,10 @@ export default {
               this.wordGuessedTwo.push("_");
             }
           }
-          console.log(this.wordGuessedOne, this.wordGuessedTwo, 'guesses setup');
-          this.socket.emit('wordsSetup', {one: this.wordGuessedOne, two: this.wordGuessedTwo});
+          this.socket.emit("wordsSetup", {
+            one: this.wordGuessedOne,
+            two: this.wordGuessedTwo
+          });
           axios
             .get(
               "https://hangman-webapp.herokuapp.com/api/list/size/" +
@@ -248,12 +266,6 @@ export default {
       return this.alphabet[index][user];
     },
     letterCheck(letter, user) {
-      console.log({
-        letter,
-        user,
-        guessOne: this.wordGuessedOne,
-        guessTwo: this.wordGuessedTwo
-      });
       this.socket.emit("letterCheck", {
         letter,
         user,
@@ -261,17 +273,12 @@ export default {
         guessTwo: this.wordGuessedTwo
       });
       this.socket.on("guesses", data => {
-        console.log(data);
-        console.log(this.wordGuessedOne, this.wordGuessedTwo);
         this.wordGuessedOne = data.one;
         this.wordGuessedTwo = data.two;
-        console.log(this.wordGuessedOne, this.wordGuessedTwo);
         this.playerOneGuesses = data.guessOne;
         this.playerTwoGuesses = data.guessTwo;
-        console.log(this.playerOneGuesses, this.playerTwoGuesses);
         for (const item of this.alphabet) {
           if (item.letter === letter) {
-            console.log(item);
             if (user === "one") {
               item.one = true;
             } else if (user === "two") {
