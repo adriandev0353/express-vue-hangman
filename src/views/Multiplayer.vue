@@ -235,8 +235,10 @@ export default {
         guessTwo: this.wordGuessedTwo
       });
       this.socket.on("guesses", data => {
+        console.log(data);
         this.wordGuessedOne = data.one;
         this.wordGuessedTwo = data.two;
+        console.log(this.wordGuessedOne, this.wordGuessedTwo);
         if (!data.isCorrect) {
           if (user === "one") {
             this.playerOneGuesses--;
@@ -244,6 +246,7 @@ export default {
             this.playerTwoGuesses--;
           }
         }
+        console.log(this.playerOneGuesses, this.playerTwoGuesses);
         for (const item of this.alphabet) {
           if (item.letter === letter) {
             console.log(item);
