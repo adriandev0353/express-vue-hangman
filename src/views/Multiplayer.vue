@@ -189,8 +189,8 @@ export default {
       }
       this.socket.on("bothReady", () => {
         this.playersReady = true;
-        this.socket.emit("lengthReq");
         this.socket.on("lengthRes", data => {
+          console.log(data);
           this.wordLength = data;
           axios
             .get(
