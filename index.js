@@ -141,6 +141,8 @@ io.on('connection', socket => {
         wordLength = 0;
         playersWords = {};
         guesses = { wordGuessedOne: [], wordGuessedTwo: [] };
+        playerOneReady = false;
+        playerTwoReady = false;
     });
     socket.on('lengthReq', () => {
         if (wordLength === 0) {
