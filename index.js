@@ -91,6 +91,8 @@ io.on('connection', socket => {
         };
         if (playerOneReady && playerTwoReady) {
             for (let i = 0; i < wordLength; i++) {
+                console.log(playersWords.one);
+                console.log(playersWords.one[i]);
                 if (playersWords.one[i] === '-') {
                     guesses.wordGuessedOne.push('-');
                 } else {
@@ -98,6 +100,8 @@ io.on('connection', socket => {
                 }
             }
             for (let i = 0; i < wordLength; i++) {
+                console.log(playersWords.two);
+                console.log(playersWords.two[i]);
                 if (playersWords.two[i] === '-') {
                     guesses.wordGuessedTwo.push('-');
                 } else {
