@@ -66,10 +66,6 @@ let guesses = { wordGuessedOne: [], wordGuessedTwo: [] };
 
 io.on('connection', socket => {
     socket.on('check', user => {
-        if (wordLength === 0) {
-            wordLength = Math.floor(Math.random() * 10) + 2;
-        };
-        io.emit('lengthRes', wordLength);
         if (user !== users.playerOne) {
             if (players < 2) {
                 players++;
@@ -94,10 +90,8 @@ io.on('connection', socket => {
             playerTwoReady = true;
         };
         if (playerOneReady && playerTwoReady) {
-            console.log(playersWords);
             for (let i = 0; i < wordLength; i++) {
                 console.log(playersWords.one);
-                console.log(playersWords.one[i]);
                 if (playersWords.one[i] === '-') {
                     guesses.wordGuessedOne.push('-');
                 } else {
@@ -152,6 +146,12 @@ io.on('connection', socket => {
         guesses = { wordGuessedOne: [], wordGuessedTwo: [] };
         playerOneReady = false;
         playerTwoReady = false;
+    });
+    socket.on('lengthReq', () => {
+        if (wordLength === 0) {
+            wordLength = Math.floor(Math.random() * 10) + 2;
+        };
+        io.emit('lengthRes', wordLength);
     });
 });
 
