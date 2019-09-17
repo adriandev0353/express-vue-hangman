@@ -182,7 +182,7 @@ export default {
   },
   methods: {
     ready(user) {
-      console.log(user)
+      console.log(user);
       if (user === "one") {
         this.socket.emit("ready", "one");
       } else {
@@ -193,20 +193,6 @@ export default {
         this.socket.emit("lengthReq");
         this.socket.on("lengthRes", data => {
           this.wordLength = data;
-          for (let i = 0; i < this.wordLength; i++) {
-            if (this.playerOneWord[i] === "-") {
-              this.wordGuessedOne.push("-");
-            } else {
-              this.wordGuessedOne.push("_");
-            }
-          }
-          for (let i = 0; i < this.wordLength; i++) {
-            if (this.playerTwoWord[i] === "-") {
-              this.wordGuessedTwo.push("-");
-            } else {
-              this.wordGuessedTwo.push("_");
-            }
-          }
           axios
             .get(
               "https://hangman-webapp.herokuapp.com/api/list/size/" +

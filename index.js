@@ -93,6 +93,20 @@ io.on('connection', socket => {
             console.log('two');
         };
         if (playerOneReady && playerTwoReady) {
+            for (let i = 0; i < wordLength; i++) {
+                if (playersWords.one[i] === '-') {
+                    guesses.wordGuessedOne.push('-');
+                } else {
+                    guesses.wordGuessedOne.push('_');
+                }
+            }
+            for (let i = 0; i < wordLength; i++) {
+                if (playersWords.two[i] === '-') {
+                    guesses.wordGuessedTwo.push('-');
+                } else {
+                    guesses.wordGuessedTwo.push('_');
+                }
+            }
             console.log('both ready');
             io.emit('bothReady');
         };
