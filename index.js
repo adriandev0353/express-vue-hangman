@@ -83,6 +83,13 @@ io.on('connection', socket => {
             io.emit('checkResponse', 'already connected');
         }
     });
+    socket.on('lengthReq', () => {
+        if (wordLength === 0) {
+            wordLength = Math.floor(Math.random() * 10) + 2;
+        };
+        console.log(wordLength);
+        io.emit('lengthRes', wordLength);
+    });
     socket.on('ready', user => {
         if (user === 'one') {
             playerOneReady = true;
@@ -148,13 +155,6 @@ io.on('connection', socket => {
         guesses = { wordGuessedOne: [], wordGuessedTwo: [] };
         playerOneReady = false;
         playerTwoReady = false;
-    });
-    socket.on('lengthReq', () => {
-        if (wordLength === 0) {
-            wordLength = Math.floor(Math.random() * 10) + 2;
-        };
-        console.log(wordLength);
-        io.emit('lengthRes', wordLength);
     });
 });
 

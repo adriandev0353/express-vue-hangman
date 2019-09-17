@@ -182,7 +182,6 @@ export default {
   },
   methods: {
     ready(user) {
-      console.log(user);
       if (user === "one") {
         this.socket.emit("ready", "one");
       } else {
