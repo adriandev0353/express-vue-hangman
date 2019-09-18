@@ -52,7 +52,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerOne) && !playerOneLose">
                 <b-button
@@ -89,7 +89,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerTwo) && !playerTwoLose">
                 <b-button
@@ -184,8 +184,6 @@ export default {
   },
   created() {
     this.socket = io("https://hangman-webapp.herokuapp.com");
-  },
-  mounted() {
     EventBus.$on("search", () => {
       this.socket.emit("check", localStorage["user"]);
       this.socket.on("checkResponse", data => {
@@ -235,19 +233,6 @@ export default {
           item[data] = true;
         }
       });
-    });
-  },
-  methods: {
-    search() {
-      this.searchForOpponent = true;
-      EventBus.$emit("search");
-    },
-    ready(user) {
-      if (user === "one") {
-        this.socket.emit("ready", "one");
-      } else {
-        this.socket.emit("ready", "two");
-      }
       this.socket.on("bothReady", () => {
         this.playersReady = true;
         this.socket.emit("lengthReq");
@@ -294,45 +279,6 @@ export default {
         });
         this.$forceUpdate();
       });
-    },
-    userCheck(player) {
-      let bool = false;
-      if (localStorage["user"] === player) {
-        bool = true;
-      } else {
-        bool = false;
-      }
-      return bool;
-    },
-    isDisabled(index, user) {
-      return this.alphabet[index][user];
-    },
-    letterCheck(letter, user) {
-      this.socket.emit("letterCheck", {
-        letter,
-        user,
-        guessOne: this.wordGuessedOne,
-        guessTwo: this.wordGuessedTwo
-      });
-      this.socket.on("guesses", data => {
-        this.wordGuessedOne = data.one;
-        this.wordGuessedTwo = data.two;
-        this.playerOneGuesses = data.guessOne;
-        this.playerTwoGuesses = data.guessTwo;
-        for (const item of this.alphabet) {
-          if (item.letter === letter) {
-            if (user === "one") {
-              item.one = true;
-            } else if (user === "two") {
-              item.two = true;
-            }
-          }
-        }
-        this.$forceUpdate();
-      });
-    },
-    clearServerData() {
-      this.socket.emit("clear");
       this.socket.on("cleared", () => {
         this.searchForOpponent = false;
         this.playerOneLose = false;
@@ -374,6 +320,60 @@ export default {
         ];
         console.log("data cleared");
       });
+    });
+  },
+  mounted() {},
+  methods: {
+    search() {
+      this.searchForOpponent = true;
+      EventBus.$emit("search");
+    },
+    ready(user) {
+      if (user === "one") {
+        this.socket.emit("ready", "one");
+      } else {
+        this.socket.emit("ready", "two");
+      }
+    },
+    userCheck(player) {
+      let bool = false;
+      if (localStorage["user"] === player) {
+        bool = true;
+      } else {
+        bool = false;
+      }
+      return bool;
+    },
+    isDisabled(index, user) {
+      return this.alphabet[index][user];
+    },
+    letterCheck(letter, user) {
+      this.socket.emit("letterCheck", {
+        letter,
+        user,
+        guessOne: this.wordGuessedOne,
+        guessTwo: this.wordGuessedTwo
+      });
+      this.socket.on("guesses", data => {
+        this.wordGuessedOne = data.one;
+        this.wordGuessedTwo = data.two;
+        this.playerOneGuesses = data.guessOne;
+        this.playerTwoGuesses = data.guessTwo;
+        for (const item of this.alphabet) {
+          console.log(item);
+          if (item.letter === letter) {
+            if (user === "one") {
+              item.one = true;
+            } else if (user === "two") {
+              item.two = true;
+            }
+          }
+        }
+        this.$forceUpdate();
+      });
+    },
+    clearServerData() {
+      this.socket.emit("clear");
     }
   }
 };
