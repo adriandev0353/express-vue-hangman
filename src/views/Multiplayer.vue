@@ -2,8 +2,8 @@
   <div class="multiplayer">
     <b-container>
       <h1>Multiplayer</h1>
-      <b-row v-if='!searchForOpponent'>
-        <b-button variant='info' style='margin:8px' class='mx-auto' @click="search">Search</b-button>
+      <b-row v-if="!searchForOpponent">
+        <b-button variant="info" style="margin:8px" class="mx-auto" @click="search">Search</b-button>
       </b-row>
       <b-row v-if="!lobbyFull && searchForOpponent">
         <b-col sm>
@@ -52,7 +52,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerOne) && !playerOneLose">
                 <b-button
@@ -89,7 +89,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerTwo) && !playerTwoLose">
                 <b-button
@@ -332,16 +332,18 @@ export default {
       });
     },
     clearServerData() {
-      this.searchForOpponent = false;
-      this.playerOneLose = false;
-      this.playerTwoLose = false;
-      this.gameOver = false;
-      this.playersReady = false;
-      this.playerOne = "";
-      this.playerTwo = "";
-      this.lobbyFull = false;
       this.socket.emit("clear");
-      console.log("data cleared");
+      this.socket.on("cleared", () => {
+        this.searchForOpponent = false;
+        this.playerOneLose = false;
+        this.playerTwoLose = false;
+        this.gameOver = false;
+        this.playersReady = false;
+        this.playerOne = "";
+        this.playerTwo = "";
+        this.lobbyFull = false;
+        console.log("data cleared");
+      });
     }
   }
 };

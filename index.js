@@ -159,6 +159,7 @@ io.on('connection', socket => {
         playerTwoReady = false;
         playerOneGuesses = 6;
         playerTwoGuesses = 6;
+        io.emit('cleared');
     });
     socket.on('lengthReq', () => {
         if (wordLength === 0) {
