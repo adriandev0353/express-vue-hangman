@@ -52,7 +52,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }}</span>
+                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }} </span>
               </div>
               <div v-if="userCheck(playerOne) && !playerOneLose">
                 <b-button
@@ -89,7 +89,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }}</span>
+                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }} </span>
               </div>
               <div v-if="userCheck(playerTwo) && !playerTwoLose">
                 <b-button
@@ -342,6 +342,8 @@ export default {
         this.playerOne = "";
         this.playerTwo = "";
         this.lobbyFull = false;
+        this.playerOneGuesses = 6;
+        this.playerTwoGuesses = 6;
         console.log("data cleared");
       });
     }
