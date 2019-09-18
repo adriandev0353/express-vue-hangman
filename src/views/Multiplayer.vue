@@ -2,7 +2,10 @@
   <div class="multiplayer">
     <b-container>
       <h1>Multiplayer</h1>
-      <b-row v-if="!lobbyFull">
+      <b-row v-if='!searchForOpponent'>
+        <b-button style='margin:8px' class='mx-auto' @click="search">Search</b-button>
+      </b-row>
+      <b-row v-if="!lobbyFull && searchForOpponent">
         <b-col sm>
           <h2>{{playerOne}}</h2>
         </b-col>
@@ -13,7 +16,7 @@
           <h2 v-else>{{playerTwo}}</h2>
         </b-col>
       </b-row>
-      <b-row v-if="!lobbyFull">
+      <b-row v-if="!lobbyFull && searchForOpponent">
         <b-col sm></b-col>
         <b-col sm>
           <h5 v-if="!lobbyFull">Waiting for opponent..</h5>
@@ -61,8 +64,8 @@
                   :disabled="isDisabled(index, 'one')"
                 >{{ letter.letter }}</b-button>
               </div>
-              <div v-if='playerOneLose'>
-                <h3 style='color: crimson'>You ran out of guesses!</h3>
+              <div v-if="playerOneLose">
+                <h3 style="color: crimson">You ran out of guesses!</h3>
               </div>
             </b-col>
             <b-col sm></b-col>
@@ -98,8 +101,8 @@
                   :disabled="isDisabled(index, 'two')"
                 >{{ letter.letter }}</b-button>
               </div>
-              <div v-if='playerTwoLose'>
-                <h3 style='color: crimson'>You ran out of guesses!</h3>
+              <div v-if="playerTwoLose">
+                <h3 style="color: crimson">You ran out of guesses!</h3>
               </div>
             </b-col>
             <b-col sm></b-col>
@@ -111,11 +114,11 @@
           <div class="d-block text-center">
             <h3>{{winner}} wins!</h3>
             <h3>
-              With the word 
-              <span class='word'>"{{winningWord}}"</span>
+              With the word
+              <span class="word">"{{winningWord}}"</span>
             </h3>
           </div>
-          <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close Me</b-button>
+          <b-button class="mt-3" variant="outline-danger" block @click="clearServerData">Close Me</b-button>
         </b-modal>
         <b-button class="mx-auto" @click="clearServerData">Clear Server data</b-button>
       </b-row>
@@ -126,11 +129,13 @@
 <script>
 import axios from "axios";
 import io from "socket.io-client";
+import { EventBus } from "../event-bus";
 
 export default {
   name: "multiplayer",
   data() {
     return {
+      searchForOpponent: false,
       winner: "",
       winningWord: "",
       gameOver: false,
@@ -181,58 +186,61 @@ export default {
     this.socket = io("https://hangman-webapp.herokuapp.com");
   },
   mounted() {
-    this.socket.emit("check", localStorage["user"]);
-    this.socket.on("checkResponse", data => {
-      if (data !== "already connected") {
+    EventBus.$on("search", () => {
+      this.socket.emit("check", localStorage["user"]);
+      this.socket.on("checkResponse", data => {
+        if (data !== "already connected") {
+          if (data.users.playerOne) {
+            this.playerOne = data.users.playerOne;
+          }
+          if (data.users.playerTwo) {
+            this.playerTwo = data.users.playerTwo;
+          }
+        }
+      });
+      this.socket.on("lobbyFull", data => {
         if (data.users.playerOne) {
           this.playerOne = data.users.playerOne;
         }
         if (data.users.playerTwo) {
           this.playerTwo = data.users.playerTwo;
         }
-      }
-    });
-    this.socket.on("lobbyFull", data => {
-      if (data.users.playerOne) {
-        this.playerOne = data.users.playerOne;
-      }
-      if (data.users.playerTwo) {
-        this.playerTwo = data.users.playerTwo;
-      }
-      this.lobbyFull = true;
-      this.$forceUpdate();
-    });
-    this.socket.on("gameOver", data => {
-      this.winningWord = data.word;
-      if (data.user === "one") {
-        this.winner = this.playerOne;
-      } else if (data.user === "two") {
-        this.winner = this.playerTwo;
-      }
-      this.wordGuessedOne = [];
-      for(const letter of this.playerOneWord){
-        this.wordGuessedOne.push(letter);
-      }
-      this.wordGuessedTwo = [];
-      for(const letter of this.playerTwoWord){
-        this.wordGuessedTwo.push(letter);
-      }
-      this.gameOver = true;
-    });
-    this.socket.on('lose', data => {
-      if(data === 'one'){
-        this.playerOneLose = true;
-      } else if (data === 'two'){
-        this.playerTwoLose = true;
-      };
-      for(const item of this.alphabet){
-        item[data] = true;
-      }
+        this.lobbyFull = true;
+        this.$forceUpdate();
+      });
+      this.socket.on("gameOver", data => {
+        this.winningWord = data.word;
+        if (data.user === "one") {
+          this.winner = this.playerOne;
+        } else if (data.user === "two") {
+          this.winner = this.playerTwo;
+        }
+        this.wordGuessedOne = [];
+        for (const letter of this.playerOneWord) {
+          this.wordGuessedOne.push(letter);
+        }
+        this.wordGuessedTwo = [];
+        for (const letter of this.playerTwoWord) {
+          this.wordGuessedTwo.push(letter);
+        }
+        this.gameOver = true;
+      });
+      this.socket.on("lose", data => {
+        if (data === "one") {
+          this.playerOneLose = true;
+        } else if (data === "two") {
+          this.playerTwoLose = true;
+        }
+        for (const item of this.alphabet) {
+          item[data] = true;
+        }
+      });
     });
   },
   methods: {
-    hideModal() {
-      this.gameOver = false;
+    search() {
+      this.searchForOpponent = true;
+      EventBus.$emit("search");
     },
     ready(user) {
       if (user === "one") {
@@ -324,6 +332,8 @@ export default {
       });
     },
     clearServerData() {
+      this.searchForOpponent = false;
+      this.gameOver = false;
       this.playersReady = false;
       this.playerOne = "";
       this.playerTwo = "";
