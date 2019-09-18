@@ -51,7 +51,7 @@
               <div>
                 <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }} </span>
               </div>
-              <div v-if="userCheck(playerOne)">
+              <div v-if="userCheck(playerOne) && !playerOneLose">
                 <b-button
                   @click="letterCheck(letter.letter, 'one')"
                   class="letter"
@@ -60,6 +60,9 @@
                   v-for="(letter, index) of alphabet"
                   :disabled="isDisabled(index, 'one')"
                 >{{ letter.letter }}</b-button>
+              </div>
+              <div v-else>
+                <h3 style='color: crimson'>You ran out of guesses!</h3>
               </div>
             </b-col>
             <b-col sm></b-col>
@@ -85,7 +88,7 @@
               <div>
                 <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }} </span>
               </div>
-              <div v-if="userCheck(playerTwo)">
+              <div v-if="userCheck(playerTwo) && !playerTwoLose">
                 <b-button
                   @click="letterCheck(letter.letter, 'two')"
                   class="letter"
@@ -94,6 +97,9 @@
                   v-for="(letter, index) of alphabet"
                   :disabled="isDisabled(index, 'two')"
                 >{{ letter.letter }}</b-button>
+              </div>
+              <div v-else>
+                <h3 style='color: crimson'>You ran out of guesses!</h3>
               </div>
             </b-col>
             <b-col sm></b-col>
@@ -106,7 +112,7 @@
             <h3>{{winner}} wins!</h3>
             <h3>
               The word was
-              <span>{{winningWord}}</span>
+              <span class='word'>"{{winningWord}}"</span>
             </h3>
           </div>
           <b-button class="mt-3" variant="outline-danger" block @click="hideModal">Close Me</b-button>
@@ -322,6 +328,9 @@ export default {
 </script>
 
 <style scoped>
+.word {
+  font-style: italic;
+}
 .playGround {
   border: 1px solid black;
   height: 550;
