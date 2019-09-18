@@ -129,6 +129,7 @@
 <script>
 import axios from "axios";
 import io from "socket.io-client";
+import { EventBus } from "../event-bus";
 
 export default {
   name: "multiplayer",
