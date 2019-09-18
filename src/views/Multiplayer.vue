@@ -3,7 +3,7 @@
     <b-container>
       <h1>Multiplayer</h1>
       <b-row v-if='!searchForOpponent'>
-        <b-button style='margin:8px' class='mx-auto' @click="search">Search</b-button>
+        <b-button variant='info' style='margin:8px' class='mx-auto' @click="search">Search</b-button>
       </b-row>
       <b-row v-if="!lobbyFull && searchForOpponent">
         <b-col sm>
@@ -333,6 +333,8 @@ export default {
     },
     clearServerData() {
       this.searchForOpponent = false;
+      this.playerOneLose = false;
+      this.playerTwoLose = false;
       this.gameOver = false;
       this.playersReady = false;
       this.playerOne = "";
