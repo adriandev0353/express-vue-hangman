@@ -61,7 +61,7 @@
                   :disabled="isDisabled(index, 'one')"
                 >{{ letter.letter }}</b-button>
               </div>
-              <div v-else>
+              <div v-if='playerOneLose'>
                 <h3 style='color: crimson'>You ran out of guesses!</h3>
               </div>
             </b-col>
@@ -98,7 +98,7 @@
                   :disabled="isDisabled(index, 'two')"
                 >{{ letter.letter }}</b-button>
               </div>
-              <div v-else>
+              <div v-if='playerTwoLose'>
                 <h3 style='color: crimson'>You ran out of guesses!</h3>
               </div>
             </b-col>
@@ -111,7 +111,7 @@
           <div class="d-block text-center">
             <h3>{{winner}} wins!</h3>
             <h3>
-              The word was
+              With the word 
               <span class='word'>"{{winningWord}}"</span>
             </h3>
           </div>
@@ -208,6 +208,14 @@ export default {
         this.winner = this.playerOne;
       } else if (data.user === "two") {
         this.winner = this.playerTwo;
+      }
+      this.playerOneGuesses = [];
+      for(const letter of this.playerOneWord){
+        this.playerOneGuesses.push(letter);
+      }
+      this.playerTwoGuesses = [];
+      for(const letter of this.playerTwoWord){
+        this.playerTwoGuesses.push(letter);
       }
       this.gameOver = true;
     });
