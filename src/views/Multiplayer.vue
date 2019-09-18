@@ -133,9 +133,11 @@ export default {
       wordGuessedTwo: [],
       wordLength: 0,
       playerOne: "",
+      playerOneLose: false,
       playerOneWord: "",
       playerOneGuesses: 6,
       playerTwo: "",
+      playerTwoLose: false,
       playerTwoWord: "",
       playerTwoGuesses: 6,
       lobbyFull: false,
@@ -202,6 +204,16 @@ export default {
         this.winner = this.playerTwo;
       }
       this.gameOver = true;
+    });
+    this.socket.on('lose', data => {
+      if(data === 'one'){
+        this.playerOneLose = true;
+      } else if (data === 'two'){
+        this.playerTwoLose = true;
+      };
+      for(const item of this.alphabet){
+        item[data] = true;
+      }
     });
   },
   methods: {

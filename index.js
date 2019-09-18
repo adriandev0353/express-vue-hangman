@@ -134,6 +134,8 @@ io.on('connection', socket => {
         if (guessedWord === playersWords.one) {
             io.emit('gameOver', { user: 'one', word: playersWords.one });
             return;
+        } else if (playerOneGuesses === 0) {
+            io.emit('lose', 'one');
         };
         guessedWord = '';
         for (const letter of guesses.wordGuessedTwo) {
@@ -142,6 +144,8 @@ io.on('connection', socket => {
         if (guessedWord === playersWords.two) {
             io.emit('gameOver', { user: 'two', word: playersWords.two });
             return;
+        } else if (playerTwoGuesses === 0) {
+            io.emit('lose', 'two');
         };
         io.emit('guesses', { one: guesses.wordGuessedOne, two: guesses.wordGuessedTwo, isCorrect, guessOne: playerOneGuesses, guessTwo: playerTwoGuesses });
     });
