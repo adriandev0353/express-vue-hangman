@@ -129,7 +129,6 @@
 <script>
 import axios from "axios";
 import io from "socket.io-client";
-import { EventBus } from "../event-bus";
 
 export default {
   name: "multiplayer",
@@ -344,6 +343,34 @@ export default {
         this.lobbyFull = false;
         this.playerOneGuesses = 6;
         this.playerTwoGuesses = 6;
+        this.alphabet = [
+          { letter: "Q", one: false, two: false },
+          { letter: "W", one: false, two: false },
+          { letter: "E", one: false, two: false },
+          { letter: "R", one: false, two: false },
+          { letter: "T", one: false, two: false },
+          { letter: "Y", one: false, two: false },
+          { letter: "U", one: false, two: false },
+          { letter: "I", one: false, two: false },
+          { letter: "O", one: false, two: false },
+          { letter: "P", one: false, two: false },
+          { letter: "A", one: false, two: false },
+          { letter: "S", one: false, two: false },
+          { letter: "D", one: false, two: false },
+          { letter: "F", one: false, two: false },
+          { letter: "G", one: false, two: false },
+          { letter: "H", one: false, two: false },
+          { letter: "J", one: false, two: false },
+          { letter: "K", one: false, two: false },
+          { letter: "L", one: false, two: false },
+          { letter: "Z", one: false, two: false },
+          { letter: "X", one: false, two: false },
+          { letter: "C", one: false, two: false },
+          { letter: "V", one: false, two: false },
+          { letter: "B", one: false, two: false },
+          { letter: "N", one: false, two: false },
+          { letter: "M", one: false, two: false }
+        ];
         console.log("data cleared");
       });
     }

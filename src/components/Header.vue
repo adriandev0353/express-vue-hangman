@@ -1,10 +1,13 @@
 <template>
   <header class="header">
     <div>
-      <b-navbar type="dark" variant="dark">
+      <b-navbar toggleable="sm" type="dark" variant="dark">
         <b-navbar-brand href="#">
           <img src="../assets/hangman-game.svg" class="d-inline-block align-top" alt="logo" />
         </b-navbar-brand>
+        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+        <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
           <b-nav-item>
             <router-link to="/Play">Play</router-link>
@@ -29,6 +32,7 @@
             <b-dropdown-item @click="logout">Logout</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
+        </b-collapse>
       </b-navbar>
     </div>
   </header>
