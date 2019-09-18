@@ -209,13 +209,13 @@ export default {
       } else if (data.user === "two") {
         this.winner = this.playerTwo;
       }
-      this.playerOneGuesses = [];
+      this.wordGuessedOne = [];
       for(const letter of this.playerOneWord){
-        this.playerOneGuesses.push(letter);
+        this.wordGuessedOne.push(letter);
       }
-      this.playerTwoGuesses = [];
+      this.wordGuessedTwo = [];
       for(const letter of this.playerTwoWord){
-        this.playerTwoGuesses.push(letter);
+        this.wordGuessedTwo.push(letter);
       }
       this.gameOver = true;
     });
