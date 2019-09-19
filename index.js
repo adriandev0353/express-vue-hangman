@@ -173,7 +173,9 @@ io.on('connection', socket => {
 });
 
 io.on('disconnection', socket => {
+    console.log('user left');
     io.emit('userQuit');
+
 });
 
 var PORT = process.env.PORT || 3000;
