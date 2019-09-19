@@ -1,8 +1,8 @@
 <template>
   <header class="header">
     <div>
-      <b-navbar toggleable="sm" type="dark" variant="dark">
-        <b-navbar-brand href="#">
+      <b-navbar toggleable="sm" type="light" variant="light">
+        <b-navbar-brand href="/#/Play">
           <img src="../assets/hangman-game.svg" class="d-inline-block align-top" alt="logo" />
         </b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -21,7 +21,7 @@
         </b-navbar-nav>
         <b-navbar-nav class="ml-auto">
           <b-nav-text v-if="user.length > 0">
-            <span style="color:yellow">{{points}}</span> Points
+            <span style="color:goldenrod">{{points}}</span> Points
           </b-nav-text>
 
           <b-nav-item-dropdown text="Other" right>
@@ -98,7 +98,7 @@ export default {
 <style scoped>
 .header a {
   text-decoration: none;
-  color: white;
+  color: black;
 }
 .dropdown a {
   color: black;

@@ -127,7 +127,7 @@
           </div>
           <b-button class="mt-3" variant="outline-danger" block @click="clearServerData">Close Me</b-button>
         </b-modal>
-        <b-button class="mx-auto" @click="clearServerData">Clear Server data</b-button>
+        <b-button class="mx-auto" @click="clearServerData" disabled>Clear Server data</b-button>
       </b-row>
     </b-container>
   </div>
