@@ -170,12 +170,10 @@ io.on('connection', socket => {
         };
         io.emit('lengthRes', wordLength);
     });
-});
-
-io.on('disconnect', socket => {
-    console.log('user left');
-    io.emit('userQuit');
-
+    socket.on('disconnect', () => {
+        console.log('user left');
+        io.emit('userQuit');
+    });
 });
 
 var PORT = process.env.PORT || 3000;
