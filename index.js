@@ -149,6 +149,9 @@ io.on('connection', socket => {
         };
         io.emit('guesses', { one: guesses.wordGuessedOne, two: guesses.wordGuessedTwo, isCorrect, guessOne: playerOneGuesses, guessTwo: playerTwoGuesses });
     });
+    socket.on('quit', data => {
+        io.emit('userQuit', data);
+    });
     socket.on('clear', () => {
         players = 0;
         users = { playerOne: '', playerTwo: '', spectators: [] };

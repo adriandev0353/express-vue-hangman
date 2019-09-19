@@ -206,6 +206,17 @@ export default {
         this.lobbyFull = true;
         this.$forceUpdate();
       });
+      this.socket.on("userQuit", data => {
+        this.wordGuessedOne = [];
+        for (const letter of this.playerOneWord) {
+          this.wordGuessedOne.push(letter);
+        }
+        this.wordGuessedTwo = [];
+        for (const letter of this.playerTwoWord) {
+          this.wordGuessedTwo.push(letter);
+        }
+        this.gameOver = true;
+      });
       this.socket.on("gameOver", data => {
         this.winningWord = data.word;
         if (data.user === "one") {
@@ -323,7 +334,11 @@ export default {
       });
     });
   },
-  mounted() {},
+  beforeDestroy() {
+    this.socket.emit("quit", localStorage["user"]);
+    this.socket.close();
+    console.log("destoryed!");
+  },
   methods: {
     search() {
       this.searchForOpponent = true;
@@ -361,7 +376,6 @@ export default {
         this.playerOneGuesses = data.guessOne;
         this.playerTwoGuesses = data.guessTwo;
         for (const item of this.alphabet) {
-          console.log(item);
           if (item.letter === letter) {
             if (user === "one") {
               item.one = true;

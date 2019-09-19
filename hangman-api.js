@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const config = require('./config');
 var saltRounds = 10;
-let count = 1;
 
 module.exports = (hangmanService) => {
     const allWords = async (req, res) => {
@@ -20,8 +19,6 @@ module.exports = (hangmanService) => {
     };
 
     const listWordOfSize = async (req, res) => {
-        console.log(count);
-        count++;
         const size = req.params.size;
         res.json({
             status: 'success',
