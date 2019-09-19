@@ -120,6 +120,13 @@
           </div>
           <b-button class="mt-3" variant="outline-danger" block @click="clearServerData">Close Me</b-button>
         </b-modal>
+        <b-modal v-model="quitMessage" centered hide-footer title="Game Over">
+          <div class="d-block text-center">
+            <h3>You win!</h3>
+            <h3>{{user}} left the match</h3>
+          </div>
+          <b-button class="mt-3" variant="outline-danger" block @click="clearServerData">Close Me</b-button>
+        </b-modal>
         <b-button class="mx-auto" @click="clearServerData">Clear Server data</b-button>
       </b-row>
     </b-container>
@@ -138,7 +145,9 @@ export default {
       searchForOpponent: false,
       winner: "",
       winningWord: "",
+      user: '',
       gameOver: false,
+      quitMessage: false,
       playersReady: false,
       wordGuessedOne: [],
       wordGuessedTwo: [],
@@ -215,7 +224,8 @@ export default {
         for (const letter of this.playerTwoWord) {
           this.wordGuessedTwo.push(letter);
         }
-        this.gameOver = true;
+        this.user = data
+        this.quitMessage = true;
       });
       this.socket.on("gameOver", data => {
         this.winningWord = data.word;
@@ -292,9 +302,11 @@ export default {
       });
       this.socket.on("cleared", () => {
         this.searchForOpponent = false;
+        this.user = '';
         this.playerOneLose = false;
         this.playerTwoLose = false;
         this.gameOver = false;
+        this.quitMessage = false;
         this.playersReady = false;
         this.playerOne = "";
         this.playerTwo = "";

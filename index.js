@@ -172,6 +172,10 @@ io.on('connection', socket => {
     });
 });
 
+io.on('disconnection', socket => {
+    io.emit('userQuit');
+});
+
 var PORT = process.env.PORT || 3000;
 
 http.listen(PORT, () => {
