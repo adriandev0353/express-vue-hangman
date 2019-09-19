@@ -172,7 +172,7 @@ io.on('connection', socket => {
     });
 });
 
-io.on('disconnection', socket => {
+io.on('disconnect', socket => {
     console.log('user left');
     io.emit('userQuit');
 
