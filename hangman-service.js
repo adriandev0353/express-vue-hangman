@@ -347,7 +347,10 @@ module.exports = (pool) => {
 
     const addPointsTo = async (user, points) => {
         console.log(user, points, 'service');
+        console.log(user, 'service user');
+        console.log(points, 'service points');
         const result = await pool.query('SELECT points FROM user_data WHERE username = $1', [user]);
+        console.log(result.rows, 'service db select');
         let newPoints = result.rows[0].points;
         console.log(newPoints, 'newPoints in service before adding');
         newPoints += points;
