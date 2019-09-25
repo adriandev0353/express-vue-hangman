@@ -346,9 +346,12 @@ module.exports = (pool) => {
     const removeChallenge = async (opponent, word) => { await pool.query('DELETE FROM user_challenges WHERE opponent = $1 AND word = $2', [opponent, word]); };
 
     const addPointsTo = async (user, points) => {
+        console.log(user, points, 'service');
         const result = await pool.query('SELECT points FROM user_data WHERE username = $1', [user]);
         let newPoints = result.rows[0].points;
+        console.log(newPoints, 'newPoints in service before adding');
         newPoints += points;
+        console.log(newPoints, 'newPoints in service after adding');
         await pool.query('UPDATE user_data SET points = $1 WHERE username = $2', [newPoints, user]);
     };
 

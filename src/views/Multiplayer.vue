@@ -240,6 +240,7 @@ export default {
             points: 10
           })
           .then(res => {
+            console.log(res.data);
             this.wordGuessedOne = [];
             for (const letter of this.playerOneWord) {
               this.wordGuessedOne.push(letter);

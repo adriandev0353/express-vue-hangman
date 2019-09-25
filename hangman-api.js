@@ -282,6 +282,7 @@ module.exports = (hangmanService) => {
 
     const addPointsTo = async (req, res) => {
         const details = req.body;
+        console.log(details, 'details');
         await hangmanService.addPointsTo({ user: details.user, points: details.points });
         res.json({
             status: 'success'
