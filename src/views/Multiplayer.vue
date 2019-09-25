@@ -118,14 +118,14 @@
               <span class="word">"{{winningWord}}"</span>
             </h3>
           </div>
-          <b-button class="mt-3" variant="outline-danger" block @click="clearServerData">Close Me</b-button>
+          <b-button class="mt-3" variant="outline-danger" block @click="clearServerData">leave</b-button>
         </b-modal>
         <b-modal v-model="quitMessage" centered hide-footer title="Game Over">
           <div class="d-block text-center">
             <h3>You win!</h3>
             <h3>{{user}} left the match</h3>
           </div>
-          <b-button class="mt-3" variant="outline-danger" block @click="clearServerData">Close Me</b-button>
+          <b-button class="mt-3" variant="outline-danger" block @click="clearServerData">leave</b-button>
         </b-modal>
         <b-button class="mx-auto" @click="clearServerData" disabled>Clear Server data</b-button>
       </b-row>

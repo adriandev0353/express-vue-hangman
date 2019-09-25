@@ -208,7 +208,6 @@
 
 <script>
 import axios from "axios";
-import { log } from "util";
 import Game from "../components/Game";
 export default {
   name: "friends",

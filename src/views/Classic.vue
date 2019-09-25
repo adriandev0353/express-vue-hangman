@@ -39,7 +39,7 @@
       <div v-if="play">
         <div v-if="!win && guessesLeft>0">
           <b-spinner v-if="loading" label="Spinning"></b-spinner>
-          <span v-else :key="index" v-for="(letter, index) of wordGuessed">{{ letter }} </span>
+          <span v-else :key="index" v-for="(letter, index) of wordGuessed">{{ letter }}</span>
         </div>
         <div v-else-if="win">
           <h1>Congratulations!</h1>
@@ -240,7 +240,7 @@ export default {
             state: "won"
           })
           .then(res => {
-            EventBus.$emit("userData", localStorage['user']);
+            EventBus.$emit("userData", localStorage["user"]);
           });
       }
       if (!isCorrect) {
@@ -254,7 +254,7 @@ export default {
               state: "lost"
             })
             .then(res => {
-              EventBus.$emit("userData", localStorage['user']);
+              EventBus.$emit("userData", localStorage["user"]);
             });
         }
       }
@@ -278,7 +278,7 @@ export default {
     },
     giveHint() {
       this.hintGiven = true;
-      this.guessesLeft --;
+      this.guessesLeft--;
       let count = 0;
       for (const letter of this.wordGuessed) {
         if (letter === "_") {
@@ -298,6 +298,19 @@ export default {
         count++;
       }
     }
+  },
+  beforeDestroy() {
+    if(this.play){
+    axios
+      .post("https://hangman-webapp.herokuapp.com/api/add/to/user", {
+        username: localStorage["user"],
+        word: this.word.word,
+        state: "lost"
+      })
+      .then(res => {
+        EventBus.$emit("userData", localStorage["user"]);
+      });
+    };
   }
 };
 </script>

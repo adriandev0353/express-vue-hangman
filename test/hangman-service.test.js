@@ -186,6 +186,26 @@ describe('Testing hangman game', () => {
                 { username: 'dyllanhope', word: 'house', complete_state: 'lost', points: -3 }]
             );
         });
+        it('Should return a list of words that all users that have played and whether they have lost or won', async () => {
+            const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.reloadData([
+                'house',
+                'car',
+                'plane',
+                'Aeroplane'
+            ]);
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+
+            await hangmanInstance.addWordTo('dyllanhope', 'plane', 'won');
+            await hangmanInstance.addWordTo('dyllanhope', 'house', 'lost');
+
+            const data = await hangmanInstance.linkTableData();
+            assert.strict.deepEqual(data, [
+                { username: 'dyllanhope', word: 'plane', complete_state: 'won', points: 5 },
+                { username: 'dyllanhope', word: 'house', complete_state: 'lost', points: -3 }]
+            );
+        });
         it('Should return dyllanhopes user data', async () => {
             const hangmanInstance = HangmanService(pool);
             await hangmanInstance.reloadData([
@@ -228,6 +248,19 @@ describe('Testing hangman game', () => {
             await hangmanInstance.addUser('michael', '123');
 
             assert.strict.deepEqual(await hangmanInstance.loginCheck('dyllanhope'), '123');
+        });
+        it('Should return that the user was "not found"', async () => {
+            const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.reloadData([
+                'house',
+                'car',
+                'plane',
+                'Aeroplane'
+            ]);
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+
+            assert.strict.deepEqual(await hangmanInstance.loginCheck('John'), 'Not found');
         });
         it('Should return that dyllanhope already exists', async () => {
             const hangmanInstance = HangmanService(pool);
@@ -394,6 +427,33 @@ describe('Testing hangman game', () => {
                     status: 'confirmed'
                 }
             ]);
+        });
+        it('Should return that the word "house" has been played before', async () => {
+            const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.reloadData([
+                'house',
+                'car',
+                'plane',
+                'Aeroplane'
+            ]);
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+
+            await hangmanInstance.addWordTo('dyllanhope', 'house', 'won');
+            assert.strict.equal(await hangmanInstance.checkWordsGuessed('dyllanhope', 'house'), 'found');
+        });
+        it('Should return that the word "house" has never been played before', async () => {
+            const hangmanInstance = HangmanService(pool);
+            await hangmanInstance.reloadData([
+                'house',
+                'car',
+                'plane',
+                'Aeroplane'
+            ]);
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+
+            assert.strict.equal(await hangmanInstance.checkWordsGuessed('dyllanhope', 'house'), 'not found');
         });
     });
 });

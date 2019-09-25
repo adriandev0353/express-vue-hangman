@@ -272,7 +272,6 @@ module.exports = (pool) => {
         // updating the friends friend list without the user in it
         const friendFriends = await pool.query('SELECT friends FROM user_data WHERE username = $1', [friend]);
         const friendList = friendFriends.rows[0].friends;
-        console.log(friendList, 'friendList');
         const newFriendList = [];
         const friendFriendList = friendList.split(',');
         friendFriendList.length -= 1;
@@ -282,8 +281,6 @@ module.exports = (pool) => {
             };
         };
 
-        console.log(newFriendList, 'newFriendList');
-
         let newFriendFriendsList = '';
         if (newFriendList.length !== 0) {
             for (const item of newFriendList) {
@@ -292,9 +289,6 @@ module.exports = (pool) => {
         } else {
             newFriendFriendsList = null;
         }
-
-        console.log(newFriendFriendsList, 'friend');
-        console.log(newUserFriendsList, 'user');
 
         await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [newUserFriendsList, user]);
         await pool.query('UPDATE user_data SET friends = $1 WHERE username = $2', [newFriendFriendsList, friend]);
