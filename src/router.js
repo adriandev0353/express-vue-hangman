@@ -19,14 +19,18 @@ const router = new Router({
         {
             path: '/',
             name: 'login',
-            component: Login
+            component: Login,
+            meta: {
+                title: 'Login'
+            }
         },
         {
             path: '/multiplayer',
             name: 'multiplayer',
             component: Multiplayer,
             meta: {
-                requiresAuth: true
+                requiresAuth: true,
+                title: 'Multiplayer'
             }
         },
         {
@@ -34,7 +38,8 @@ const router = new Router({
             name: 'classic',
             component: Classic,
             meta: {
-                requiresAuth: true
+                requiresAuth: true,
+                title: 'Classic'
             }
         },
         {
@@ -42,20 +47,25 @@ const router = new Router({
             name: 'admin',
             component: Admin,
             meta: {
-                adminAuth: true
+                adminAuth: true,
+                title: 'Admin'
             }
         },
         {
             path: '/register',
             name: 'register',
-            component: Register
+            component: Register,
+            meta: {
+                title: 'Register'
+            }
         },
         {
             path: '/leader',
             name: 'Leaderboard',
             component: Leader,
             meta: {
-                requiresAuth: true
+                requiresAuth: true,
+                title: 'Leaderboard'
             }
         },
         {
@@ -63,7 +73,8 @@ const router = new Router({
             name: 'Add new word',
             component: New,
             meta: {
-                requiresAuth: true
+                requiresAuth: true,
+                title: 'Add new word'
             }
         },
         {
@@ -71,7 +82,8 @@ const router = new Router({
             name: 'Play',
             component: Play,
             meta: {
-                requiresAuth: true
+                requiresAuth: true,
+                title: 'Play'
             }
         },
         {
@@ -79,7 +91,8 @@ const router = new Router({
             name: 'Profile',
             component: Profile,
             meta: {
-                requiresAuth: true
+                requiresAuth: true,
+                title: 'Profile'
             }
         },
         {
@@ -87,7 +100,8 @@ const router = new Router({
             name: 'Friends',
             component: Friends,
             meta: {
-                requiresAuth: true
+                requiresAuth: true,
+                title: 'Friends'
             }
         }
     ]
