@@ -216,7 +216,7 @@ module.exports = (pool) => {
     };
 
     const returnFriendRequests = async (receiver) => {
-        const requests = await pool.query('SELECT * FROM friend_link WHERE receiver = $1 AND status = $2', [receiver, 'pending']);
+        const requests = await pool.query('SELECT requester, receiver, status FROM friend_link WHERE receiver = $1 AND status = $2', [receiver, 'pending']);
         if (requests.rowCount > 0) {
             return requests.rows;
         } else {
@@ -250,7 +250,6 @@ module.exports = (pool) => {
         // updating users friend list without the friend in it
         const userFriends = await pool.query('SELECT friends FROM user_data WHERE username = $1', [user]);
         const userList = userFriends.rows[0].friends;
-        console.log(userList, 'userList');
         const newUserList = [];
         const userFriendList = userList.split(',');
         userFriendList.length -= 1;
@@ -260,7 +259,6 @@ module.exports = (pool) => {
             };
         };
 
-        console.log(newUserList, 'newUserList');
         let newUserFriendsList = '';
         if (newUserList.length !== 0) {
             for (const item of newUserList) {
@@ -329,17 +327,17 @@ module.exports = (pool) => {
     };
 
     const fetchChallengesFor = async (user) => {
-        const results = await pool.query('SELECT * FROM user_challenges WHERE opponent = $1 AND status = $2', [user, 'pending']);
+        const results = await pool.query('SELECT challenger, opponent, word, hint, status FROM user_challenges WHERE opponent = $1 AND status = $2', [user, 'pending']);
         return results.rows;
     };
 
     const fetchCompleteChallenges = async (user) => {
-        const results = await pool.query('SELECT * FROM user_challenges WHERE opponent = $1 AND (status = $2 OR status = $3)', [user, 'won', 'lost']);
+        const results = await pool.query('SELECT challenger, opponent, word, hint, status FROM user_challenges WHERE opponent = $1 AND (status = $2 OR status = $3)', [user, 'won', 'lost']);
         return results.rows;
     };
 
     const fetchChallengesSentBy = async (user) => {
-        const results = await pool.query('SELECT * FROM user_challenges WHERE challenger = $1', [user]);
+        const results = await pool.query('SELECT challenger, opponent, word, hint, status FROM user_challenges WHERE challenger = $1', [user]);
         return results.rows;
     };
 

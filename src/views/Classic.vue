@@ -39,7 +39,7 @@
       <div v-if="play">
         <div v-if="!win && guessesLeft>0">
           <b-spinner v-if="loading" label="Spinning"></b-spinner>
-          <span v-else :key="index" v-for="(letter, index) of wordGuessed">{{ letter }}</span>
+          <span v-else :key="index" v-for="(letter, index) of wordGuessed">{{ letter }} </span>
         </div>
         <div v-else-if="win">
           <h1>Congratulations!</h1>

@@ -24,6 +24,8 @@ describe('Testing hangman game', () => {
         await pool.query('delete from user_data;');
         await pool.query('delete from table_link;');
         await pool.query('delete from new_words;');
+        await pool.query('delete from friend_link;');
+        await pool.query('delete from user_challenges;');
     });
     describe('testing database manipulation', () => {
         it('Should return a list of 3 words with their id and length', async () => {
@@ -454,6 +456,257 @@ describe('Testing hangman game', () => {
             await hangmanInstance.addUser('michael', '123');
 
             assert.strict.equal(await hangmanInstance.checkWordsGuessed('dyllanhope', 'house'), 'not found');
+        });
+        it('Should return that michael has sent a pending friend request to dyllan', async () => {
+            const hangmanInstance = HangmanService(pool);
+
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+
+            const status = await hangmanInstance.addFriends('michael', 'dyllanhope');
+
+            const requests = await hangmanInstance.returnFriendRequests('dyllanhope');
+            assert.strict.deepEqual(requests, [
+                {
+                    requester: 'michael',
+                    receiver: 'dyllanhope',
+                    status: 'pending'
+                }]
+            );
+            assert.strict.equal(status, 'success');
+        });
+        it("Should return that a record of john's friends doesn't exist", async () => {
+            const hangmanInstance = HangmanService(pool);
+
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+
+            await hangmanInstance.addFriends('michael', 'dyllanhope');
+            const status = await hangmanInstance.addFriends('michael', 'dyllanhope');
+
+            const requests = await hangmanInstance.returnFriendRequests('john');
+            assert.strict.deepEqual(requests, 'none'
+            );
+            assert.strict.equal(status, 'exists');
+        });
+        it("Should return that michael's request was confirmed by dyllan", async () => {
+            const hangmanInstance = HangmanService(pool);
+
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+
+            await hangmanInstance.addFriends('michael', 'dyllanhope');
+            await hangmanInstance.confirmRequest('michael', 'dyllanhope');
+
+            const friends = await hangmanInstance.friendList('dyllanhope');
+
+            assert.strict.deepEqual(friends, ['michael']);
+        });
+        it("Should return that michael and john's requests were confirmed by dyllan", async () => {
+            const hangmanInstance = HangmanService(pool);
+
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+            await hangmanInstance.addUser('john', '123');
+            await hangmanInstance.addUser('janey', '123');
+
+            await hangmanInstance.addFriends('michael', 'dyllanhope');
+            await hangmanInstance.addFriends('john', 'dyllanhope');
+            await hangmanInstance.addFriends('john', 'michael');
+
+            await hangmanInstance.confirmRequest('michael', 'dyllanhope');
+            await hangmanInstance.confirmRequest('john', 'dyllanhope');
+            await hangmanInstance.confirmRequest('john', 'michael');
+
+            const friends = await hangmanInstance.friendList('dyllanhope');
+
+            assert.strict.equal(await hangmanInstance.friendList('janey'), 'none');
+            assert.strict.deepEqual(friends, ['michael', 'john']);
+        });
+        it("Should return that michael's request was denied by dyllan", async () => {
+            const hangmanInstance = HangmanService(pool);
+
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+            await hangmanInstance.addUser('john', '123');
+            await hangmanInstance.addUser('janey', '123');
+
+            await hangmanInstance.addFriends('michael', 'dyllanhope');
+            await hangmanInstance.addFriends('john', 'dyllanhope');
+            await hangmanInstance.addFriends('john', 'michael');
+
+            await hangmanInstance.denyRequest('michael', 'dyllanhope');
+            await hangmanInstance.confirmRequest('john', 'dyllanhope');
+            await hangmanInstance.confirmRequest('john', 'michael');
+
+            let requests = await pool.query('SELECT requester, receiver, status FROM friend_link');
+            requests = requests.rows;
+
+            assert.strict.deepEqual(requests, [
+                { requester: 'john', receiver: 'dyllanhope', status: 'confirmed' },
+                { requester: 'john', receiver: 'michael', status: 'confirmed' }]);
+        });
+        it("Should return that john was deleted from michael's friends list", async () => {
+            const hangmanInstance = HangmanService(pool);
+
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+            await hangmanInstance.addUser('john', '123');
+            await hangmanInstance.addUser('janey', '123');
+
+            await hangmanInstance.addFriends('michael', 'dyllanhope');
+            await hangmanInstance.addFriends('michael', 'janey');
+            await hangmanInstance.addFriends('john', 'dyllanhope');
+            await hangmanInstance.addFriends('john', 'michael');
+
+            await hangmanInstance.confirmRequest('michael', 'dyllanhope');
+            await hangmanInstance.confirmRequest('michael', 'janey');
+            await hangmanInstance.confirmRequest('john', 'dyllanhope');
+            await hangmanInstance.confirmRequest('john', 'michael');
+
+            await hangmanInstance.deleteFriend('michael', 'john');
+            await hangmanInstance.deleteFriend('john', 'dyllanhope');
+            await hangmanInstance.deleteFriend('michael', 'dyllanhope');
+
+            assert.strict.deepEqual(await hangmanInstance.friendList('john'), 'none');
+            assert.strict.deepEqual(await hangmanInstance.friendList('dyllanhope'), 'none');
+            assert.strict.deepEqual(await hangmanInstance.friendList('michael'), ['janey']);
+        });
+        it('Should return that dyllanhope has received 3 challenges from michael', async () => {
+            const hangmanInstance = HangmanService(pool);
+
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+            await hangmanInstance.addUser('john', '123');
+            await hangmanInstance.addUser('janey', '123');
+
+            await hangmanInstance.sendChallenge('michael', 'dyllanhope', 'house', 'building');
+            await hangmanInstance.sendChallenge('michael', 'dyllanhope', 'technology', 'phone');
+            await hangmanInstance.sendChallenge('michael', 'dyllanhope', 'music', '');
+            const status = await hangmanInstance.sendChallenge('michael', 'dyllanhope', 'helmet', 'motorbike');
+
+            await hangmanInstance.sendChallenge('janey', 'john', 'car', '');
+
+            assert.strict.deepEqual(await hangmanInstance.fetchChallengesFor('dyllanhope'), [
+                {
+                    challenger: 'michael',
+                    opponent: 'dyllanhope',
+                    word: 'house',
+                    hint: 'building',
+                    status: 'pending'
+                },
+                {
+                    challenger: 'michael',
+                    opponent: 'dyllanhope',
+                    word: 'technology',
+                    hint: 'phone',
+                    status: 'pending'
+                },
+                {
+                    challenger: 'michael',
+                    opponent: 'dyllanhope',
+                    word: 'music',
+                    hint: 'none',
+                    status: 'pending'
+                }]
+            );
+            assert.strict.equal(status, 'challenge limit reached');
+        });
+        it('Should return that dyllanhope has completed all 3 challenges with 2 wins and a loss', async () => {
+            const hangmanInstance = HangmanService(pool);
+
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+            await hangmanInstance.addUser('john', '123');
+            await hangmanInstance.addUser('janey', '123');
+
+            await hangmanInstance.sendChallenge('michael', 'dyllanhope', 'house', 'building');
+            await hangmanInstance.sendChallenge('michael', 'dyllanhope', 'technology', 'phone');
+            await hangmanInstance.sendChallenge('michael', 'dyllanhope', 'music', '');
+
+            await hangmanInstance.setChallengeStatus('dyllanhope', 'won', 'house');
+            await hangmanInstance.setChallengeStatus('dyllanhope', 'won', 'technology');
+            await hangmanInstance.setChallengeStatus('dyllanhope', 'lost', 'music');
+
+            assert.strict.deepEqual(await hangmanInstance.fetchChallengesSentBy('michael'), [
+                {
+                    challenger: 'michael',
+                    opponent: 'dyllanhope',
+                    word: 'house',
+                    hint: 'building',
+                    status: 'won'
+                },
+                {
+                    challenger: 'michael',
+                    opponent: 'dyllanhope',
+                    word: 'technology',
+                    hint: 'phone',
+                    status: 'won'
+                },
+                {
+                    challenger: 'michael',
+                    opponent: 'dyllanhope',
+                    word: 'music',
+                    hint: 'none',
+                    status: 'lost'
+                }]
+            );
+
+            assert.strict.deepEqual(await hangmanInstance.fetchCompleteChallenges('dyllanhope'), [
+                {
+                    challenger: 'michael',
+                    opponent: 'dyllanhope',
+                    word: 'house',
+                    hint: 'building',
+                    status: 'won'
+                },
+                {
+                    challenger: 'michael',
+                    opponent: 'dyllanhope',
+                    word: 'technology',
+                    hint: 'phone',
+                    status: 'won'
+                },
+                {
+                    challenger: 'michael',
+                    opponent: 'dyllanhope',
+                    word: 'music',
+                    hint: 'none',
+                    status: 'lost'
+                }]
+            );
+        });
+
+        it('Should return that dyllanhope has received 3 challenges from michael', async () => {
+            const hangmanInstance = HangmanService(pool);
+
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+            await hangmanInstance.addUser('john', '123');
+            await hangmanInstance.addUser('janey', '123');
+
+            await hangmanInstance.sendChallenge('michael', 'dyllanhope', 'house', 'building');
+            await hangmanInstance.sendChallenge('michael', 'dyllanhope', 'technology', 'phone');
+            await hangmanInstance.sendChallenge('michael', 'dyllanhope', 'music', '');
+
+            await hangmanInstance.removeChallenge('dyllanhope', 'technology');
+
+            assert.strict.deepEqual(await hangmanInstance.fetchChallengesFor('dyllanhope'), [
+                {
+                    challenger: 'michael',
+                    opponent: 'dyllanhope',
+                    word: 'house',
+                    hint: 'building',
+                    status: 'pending'
+                },
+                {
+                    challenger: 'michael',
+                    opponent: 'dyllanhope',
+                    word: 'music',
+                    hint: 'none',
+                    status: 'pending'
+                }
+            ]);
         });
     });
 });
