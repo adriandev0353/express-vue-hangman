@@ -707,7 +707,7 @@ describe('Testing hangman game', () => {
                 }
             ]);
         });
-        it('Should return that dyllanhope has received 3 challenges from michael', async () => {
+        it('Should return that dyllanhope has won 5 points for winning a multiplayer match', async () => {
             const hangmanInstance = HangmanService(pool);
 
             await hangmanInstance.addUser('dyllanhope', '123');
@@ -716,6 +716,16 @@ describe('Testing hangman game', () => {
             await hangmanInstance.addPointsTo('dyllanhope', 5);
             const result = await pool.query('SELECT points FROM user_data WHERE username = $1', ['dyllanhope']);
             assert.strict.deepEqual(result.rows, [{ points: 5 }]);
+        });
+        it('Should return that dyllanhope has lost 5 points for losing a multiplayer game', async () => {
+            const hangmanInstance = HangmanService(pool);
+
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+
+            await hangmanInstance.addPointsTo('dyllanhope', -5);
+            const result = await pool.query('SELECT points FROM user_data WHERE username = $1', ['dyllanhope']);
+            assert.strict.deepEqual(result.rows, [{ points: -5 }]);
         });
     });
 });

@@ -52,7 +52,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerOne) && !playerOneLose">
                 <b-button
@@ -89,7 +89,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerTwo) && !playerTwoLose">
                 <b-button
@@ -228,28 +228,38 @@ export default {
         this.quitMessage = true;
       });
       this.socket.on("gameOver", data => {
+        let loser = "";
         this.winningWord = data.word;
         if (data.user === "one") {
           this.winner = this.playerOne;
+          loser = this.playerTwo;
         } else if (data.user === "two") {
           this.winner = this.playerTwo;
+          loser = this.playerOne;
         }
         axios
           .post("https://hangman-webapp.herokuapp.com/api/add/points/to", {
             user: this.winner,
             points: 5
           })
-          .then(res => {
-            console.log(res.data);
-            this.wordGuessedOne = [];
-            for (const letter of this.playerOneWord) {
-              this.wordGuessedOne.push(letter);
-            }
-            this.wordGuessedTwo = [];
-            for (const letter of this.playerTwoWord) {
-              this.wordGuessedTwo.push(letter);
-            }
-            this.gameOver = true;
+          .then(res => {})
+          .then(() => {
+            axios
+              .post("https://hangman-webapp.herokuapp.com/api/add/points/to", {
+                user: loser,
+                points: -5
+              })
+              .then(res => {
+                this.wordGuessedOne = [];
+                for (const letter of this.playerOneWord) {
+                  this.wordGuessedOne.push(letter);
+                }
+                this.wordGuessedTwo = [];
+                for (const letter of this.playerTwoWord) {
+                  this.wordGuessedTwo.push(letter);
+                }
+                this.gameOver = true;
+              });
           });
       });
       this.socket.on("lose", data => {
