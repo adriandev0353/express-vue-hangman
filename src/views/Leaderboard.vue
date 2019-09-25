@@ -33,7 +33,7 @@ export default {
     this.loading = true;
     this.statLoading= true;
     axios
-      .get("https://hangman-webapp.herokuapp.com/api/all/users")
+      .get("/api/all/users")
       .then(res => {
         let list = [];
         let response = res.data;
@@ -52,7 +52,7 @@ export default {
       })
       .then(() => {
         axios
-          .get("https://hangman-webapp.herokuapp.com/api/link/data")
+          .get("/api/link/data")
           .then(res => {
             const response = res.data;
             const items = response.items;

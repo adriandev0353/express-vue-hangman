@@ -50,7 +50,7 @@ export default {
       let password = this.pass;
       if (username && password) {
         axios
-          .post("https://hangman-webapp.herokuapp.com/api/login/check", {
+          .post("/api/login/check", {
             username,
             password
           })

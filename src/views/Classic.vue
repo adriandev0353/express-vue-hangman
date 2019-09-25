@@ -155,7 +155,7 @@ export default {
       this.wordGuessed = [];
       axios
         .get(
-          "https://hangman-webapp.herokuapp.com/api/list/size/" + this.length
+          "/api/list/size/" + this.length
         )
         .then(results => {
           let response = results.data;
@@ -168,7 +168,7 @@ export default {
             let word = this.word.word;
             axios
               .post(
-                "https://hangman-webapp.herokuapp.com/api/check/word/played",
+                "/api/check/word/played",
                 { user: localStorage["user"], word: word }
               )
               .then(res => {
@@ -234,7 +234,7 @@ export default {
       if (wordSoFar === word) {
         this.win = true;
         axios
-          .post("https://hangman-webapp.herokuapp.com/api/add/to/user", {
+          .post("/api/add/to/user", {
             username: localStorage["user"],
             word: this.word.word,
             state: "won"
@@ -248,7 +248,7 @@ export default {
         if (this.guessesLeft === 0) {
           this.lost = Math.ceil(this.length / 2);
           axios
-            .post("https://hangman-webapp.herokuapp.com/api/add/to/user", {
+            .post("/api/add/to/user", {
               username: localStorage["user"],
               word: this.word.word,
               state: "lost"
@@ -302,7 +302,7 @@ export default {
   beforeDestroy() {
     if(this.play){
     axios
-      .post("https://hangman-webapp.herokuapp.com/api/add/to/user", {
+      .post("/api/add/to/user", {
         username: localStorage["user"],
         word: this.word.word,
         state: "lost"

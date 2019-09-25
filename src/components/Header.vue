@@ -57,7 +57,7 @@ export default {
         this.user = name;
         axios
           .get(
-            "https://hangman-webapp.herokuapp.com/api/find/user/" +
+            "/api/find/user/" +
               localStorage["user"]
           )
           .then(res => {
@@ -70,7 +70,7 @@ export default {
 
       axios
         .get(
-          "https://hangman-webapp.herokuapp.com/api/find/user/" +
+          "/api/find/user/" +
             localStorage["user"]
         )
         .then(res => {

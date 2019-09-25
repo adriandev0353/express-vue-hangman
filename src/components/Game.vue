@@ -151,7 +151,7 @@ export default {
         this.win = true;
         axios
           .post(
-            "https://hangman-webapp.herokuapp.com/api/set/challenge/status",
+            "/api/set/challenge/status",
             {
               opponent: localStorage["user"],
               status: "won",
@@ -166,7 +166,7 @@ export default {
           this.lost = true;
           axios
             .post(
-              "https://hangman-webapp.herokuapp.com/api/set/challenge/status",
+              "/api/set/challenge/status",
               {
                 opponent: localStorage["user"],
                 status: "lost",

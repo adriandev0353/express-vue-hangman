@@ -69,7 +69,7 @@ import axios from "axios";
 export default {
   beforeCreate() {
     axios
-      .get("https://hangman-webapp.herokuapp.com/api/all/users")
+      .get("/api/all/users")
       .then(res => {
         let list = [];
         let response = res.data;
@@ -85,7 +85,7 @@ export default {
       })
       .then(() => {
         axios
-          .get("https://hangman-webapp.herokuapp.com/api/all/new/words")
+          .get("/api/all/new/words")
           .then(res => {
             const response = res.data;
             const words = response.words;
@@ -130,7 +130,7 @@ export default {
       if (user != "") {
         axios
           .get(
-            "https://hangman-webapp.herokuapp.com/api/find/user/" + this.search
+            "/api/find/user/" + this.search
           )
           .then(res => {
             let response = res.data;
@@ -143,7 +143,7 @@ export default {
           });
       } else {
         axios
-          .get("https://hangman-webapp.herokuapp.com/api/all/users")
+          .get("/api/all/users")
           .then(res => {
             let list = [];
             let response = res.data;
@@ -163,7 +163,7 @@ export default {
       if (confirm("Are you sure you want to delete this users' account?")) {
         let list = [];
         axios
-          .post("https://hangman-webapp.herokuapp.com/api/delete/user", { username })
+          .post("/api/delete/user", { username })
           .then(res => {
             let response = res.data;
             let users = response.users;
@@ -180,19 +180,19 @@ export default {
     },
     confirmWord(word, user) {
       axios
-        .post("https://hangman-webapp.herokuapp.com/api/add/word/from/user/", {
+        .post("/api/add/word/from/user/", {
           word: word,
           user:user
         })
         .then(res => {
           axios
             .post(
-              "https://hangman-webapp.herokuapp.com/api/set/new/word/status",
+              "/api/set/new/word/status",
               { word: word, status: "confirmed" }
             )
             .then(res => {
               axios
-                .get("https://hangman-webapp.herokuapp.com/api/all/new/words")
+                .get("/api/all/new/words")
                 .then(res => {
                   const response = res.data;
                   const words = response.words;
@@ -216,13 +216,13 @@ export default {
     },
     denyWord(word) {
       axios
-        .post("https://hangman-webapp.herokuapp.com/api/set/new/word/status", {
+        .post("/api/set/new/word/status", {
           word: word,
           status: "denied"
         })
         .then(res => {
           axios
-            .get("https://hangman-webapp.herokuapp.com/api/all/new/words")
+            .get("/api/all/new/words")
             .then(res => {
               const response = res.data;
               const words = response.words;

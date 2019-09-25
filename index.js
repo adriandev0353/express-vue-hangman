@@ -6,13 +6,13 @@ const wordList = require('./word.json');
 const HangmanAPI = require('./hangman-api');
 const HangmanService = require('./hangman-service');
 const AppRouting = require('./app-routing');
-const cors = require('cors');
+// const cors = require('cors');
 
 const app = express();
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
-app.use(cors());
+// app.use(cors());
 
 const pg = require('pg');
 const Pool = pg.Pool;

@@ -41,7 +41,7 @@ export default {
     submitWord() {
       let check = "";
       axios
-        .get("https://hangman-webapp.herokuapp.com/api/check/word/" + this.word)
+        .get("/api/check/word/" + this.word)
         .then(res => {
           let response = res.data;
           check = response.check;
@@ -52,7 +52,7 @@ export default {
             this.error = false;
             this.message ='Your word has been sent in to be verified';
             axios
-              .post("https://hangman-webapp.herokuapp.com/api/store/new/word", {
+              .post("/api/store/new/word", {
                 word: this.word,
                 user: localStorage["user"]
               })
