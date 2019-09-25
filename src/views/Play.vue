@@ -18,7 +18,7 @@
 
           <b-card bg-variant="danger" text-variant="white" title="Multiplayer">
             <b-badge variant="warning">Beta!</b-badge>
-            <b-card-text>Play a head to head game with 1 victor. You will recieve a random word of random length and face off against your opponent. Win if you finish first..</b-card-text>
+            <b-card-text>Play a head to head game with 1 victor. You will recieve a random word of random length and face off against your opponent. Winner gets 10pts! And the loser loses 10 pts..</b-card-text>
             <router-link to="/multiplayer">
               <b-button variant="dark">Play now</b-button>
             </router-link>
