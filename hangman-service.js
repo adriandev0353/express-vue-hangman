@@ -345,6 +345,13 @@ module.exports = (pool) => {
 
     const removeChallenge = async (opponent, word) => { await pool.query('DELETE FROM user_challenges WHERE opponent = $1 AND word = $2', [opponent, word]); };
 
+    const addPointsTo = async (user, points) => {
+        const result = await pool.query('SELECT points FROM user_data WHERE username = $1', [user]);
+        let newPoints = result.rows[0].points;
+        newPoints += points;
+        await pool.query('UPDATE user_data SET points = $1 WHERE username = $2', [newPoints, user]);
+    };
+
     return {
         reloadData,
         listWordOfSize,
@@ -376,6 +383,7 @@ module.exports = (pool) => {
         fetchChallengesSentBy,
         fetchCompleteChallenges,
         setChallengeStatus,
-        removeChallenge
+        removeChallenge,
+        addPointsTo
     };
 };

@@ -280,6 +280,14 @@ module.exports = (hangmanService) => {
         });
     };
 
+    const addPointsTo = async (req, res) => {
+        const details = req.body;
+        await hangmanService.addPointsTo({ user: details.user, points: details.points });
+        res.json({
+            status: 'success'
+        });
+    };
+
     return {
         allWords,
         listWordOfSize,
@@ -310,6 +318,7 @@ module.exports = (hangmanService) => {
         fetchChallengesSentBy,
         fetchCompleteChallenges,
         setChallengeStatus,
-        removeChallenge
+        removeChallenge,
+        addPointsTo
     };
 };

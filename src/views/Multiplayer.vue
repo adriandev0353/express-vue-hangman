@@ -52,7 +52,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedOne">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerOne) && !playerOneLose">
                 <b-button
@@ -89,7 +89,7 @@
                 <div class="base"></div>
               </div>
               <div>
-                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }} </span>
+                <span :key="index" v-for="(letter, index) of wordGuessedTwo">{{ letter }}</span>
               </div>
               <div v-if="userCheck(playerTwo) && !playerTwoLose">
                 <b-button
@@ -145,7 +145,7 @@ export default {
       searchForOpponent: false,
       winner: "",
       winningWord: "",
-      user: '',
+      user: "",
       gameOver: false,
       quitMessage: false,
       playersReady: false,
@@ -224,7 +224,7 @@ export default {
         for (const letter of this.playerTwoWord) {
           this.wordGuessedTwo.push(letter);
         }
-        this.user = data
+        this.user = data;
         this.quitMessage = true;
       });
       this.socket.on("gameOver", data => {
@@ -234,24 +234,28 @@ export default {
         } else if (data.user === "two") {
           this.winner = this.playerTwo;
         }
-        this.wordGuessedOne = [];
-        for (const letter of this.playerOneWord) {
-          this.wordGuessedOne.push(letter);
-        }
-        this.wordGuessedTwo = [];
-        for (const letter of this.playerTwoWord) {
-          this.wordGuessedTwo.push(letter);
-        }
-        this.gameOver = true;
+        axios
+          .post("https://hangman-webapp.herokuapp.com/api/add/points/to", {
+            user: this.winner,
+            points: 10
+          })
+          .then(res => {
+            this.wordGuessedOne = [];
+            for (const letter of this.playerOneWord) {
+              this.wordGuessedOne.push(letter);
+            }
+            this.wordGuessedTwo = [];
+            for (const letter of this.playerTwoWord) {
+              this.wordGuessedTwo.push(letter);
+            }
+            this.gameOver = true;
+          });
       });
       this.socket.on("lose", data => {
         if (data === "one") {
           this.playerOneLose = true;
         } else if (data === "two") {
           this.playerTwoLose = true;
-        }
-        for (const item of this.alphabet) {
-          item[data] = true;
         }
       });
       this.socket.on("bothReady", () => {
@@ -302,7 +306,7 @@ export default {
       });
       this.socket.on("cleared", () => {
         this.searchForOpponent = false;
-        this.user = '';
+        this.user = "";
         this.playerOneLose = false;
         this.playerTwoLose = false;
         this.gameOver = false;

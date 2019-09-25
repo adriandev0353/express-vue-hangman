@@ -676,7 +676,6 @@ describe('Testing hangman game', () => {
                 }]
             );
         });
-
         it('Should return that dyllanhope has received 3 challenges from michael', async () => {
             const hangmanInstance = HangmanService(pool);
 
@@ -707,6 +706,16 @@ describe('Testing hangman game', () => {
                     status: 'pending'
                 }
             ]);
+        });
+        it('Should return that dyllanhope has received 3 challenges from michael', async () => {
+            const hangmanInstance = HangmanService(pool);
+
+            await hangmanInstance.addUser('dyllanhope', '123');
+            await hangmanInstance.addUser('michael', '123');
+
+            await hangmanInstance.addPointsTo('dyllanhope', 5);
+            const result = await pool.query('SELECT points FROM user_data WHERE username = $1', ['dyllanhope']);
+            assert.strict.deepEqual(result.rows, [{ points: 5 }]);
         });
     });
 });

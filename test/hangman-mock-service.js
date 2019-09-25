@@ -82,6 +82,8 @@ module.exports = (pool) => {
 
     const removeChallenge = async => { return 'success'; };
 
+    const addPointsTo = async => { return 'success'; };
+
     return {
         reloadData,
         listWordOfSize,
@@ -113,6 +115,7 @@ module.exports = (pool) => {
         fetchChallengesSentBy,
         fetchCompleteChallenges,
         setChallengeStatus,
-        removeChallenge
+        removeChallenge,
+        addPointsTo
     };
 };
