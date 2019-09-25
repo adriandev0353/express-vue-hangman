@@ -80,10 +80,6 @@ export default {
         let list = [];
 
         for (let i = 0; i < data.length; i++) {
-          this.points += data[i].points;
-          if (this.points < 0) {
-            this.points = 0;
-          }
           let item = {
             Total_points: this.points,
             Word: data[i].word,
@@ -118,7 +114,17 @@ export default {
               }
             }
           });
-      });
+      })
+      .then(() => {
+        axios
+        .get('https://hangman-webapp.herokuapp.com/api/find/user/' + localStorage['user'])
+        .then(res => {
+          const response = res.data;
+          const user = response.user;
+          let userData = user[0];
+          this.points = userData.points;
+        })
+      })
   },
   data() {
     return {

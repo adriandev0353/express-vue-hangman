@@ -237,7 +237,7 @@ export default {
         axios
           .post("https://hangman-webapp.herokuapp.com/api/add/points/to", {
             user: this.winner,
-            points: 10
+            points: 5
           })
           .then(res => {
             console.log(res.data);
