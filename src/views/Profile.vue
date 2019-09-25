@@ -81,7 +81,6 @@ export default {
 
         for (let i = 0; i < data.length; i++) {
           let item = {
-            Total_points: this.points,
             Word: data[i].word,
             Result: data[i].complete_state,
             Pts: data[i].points
@@ -129,7 +128,7 @@ export default {
   data() {
     return {
       user: localStorage["user"],
-      fields: ["Total_points", "Word", "Result", "Pts"],
+      fields: ["Word", "Result", "Pts"],
       winPercentage: 0,
       items: [],
       totalPoints: 0,
@@ -175,7 +174,6 @@ export default {
               for (let i = 0; i < data.length; i++) {
                 this.totalPoints += data[i].points;
                 let item = {
-                  Total_points: this.totalPoints,
                   Word: data[i].word,
                   Result: data[i].complete_state,
                   Pts: data[i].points
@@ -223,7 +221,6 @@ export default {
                 this.totalPoints = 0;
               }
               let item = {
-                Total_points: this.totalPoints,
                 Word: data[i].word,
                 Result: data[i].complete_state,
                 Points: data[i].points
