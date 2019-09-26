@@ -3,7 +3,7 @@ const config = require('./config.js');
 
 const checkToken = (req, res, next) => {
     console.log(req.token, 'token');
-    console.log(req.headers['authorization'], 'headers');
+    console.log(req.headers, 'headers');
     let token = req.body;
     if (token) {
         token = Object.keys(token);
