@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const config = require('./config.js');
 
 const checkToken = (req, res, next) => {
-    console.log(req.token, 'token');
+    console.log(req.body, 'body');
     console.log(req.headers, 'headers');
     let token = req.body;
     if (token) {
