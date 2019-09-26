@@ -108,16 +108,12 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
-    const headers = {
-        'Content-Type': 'application/json',
-        'X-Auth-Token': localStorage['token']
-    };
     if (to.matched.some(record => record.meta.requiresAuth)) {
         // this route requires auth, check if logged in
         // if not, redirect to login page.
-        // const token = localStorage['token'];
+        const token = localStorage['token'];
         axios
-            .post('https://hangman-webapp.herokuapp.com/api/token/check', { headers })
+            .post('https://hangman-webapp.herokuapp.com/api/token/check', token)
             .then(results => {
                 const response = results.data;
                 const auth = response.success;
@@ -132,9 +128,9 @@ router.beforeEach((to, from, next) => {
                 }
             });
     } else if (to.matched.some(record => record.meta.adminAuth)) {
-        // const token = localStorage['token'];
+        const token = localStorage['token'];
         axios
-            .post('https://hangman-webapp.herokuapp.com/api/token/check', { headers })
+            .post('https://hangman-webapp.herokuapp.com/api/token/check', token)
             .then(results => {
                 const response = results.data;
                 const auth = response.success;
