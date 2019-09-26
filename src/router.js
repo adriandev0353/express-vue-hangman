@@ -124,6 +124,7 @@ router.beforeEach((to, from, next) => {
                         query: { redirect: to.fullPath }
                     });
                 } else {
+                    document.title = to.meta.title(to);
                     next();
                 }
             });

@@ -57,7 +57,7 @@ export default {
         if (this.pass === this.passConfirm) {
           axios
             .get(
-              "/api/check/user/" + this.user
+              "https://hangman-webapp.herokuapp.com/api/check/user/" + this.user
             )
             .then(results => {
               let response = results.data;
@@ -71,7 +71,7 @@ export default {
               this.$forceUpdate();
               if (this.accountAvailability) {
                 axios
-                  .post("/api/add/user/", {
+                  .post("https://hangman-webapp.herokuapp.com/api/add/user/", {
                     username: this.user,
                     password: this.pass
                   })

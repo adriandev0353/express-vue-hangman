@@ -71,7 +71,7 @@ export default {
     this.points = 0;
     axios
       .get(
-        "/api/get/user/data/" +
+        "https://hangman-webapp.herokuapp.com/api/get/user/data/" +
           localStorage["user"]
       )
       .then(res => {
@@ -101,7 +101,7 @@ export default {
         this.items = list;
         this.history = false;
         axios
-          .get("/api/all/users")
+          .get("https://hangman-webapp.herokuapp.com/api/all/users")
           .then(res => {
             let response = res.data;
             let users = response.words;
@@ -116,7 +116,7 @@ export default {
       })
       .then(() => {
         axios
-        .get('/api/find/user/' + localStorage['user'])
+        .get('https://hangman-webapp.herokuapp.com/api/find/user/' + localStorage['user'])
         .then(res => {
           const response = res.data;
           const user = response.user;
@@ -161,7 +161,7 @@ export default {
           this.challengesChosen = false;
           axios
             .get(
-              "/api/get/user/data/user/" +
+              "https://hangman-webapp.herokuapp.com/api/get/user/data/user/" +
                 localStorage["user"] +
                 "/choice/" +
                 this.selected
@@ -187,7 +187,7 @@ export default {
         } else {
           this.challengesChosen = true;
           axios
-            .get("/api/fetch/complete/challenges/by/" + localStorage["user"])
+            .get("https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" + localStorage["user"])
             .then(res => {
               const response = res.data;
               const results = response.results;
@@ -207,7 +207,7 @@ export default {
       } else {
         axios
           .get(
-            "/api/get/user/data/" +
+            "https://hangman-webapp.herokuapp.com/api/get/user/data/" +
               localStorage["user"]
           )
           .then(res => {

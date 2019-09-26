@@ -238,14 +238,14 @@ export default {
           loser = this.playerOne;
         }
         axios
-          .post("/api/add/points/to", {
+          .post("https://hangman-webapp.herokuapp.com/api/add/points/to", {
             user: this.winner,
             points: 5
           })
           .then(res => {})
           .then(() => {
             axios
-              .post("/api/add/points/to", {
+              .post("https://hangman-webapp.herokuapp.com/api/add/points/to", {
                 user: loser,
                 points: -5
               })
@@ -296,7 +296,7 @@ export default {
           });
           axios
             .get(
-              "/api/list/size/" +
+              "https://hangman-webapp.herokuapp.com/api/list/size/" +
                 this.wordLength
             )
             .then(res => {

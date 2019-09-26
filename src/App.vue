@@ -2,7 +2,7 @@
   <div id="app">
     <Header />
     <!-- <div style='margin-top: 70px'> -->
-    <router-view />
+    <router-view v-title="title"/>
     <!-- </div> -->
   </div>
 </template>

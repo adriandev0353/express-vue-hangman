@@ -217,7 +217,7 @@ export default {
   beforeCreate() {
     axios
       .get(
-        "/api/friend/requests/for/" +
+        "https://hangman-webapp.herokuapp.com/api/friend/requests/for/" +
           localStorage["user"]
       )
       .then(res => {
@@ -229,7 +229,7 @@ export default {
       .then(() => {
         axios
           .get(
-            "/api/friend/list/" +
+            "https://hangman-webapp.herokuapp.com/api/friend/list/" +
               localStorage["user"]
           )
           .then(res => {
@@ -239,7 +239,7 @@ export default {
           })
           .then(() => {
             axios
-              .get("/api/all/users")
+              .get("https://hangman-webapp.herokuapp.com/api/all/users")
               .then(res => {
                 const list = [];
                 let item = {};
@@ -273,7 +273,7 @@ export default {
               .then(() => {
                 axios
                   .get(
-                    "/api/fetch/challenges/for/" +
+                    "https://hangman-webapp.herokuapp.com/api/fetch/challenges/for/" +
                       localStorage["user"]
                   )
                   .then(res => {
@@ -285,7 +285,7 @@ export default {
                   .then(() => {
                     axios
                       .get(
-                        "/api/fetch/challenges/sent/by/" +
+                        "https://hangman-webapp.herokuapp.com/api/fetch/challenges/sent/by/" +
                           localStorage["user"]
                       )
                       .then(res => {
@@ -306,7 +306,7 @@ export default {
                       .then(() => {
                         axios
                           .get(
-                            "/api/fetch/complete/challenges/by/" +
+                            "https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" +
                               localStorage["user"]
                           )
                           .then(res => {
@@ -361,7 +361,7 @@ export default {
       this.completeChallengesLoad = true;
       axios
         .get(
-          "/api/fetch/challenges/for/" +
+          "https://hangman-webapp.herokuapp.com/api/fetch/challenges/for/" +
             localStorage["user"]
         )
         .then(res => {
@@ -373,7 +373,7 @@ export default {
         .then(() => {
           axios
             .get(
-              "/api/fetch/complete/challenges/by/" +
+              "https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" +
                 localStorage["user"]
             )
             .then(res => {
@@ -399,14 +399,14 @@ export default {
     },
     rejectChallenge(word) {
       axios
-        .post("/api/remove/challenge", {
+        .post("https://hangman-webapp.herokuapp.com/api/remove/challenge", {
           opponent: localStorage["user"],
           word
         })
         .then(res => {
           axios
             .get(
-              "/api/fetch/challenges/for/" +
+              "https://hangman-webapp.herokuapp.com/api/fetch/challenges/for/" +
                 localStorage["user"]
             )
             .then(res => {
@@ -439,7 +439,7 @@ export default {
       } else {
         this.sentChallengesLoading = true;
         axios
-          .post("/api/send/challenge", {
+          .post("https://hangman-webapp.herokuapp.com/api/send/challenge", {
             challenger: localStorage["user"],
             opponent: this.friend,
             word: this.word,
@@ -452,7 +452,7 @@ export default {
           .then(() => {
             axios
               .get(
-                "/api/fetch/challenges/sent/by/" +
+                "https://hangman-webapp.herokuapp.com/api/fetch/challenges/sent/by/" +
                   localStorage["user"]
               )
               .then(res => {
@@ -485,7 +485,7 @@ export default {
       if (search != "") {
         axios
           .get(
-            "/api/find/user/" + this.search
+            "https://hangman-webapp.herokuapp.com/api/find/user/" + this.search
           )
           .then(res => {
             let found = false;
@@ -519,7 +519,7 @@ export default {
           });
       } else {
         axios
-          .get("/api/all/users")
+          .get("https://hangman-webapp.herokuapp.com/api/all/users")
           .then(res => {
             let found = false;
             const list = [];
@@ -554,7 +554,7 @@ export default {
     },
     sendRequest(receiver) {
       axios
-        .post("/api/add/friends", {
+        .post("https://hangman-webapp.herokuapp.com/api/add/friends", {
           requester: localStorage["user"],
           receiver
         })
@@ -567,7 +567,7 @@ export default {
     confirmRequest(requester, index) {
       axios
         .post(
-          "/api/confirm/friend/request",
+          "https://hangman-webapp.herokuapp.com/api/confirm/friend/request",
           {
             requester,
             receiver: localStorage["user"]
@@ -579,7 +579,7 @@ export default {
         .then(() => {
           axios
             .get(
-              "/api/friend/list/" +
+              "https://hangman-webapp.herokuapp.com/api/friend/list/" +
                 localStorage["user"]
             )
             .then(res => {
@@ -589,7 +589,7 @@ export default {
             })
             .then(() => {
               axios
-                .get("/api/all/users")
+                .get("https://hangman-webapp.herokuapp.com/api/all/users")
                 .then(res => {
                   const list = [];
                   let item = {};
@@ -625,7 +625,7 @@ export default {
     },
     denyRequest(requester, index) {
       axios
-        .post("/api/deny/friend/request", {
+        .post("https://hangman-webapp.herokuapp.com/api/deny/friend/request", {
           requester,
           receiver: localStorage["user"]
         })
@@ -635,14 +635,14 @@ export default {
     },
     deleteFriend(friend) {
       axios
-        .post("/api/remove/friend", {
+        .post("https://hangman-webapp.herokuapp.com/api/remove/friend", {
           user: localStorage["user"],
           friend
         })
         .then(res => {
           axios
             .get(
-              "/api/friend/list/" +
+              "https://hangman-webapp.herokuapp.com/api/friend/list/" +
                 localStorage["user"]
             )
             .then(res => {
@@ -652,7 +652,7 @@ export default {
             })
             .then(() => {
               axios
-                .get("/api/all/users")
+                .get("https://hangman-webapp.herokuapp.com/api/all/users")
                 .then(res => {
                   const list = [];
                   let item = {};
