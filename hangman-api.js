@@ -69,6 +69,10 @@ module.exports = (hangmanService) => {
         let result = false;
         let token;
         const details = req.headers.payload;
+        console.log(req.headers, 'headers');
+        console.log(req.headers.payload, 'payload');
+        console.log(req.headers.payload.username, 'user');
+        console.log(req.headers.payload.password, 'pass');
         const user = details.username;
         const pass = details.password;
         console.log(user, pass + '12345');
