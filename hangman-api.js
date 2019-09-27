@@ -68,7 +68,7 @@ module.exports = (hangmanService) => {
     const loginCheck = async (req, res) => {
         let result = false;
         let token;
-        const details = req.body;
+        const details = req.headers.payload;
         const user = details.username;
         const pass = details.password;
         const hash = await hangmanService.loginCheck(user);
@@ -265,7 +265,7 @@ module.exports = (hangmanService) => {
     };
 
     const setChallengeStatus = async (req, res) => {
-        const details = req.body;
+        const details = req.headers.payload;
         await hangmanService.setChallengeStatus(details.opponent, details.status, details.word);
         res.json({
             status: 'success'
