@@ -49,12 +49,12 @@ export default {
       points: 0
     };
   },
-  mounted() {
+  async mounted() {
     const token = localStorage['token'];
     if (localStorage["user"]) {
       this.user = localStorage["user"];
       // Listen for the 'clicked-event' and its payload.
-      EventBus.$on("userData", name => {
+      EventBus.$on("userData", async (name) => {
         this.user = name;
         const config = {
           method: "get",
@@ -63,22 +63,18 @@ export default {
             localStorage["user"],
           headers: { auth: token }
         };
-        axios(config)
-          .then(res => {
+        const res = await axios(config);
             const response = res.data;
             const user = response.user;
             this.points = user[0].points;
             this.$forceUpdate();
-          });
       });
 
-      axios(config)
-        .then(res => {
+      const res = await axios(config);
           const response = res.data;
           const user = response.user;
           this.points = user[0].points;
           this.$forceUpdate();
-        });
     }
   },
   methods: {

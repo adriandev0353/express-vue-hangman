@@ -108,7 +108,7 @@ const router = new Router({
 });
 const token = localStorage['token'];
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
         // this route requires auth, check if logged in
         // if not, redirect to login page.
@@ -117,20 +117,18 @@ router.beforeEach((to, from, next) => {
             url: 'https://hangman-webapp.herokuapp.com/api/token/check',
             headers: { auth: token }
         };
-        axios(config)
-            .then(results => {
-                const response = results.data;
-                const auth = response.success;
+        const results = await axios(config);
+        const response = results.data;
+        const auth = response.success;
 
-                if (!auth) {
-                    next({
-                        path: '/',
-                        query: { redirect: to.fullPath }
-                    });
-                } else {
-                    next();
-                }
+        if (!auth) {
+            next({
+                path: '/',
+                query: { redirect: to.fullPath }
             });
+        } else {
+            next();
+        }
     } else if (to.matched.some(record => record.meta.adminAuth)) {
         const token = localStorage['token'];
         const config = {
@@ -138,26 +136,24 @@ router.beforeEach((to, from, next) => {
             url: 'https://hangman-webapp.herokuapp.com/api/token/check',
             headers: { auth: token }
         };
-        axios(config)
-            .then(results => {
-                const response = results.data;
-                const auth = response.success;
-                const user = response.user;
+        const results = await axios(config);
+        const response = results.data;
+        const auth = response.success;
+        const user = response.user;
 
-                if (!auth) {
-                    next({
-                        path: '/',
-                        query: { redirect: to.fullPath }
-                    });
-                } else if (user === 'admin') {
-                    next();
-                } else {
-                    next({
-                        path: '/',
-                        query: { redirect: to.fullPath }
-                    });
-                }
+        if (!auth) {
+            next({
+                path: '/',
+                query: { redirect: to.fullPath }
             });
+        } else if (user === 'admin') {
+            next();
+        } else {
+            next({
+                path: '/',
+                query: { redirect: to.fullPath }
+            });
+        }
     } else {
         next();
     };

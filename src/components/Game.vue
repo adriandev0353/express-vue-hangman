@@ -125,7 +125,7 @@ export default {
     isDisabled(index) {
       return this.alphabet[index].disable;
     },
-    letterCheck(letter) {
+    async letterCheck(letter) {
       const token = localStorage["token"];
       this.lettersGuessed.push(letter);
       let isCorrect = false;
@@ -162,25 +162,26 @@ export default {
             }
           }
         };
-        axios(config);
+        await axios(config);
       }
       if (!isCorrect) {
         this.guessesLeft--;
         if (this.guessesLeft === 0) {
           this.lost = true;
           const config = {
-          method: "post",
-          url: "https://hangman-webapp.herokuapp.com/api/set/challenge/status",
-          headers: {
-            auth: token,
-            payload: {
-              opponent: localStorage["user"],
-              status: "lost",
-              word: this.word
+            method: "post",
+            url:
+              "https://hangman-webapp.herokuapp.com/api/set/challenge/status",
+            headers: {
+              auth: token,
+              payload: {
+                opponent: localStorage["user"],
+                status: "lost",
+                word: this.word
+              }
             }
-          }
-        };
-          axios(config);
+          };
+          await axios(config);
         }
       }
     }
