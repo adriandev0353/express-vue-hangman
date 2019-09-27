@@ -20,7 +20,7 @@
             <b-badge variant="warning">Beta!</b-badge>
             <b-card-text>Play a head to head game with 1 victor. You will recieve a random word of random length and face off against your opponent. Winner gets 10pts! And the loser loses 10 pts..</b-card-text>
             <router-link to="/multiplayer">
-              <b-button variant="dark">Play now</b-button>
+              <b-button id='playMultiplayer' variant="dark">Play now</b-button>
             </router-link>
           </b-card>
         </b-card-group>
