@@ -7,7 +7,7 @@
           <b-card bg-variant="primary" text-variant="white" title='Classic'>
             <b-card-text>Play the classic game of hangman where you choose how big of a word you want and guess the letters until you either win or run out of guesses!</b-card-text>
             <router-link to="/classic">
-              <b-button variant="dark">Play now</b-button>
+              <b-button id='playClassic' variant="dark">Play now</b-button>
             </router-link>
           </b-card>
 
