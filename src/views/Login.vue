@@ -49,24 +49,25 @@ export default {
       let username = this.user;
       let password = this.pass;
       if (username && password) {
-        const config = {
-          method: "post",
-          url: "https://hangman-webapp.herokuapp.com/api/login/check",
-          headers: { payload: { username, password } }
-        };
-        const results = await axios(config);
-        let response = results.data;
-        let auth = response.auth;
-        if (auth) {
-          let token = response.token;
-          localStorage["token"] = token;
-          localStorage["user"] = username;
-          EventBus.$emit("userData", this.user);
-          this.$router.push({ name: "Play" });
-        } else {
-          this.error = true;
-          this.message = response.message;
-        }
+        axios
+          .post("https://hangman-webapp.herokuapp.com/api/login/check", {
+            username,
+            password
+          })
+          .then(results => {
+            let response = results.data;
+            let auth = response.auth;
+            if (auth) {
+              let token = response.token;
+              localStorage["token"] = token;
+              localStorage["user"] = username;
+              EventBus.$emit("userData", this.user);
+              this.$router.push({ name: "Play" });
+            } else {
+              this.error = true;
+              this.message = response.message;
+            }
+          });
       } else {
         this.error = true;
         this.message = "Please enter a username and a password";
