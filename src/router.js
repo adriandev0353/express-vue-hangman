@@ -112,8 +112,13 @@ router.beforeEach((to, from, next) => {
         // this route requires auth, check if logged in
         // if not, redirect to login page.
         const token = localStorage['token'];
+        const config = {
+            method: 'get',
+            url: 'https://hangman-webapp.herokuapp.com/api/token/check',
+            headers: { auth: token }
+        };
         axios
-            .post('https://hangman-webapp.herokuapp.com/api/token/check', token)
+            .post(config)
             .then(results => {
                 const response = results.data;
                 const auth = response.success;
