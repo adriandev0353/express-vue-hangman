@@ -50,31 +50,31 @@ export default {
     };
   },
   async mounted() {
-    const token = localStorage['token'];
+    const token = localStorage["token"];
     if (localStorage["user"]) {
       this.user = localStorage["user"];
+      const config = {
+        method: "get",
+        url:
+          "https://hangman-webapp.herokuapp.com/api/find/user/" +
+          localStorage["user"],
+        headers: { auth: token }
+      };
       // Listen for the 'clicked-event' and its payload.
-      EventBus.$on("userData", async (name) => {
+      EventBus.$on("userData", async name => {
         this.user = name;
-        const config = {
-          method: "get",
-          url:
-            "https://hangman-webapp.herokuapp.com/api/find/user/" +
-            localStorage["user"],
-          headers: { auth: token }
-        };
         const res = await axios(config);
-            const response = res.data;
-            const user = response.user;
-            this.points = user[0].points;
-            this.$forceUpdate();
+        const response = res.data;
+        const user = response.user;
+        this.points = user[0].points;
+        this.$forceUpdate();
       });
 
       const res = await axios(config);
-          const response = res.data;
-          const user = response.user;
-          this.points = user[0].points;
-          this.$forceUpdate();
+      const response = res.data;
+      const user = response.user;
+      this.points = user[0].points;
+      this.$forceUpdate();
     }
   },
   methods: {

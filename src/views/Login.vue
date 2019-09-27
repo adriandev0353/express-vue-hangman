@@ -52,7 +52,7 @@ export default {
         const config = {
           method: "post",
           url: "https://hangman-webapp.herokuapp.com/api/login/check",
-          headers: { auth: token, payload: { username, password } }
+          headers: { payload: { username, password } }
         };
         const results = await axios(config);
         let response = results.data;
