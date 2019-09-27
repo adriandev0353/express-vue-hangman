@@ -50,9 +50,30 @@ export default {
     };
   },
   async mounted() {
-    const token = localStorage["token"];
     if (localStorage["user"]) {
       this.user = localStorage["user"];
+      // Listen for the 'clicked-event' and its payload.
+      EventBus.$on("userData", async name => {
+        this.user = name;
+        this.findUser().then(res => {
+          const response = res.data;
+          const user = response.user;
+          this.points = user[0].points;
+          this.$forceUpdate();
+        });
+      });
+      this.findUser().then(res => {
+        console.log(res);
+        const response = res.data;
+        const user = response.user;
+        this.points = user[0].points;
+        this.$forceUpdate();
+      });
+    }
+  },
+  methods: {
+    async findUser() {
+      const token = localStorage["token"];
       const config = {
         method: "get",
         url:
@@ -60,24 +81,8 @@ export default {
           localStorage["user"],
         headers: { auth: token }
       };
-      // Listen for the 'clicked-event' and its payload.
-      EventBus.$on("userData", async name => {
-        this.user = name;
-        const res = await axios(config);
-        const response = res.data;
-        const user = response.user;
-        this.points = user[0].points;
-        this.$forceUpdate();
-      });
-
-      const res = await axios(config);
-      const response = res.data;
-      const user = response.user;
-      this.points = user[0].points;
-      this.$forceUpdate();
-    }
-  },
-  methods: {
+      return await axios(config);
+    },
     logout() {
       localStorage.clear();
       this.user = "";

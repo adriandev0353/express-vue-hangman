@@ -3,7 +3,6 @@ const config = require('./config.js');
 
 const checkToken = (req, res, next) => {
     const token = req.headers.auth;
-    console.log(token);
     if (token) {
         try {
             var decoded = jwt.verify(token, config.secret);

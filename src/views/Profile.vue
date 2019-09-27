@@ -115,15 +115,13 @@ export default {
           });
       })
       .then(() => {
-        axios
-        .get('https://hangman-webapp.herokuapp.com/api/find/user/' + localStorage['user'])
-        .then(res => {
+        this.findUser().then(res => {
           const response = res.data;
           const user = response.user;
           let userData = user[0];
           this.points = userData.points;
-        })
-      })
+        });
+      });
   },
   data() {
     return {
@@ -144,11 +142,22 @@ export default {
     };
   },
   methods: {
+    async findUser() {
+      const token = localStorage["token"];
+      const config = {
+        method: "get",
+        url:
+          "https://hangman-webapp.herokuapp.com/api/find/user/" +
+          localStorage["user"],
+        headers: { auth: token }
+      };
+      return await axios(config);
+    },
     rowClass(item, type) {
       if (!item) return;
       if (item.Result === "won") {
         return "table-success";
-      } else if (item.Result === "lost"){
+      } else if (item.Result === "lost") {
         return "table-danger";
       }
     },
@@ -187,7 +196,10 @@ export default {
         } else {
           this.challengesChosen = true;
           axios
-            .get("https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" + localStorage["user"])
+            .get(
+              "https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" +
+                localStorage["user"]
+            )
             .then(res => {
               const response = res.data;
               const results = response.results;
@@ -255,14 +267,14 @@ html {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgb(114, 100, 100); 
+  background: rgb(114, 100, 100);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #353030; 
+  background: #353030;
 }
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey; 
+  box-shadow: inset 0 0 5px grey;
   border-radius: 10px;
 }
 </style>
