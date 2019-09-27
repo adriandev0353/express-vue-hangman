@@ -8,30 +8,30 @@
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
         <b-collapse id="nav-collapse" is-nav>
-        <b-navbar-nav>
-          <b-nav-item>
-            <router-link to="/Play">Play</router-link>
-          </b-nav-item>
-          <b-nav-item>
-            <router-link to="/leader">Leaderboard</router-link>
-          </b-nav-item>
-          <b-nav-item>
-            <router-link to="/new/word">Add new word</router-link>
-          </b-nav-item>
-        </b-navbar-nav>
-        <b-navbar-nav class="ml-auto">
-          <b-nav-text v-if="user.length > 0">
-            <span style="color:goldenrod">{{points}}</span> Points
-          </b-nav-text>
+          <b-navbar-nav>
+            <b-nav-item>
+              <router-link to="/Play">Play</router-link>
+            </b-nav-item>
+            <b-nav-item>
+              <router-link to="/leader">Leaderboard</router-link>
+            </b-nav-item>
+            <b-nav-item>
+              <router-link to="/new/word">Add new word</router-link>
+            </b-nav-item>
+          </b-navbar-nav>
+          <b-navbar-nav class="ml-auto">
+            <b-nav-text v-if="user.length > 0">
+              <span style="color:goldenrod">{{points}}</span> Points
+            </b-nav-text>
 
-          <b-nav-item-dropdown text="Other" right>
-            <b-dropdown-item to="/profile">{{user}}</b-dropdown-item>
-            <b-dropdown-item to="/friends">Friends</b-dropdown-item>
-            <b-dropdown-item v-if="user === 'admin'" to="/admin">Admin Page</b-dropdown-item>
-            <b-dropdown-divider></b-dropdown-divider>
-            <b-dropdown-item @click="logout">Logout</b-dropdown-item>
-          </b-nav-item-dropdown>
-        </b-navbar-nav>
+            <b-nav-item-dropdown text="Other" right>
+              <b-dropdown-item to="/profile">{{user}}</b-dropdown-item>
+              <b-dropdown-item to="/friends">Friends</b-dropdown-item>
+              <b-dropdown-item v-if="user === 'admin'" to="/admin">Admin Page</b-dropdown-item>
+              <b-dropdown-divider></b-dropdown-divider>
+              <b-dropdown-item @click="logout">Logout</b-dropdown-item>
+            </b-nav-item-dropdown>
+          </b-navbar-nav>
         </b-collapse>
       </b-navbar>
     </div>
@@ -50,16 +50,20 @@ export default {
     };
   },
   mounted() {
+    const token = localStorage['token'];
     if (localStorage["user"]) {
       this.user = localStorage["user"];
       // Listen for the 'clicked-event' and its payload.
       EventBus.$on("userData", name => {
         this.user = name;
-        axios
-          .get(
+        const config = {
+          method: "get",
+          url:
             "https://hangman-webapp.herokuapp.com/api/find/user/" +
-              localStorage["user"]
-          )
+            localStorage["user"],
+          headers: { auth: token }
+        };
+        axios(config)
           .then(res => {
             const response = res.data;
             const user = response.user;
@@ -68,11 +72,7 @@ export default {
           });
       });
 
-      axios
-        .get(
-          "https://hangman-webapp.herokuapp.com/api/find/user/" +
-            localStorage["user"]
-        )
+      axios(config)
         .then(res => {
           const response = res.data;
           const user = response.user;

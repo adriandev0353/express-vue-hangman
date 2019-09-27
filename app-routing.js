@@ -10,7 +10,7 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/friend/requests/for/:user', hangmanAPI.returnFriendRequests);
     app.get('/api/check/user/:user', hangmanAPI.userCheck);
     app.get('/api/get/user/data/:user', hangmanAPI.personalData);
-    app.get('/api/find/user/:user', hangmanAPI.findUser);
+    app.get('/api/find/user/:user', middleware.checkToken, hangmanAPI.findUser);
     app.get('/api/get/user/data/user/:user/choice/:choice', hangmanAPI.choiceFilter);
     app.get('/api/check/word/:word', hangmanAPI.checkWord);
     app.get('/api/link/data', hangmanAPI.linkTableData);

@@ -126,6 +126,7 @@ export default {
       return this.alphabet[index].disable;
     },
     letterCheck(letter) {
+      const token = localStorage["token"];
       this.lettersGuessed.push(letter);
       let isCorrect = false;
       let word = this.word;
@@ -149,31 +150,37 @@ export default {
       }
       if (wordSoFar === word) {
         this.win = true;
-        axios
-          .post(
-            "https://hangman-webapp.herokuapp.com/api/set/challenge/status",
-            {
+        const config = {
+          method: "post",
+          url: "https://hangman-webapp.herokuapp.com/api/set/challenge/status",
+          headers: {
+            auth: token,
+            payload: {
               opponent: localStorage["user"],
               status: "won",
               word: this.word
             }
-          )
-          .then(res => {});
+          }
+        };
+        axios(config);
       }
       if (!isCorrect) {
         this.guessesLeft--;
         if (this.guessesLeft === 0) {
           this.lost = true;
-          axios
-            .post(
-              "https://hangman-webapp.herokuapp.com/api/set/challenge/status",
-              {
-                opponent: localStorage["user"],
-                status: "lost",
-                word: this.word
-              }
-            )
-            .then(res => {});
+          const config = {
+          method: "post",
+          url: "https://hangman-webapp.herokuapp.com/api/set/challenge/status",
+          headers: {
+            auth: token,
+            payload: {
+              opponent: localStorage["user"],
+              status: "lost",
+              word: this.word
+            }
+          }
+        };
+          axios(config);
         }
       }
     }

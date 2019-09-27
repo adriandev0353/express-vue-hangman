@@ -106,12 +106,12 @@ const router = new Router({
         }
     ]
 });
+const token = localStorage['token'];
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
         // this route requires auth, check if logged in
         // if not, redirect to login page.
-        const token = localStorage['token'];
         const config = {
             method: 'post',
             url: 'https://hangman-webapp.herokuapp.com/api/token/check',
@@ -133,8 +133,12 @@ router.beforeEach((to, from, next) => {
             });
     } else if (to.matched.some(record => record.meta.adminAuth)) {
         const token = localStorage['token'];
-        axios
-            .post('https://hangman-webapp.herokuapp.com/api/token/check', token)
+        const config = {
+            method: 'post',
+            url: 'https://hangman-webapp.herokuapp.com/api/token/check',
+            headers: { auth: token }
+        };
+        axios(config)
             .then(results => {
                 const response = results.data;
                 const auth = response.success;
