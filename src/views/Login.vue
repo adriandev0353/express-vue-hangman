@@ -45,7 +45,7 @@ export default {
     };
   },
   methods: {
-    async submitUser() {
+    submitUser() {
       let username = this.user;
       let password = this.pass;
       if (username && password) {
