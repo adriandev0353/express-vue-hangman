@@ -92,9 +92,9 @@ const router = new Router({
         }
     ]
 });
-const token = localStorage['token'];
 
 router.beforeEach(async (to, from, next) => {
+    const token = localStorage['token'];
     if (to.matched.some(record => record.meta.requiresAuth)) {
         // this route requires auth, check if logged in
         // if not, redirect to login page.
