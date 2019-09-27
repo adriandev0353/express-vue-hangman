@@ -69,9 +69,9 @@ module.exports = (hangmanService) => {
         let result = false;
         let token;
         const details = req.headers.payload;
-        console.log(details);
         const user = details.username;
         const pass = details.password;
+        console.log(user, pass + '12345');
         const hash = await hangmanService.loginCheck(user);
 
         if (hash !== 'Not found') {
