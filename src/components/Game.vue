@@ -123,6 +123,7 @@ export default {
   },
   methods: {
     async setStatus(status) {
+      const token = localStorage["token"];
       const config = {
         method: "post",
         url: "https://hangman-webapp.herokuapp.com/api/set/challenge/status",
@@ -141,7 +142,6 @@ export default {
       return this.alphabet[index].disable;
     },
     async letterCheck(letter) {
-      const token = localStorage["token"];
       this.lettersGuessed.push(letter);
       let isCorrect = false;
       let word = this.word;
