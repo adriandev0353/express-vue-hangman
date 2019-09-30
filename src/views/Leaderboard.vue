@@ -50,8 +50,7 @@ export default {
         }
       })
       .then(() => {
-        axios
-          .get("https://hangman-webapp.herokuapp.com/api/link/data")
+        this.linkData()
           .then(res => {
             const response = res.data;
             const items = response.items;
@@ -94,6 +93,14 @@ export default {
     };
   },
   methods: {
+    async linkData(){
+      const config = {
+        method: "get",
+        url: "https://hangman-webapp.herokuapp.com/api/link/data",
+        headers: {auth: localStorage['token']}
+      };
+      return await axios(config);
+    },
     async allUsers() {
       const config = {
         method: "get",

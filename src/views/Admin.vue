@@ -83,8 +83,7 @@ export default {
         }
       })
       .then(() => {
-        axios
-          .get("https://hangman-webapp.herokuapp.com/api/all/new/words")
+        this.allNewWords()
           .then(res => {
             const response = res.data;
             const words = response.words;
@@ -124,6 +123,25 @@ export default {
     };
   },
   methods: {
+    async findUser(user) {
+      const token = localStorage["token"];
+      const config = {
+        method: "get",
+        url:
+          "https://hangman-webapp.herokuapp.com/api/find/user/" +
+          user,
+        headers: { auth: token }
+      };
+      return await axios(config);
+    },
+    async allNewWords() {
+      const config = {
+        method: "get",
+        url: "https://hangman-webapp.herokuapp.com/api/all/new/words",
+        headers: { auth: localStorage["token"] }
+      };
+      return await axios(config);
+    },
     async allUsers() {
       const config = {
         method: "get",
@@ -135,10 +153,7 @@ export default {
     searchUser() {
       let user = this.search;
       if (user != "") {
-        axios
-          .get(
-            "https://hangman-webapp.herokuapp.com/api/find/user/" + this.search
-          )
+        this.findUser(user)
           .then(res => {
             let response = res.data;
             let user = response.user;
@@ -149,20 +164,19 @@ export default {
             this.items = [item];
           });
       } else {
-        this.allUsers()
-          .then(res => {
-            let list = [];
-            let response = res.data;
-            let users = response.words;
-            for (let x = 0; x < users.length; x++) {
-              let item = {
-                Username: users[x].username,
-                Points: users[x].points
-              };
-              list.push(item);
-              this.items = list;
-            }
-          });
+        this.allUsers().then(res => {
+          let list = [];
+          let response = res.data;
+          let users = response.words;
+          for (let x = 0; x < users.length; x++) {
+            let item = {
+              Username: users[x].username,
+              Points: users[x].points
+            };
+            list.push(item);
+            this.items = list;
+          }
+        });
       }
     },
     deleteUser(username) {
@@ -199,8 +213,7 @@ export default {
               { word: word, status: "confirmed" }
             )
             .then(res => {
-              axios
-                .get("https://hangman-webapp.herokuapp.com/api/all/new/words")
+              this.allNewWords()
                 .then(res => {
                   const response = res.data;
                   const words = response.words;
@@ -229,8 +242,7 @@ export default {
           status: "denied"
         })
         .then(res => {
-          axios
-            .get("https://hangman-webapp.herokuapp.com/api/all/new/words")
+          this.allNewWords()
             .then(res => {
               const response = res.data;
               const words = response.words;
