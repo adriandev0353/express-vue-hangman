@@ -67,7 +67,7 @@
 <script>
 import axios from "axios";
 export default {
-  beforeCreate() {
+  mounted() {
     this.allUsers()
       .then(res => {
         let list = [];

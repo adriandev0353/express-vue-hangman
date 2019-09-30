@@ -32,8 +32,7 @@ export default {
   beforeCreate() {
     this.loading = true;
     this.statLoading= true;
-    axios
-      .get("https://hangman-webapp.herokuapp.com/api/all/users")
+    this.allUsers()
       .then(res => {
         let list = [];
         let response = res.data;
@@ -95,6 +94,14 @@ export default {
     };
   },
   methods: {
+    async allUsers() {
+      const config = {
+        method: "get",
+        url: "https://hangman-webapp.herokuapp.com/api/all/users",
+        headers: { auth: localStorage["token"] }
+      };
+      return await axios(config);
+    },
     rowClass(item, type) {
       if (!item) return;
       if (item.Rank === 1) {

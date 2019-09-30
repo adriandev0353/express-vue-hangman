@@ -100,8 +100,7 @@ export default {
         this.loading = false;
         this.items = list;
         this.history = false;
-        axios
-          .get("https://hangman-webapp.herokuapp.com/api/all/users")
+        this.allUsers()
           .then(res => {
             let response = res.data;
             let users = response.words;
@@ -142,6 +141,14 @@ export default {
     };
   },
   methods: {
+    async allUsers() {
+      const config = {
+        method: "get",
+        url: "https://hangman-webapp.herokuapp.com/api/all/users",
+        headers: { auth: localStorage["token"] }
+      };
+      return await axios(config);
+    },
     async findUser() {
       const token = localStorage["token"];
       const config = {
