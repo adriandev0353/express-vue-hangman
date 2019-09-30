@@ -628,7 +628,7 @@ export default {
       });
     },
     confirmRequest(requester, index) {
-      this.confirmFriendRequest(requester, receiver)
+      this.confirmFriendRequest(requester, localStorage["user"])
         .then(res => {
           this.requests.splice(index, 1);
         })
@@ -679,46 +679,48 @@ export default {
       });
     },
     deleteFriend(friend) {
-      this.removeFriend(localStorage["user"], friend).then(res => {
-        this.friendsList(localStorage["user"])
-          .then(res => {
-            const response = res.data;
-            const list = response.list;
-            this.friendList = list;
-          })
-          .then(() => {
-            this.allUsers().then(res => {
-              const list = [];
-              let item = {};
+      if (confirm("Are you sure you want to delete this person as a friend?")) {
+        this.removeFriend(localStorage["user"], friend).then(res => {
+          this.friendsList(localStorage["user"])
+            .then(res => {
               const response = res.data;
-              const users = response.words;
-              for (let x = 0; x < users.length; x++) {
-                if (users[x].username === localStorage["user"]) {
-                  item = {
-                    Rank: x + 1,
-                    Username: users[x].username,
-                    Points: users[x].points,
-                    Ratio: users[x].win_rate
-                  };
-                  list.push(item);
-                } else {
-                  for (const friend of this.friendList) {
-                    if (users[x].username === friend) {
-                      item = {
-                        Rank: x + 1,
-                        Username: users[x].username,
-                        Points: users[x].points,
-                        Ratio: users[x].win_rate
-                      };
-                      list.push(item);
+              const list = response.list;
+              this.friendList = list;
+            })
+            .then(() => {
+              this.allUsers().then(res => {
+                const list = [];
+                let item = {};
+                const response = res.data;
+                const users = response.words;
+                for (let x = 0; x < users.length; x++) {
+                  if (users[x].username === localStorage["user"]) {
+                    item = {
+                      Rank: x + 1,
+                      Username: users[x].username,
+                      Points: users[x].points,
+                      Ratio: users[x].win_rate
+                    };
+                    list.push(item);
+                  } else {
+                    for (const friend of this.friendList) {
+                      if (users[x].username === friend) {
+                        item = {
+                          Rank: x + 1,
+                          Username: users[x].username,
+                          Points: users[x].points,
+                          Ratio: users[x].win_rate
+                        };
+                        list.push(item);
+                      }
                     }
                   }
                 }
-              }
-              this.items = list;
+                this.items = list;
+              });
             });
-          });
-      });
+        });
+      }
     }
   }
 };
