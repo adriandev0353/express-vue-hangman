@@ -38,10 +38,17 @@ export default {
     };
   },
   methods: {
+    async checkWord(word){
+      const config = {
+        method: "get",
+        url: "https://hangman-webapp.herokuapp.com/api/check/word/" + word,
+        headers: {auth: localStorage['token']}
+      };
+      return await axios(config);
+    },
     submitWord() {
       let check = "";
-      axios
-        .get("https://hangman-webapp.herokuapp.com/api/check/word/" + this.word)
+      this.checkWord(this.word)
         .then(res => {
           let response = res.data;
           check = response.check;

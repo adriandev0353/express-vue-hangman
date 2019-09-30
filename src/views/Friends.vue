@@ -215,11 +215,7 @@ export default {
     Game
   },
   mounted() {
-    axios
-      .get(
-        "https://hangman-webapp.herokuapp.com/api/friend/requests/for/" +
-          localStorage["user"]
-      )
+    this.friendRequestsFor(localStorage["user"])
       .then(res => {
         const response = res.data;
         const requests = response.result;
@@ -227,11 +223,7 @@ export default {
         this.$forceUpdate();
       })
       .then(() => {
-        axios
-          .get(
-            "https://hangman-webapp.herokuapp.com/api/friend/list/" +
-              localStorage["user"]
-          )
+        this.friendsList(localStorage["user"])
           .then(res => {
             const response = res.data;
             const list = response.list;
@@ -270,11 +262,7 @@ export default {
                 this.items = list;
               })
               .then(() => {
-                axios
-                  .get(
-                    "https://hangman-webapp.herokuapp.com/api/fetch/challenges/for/" +
-                      localStorage["user"]
-                  )
+                this.fetchChallenges(localStorage["user"])
                   .then(res => {
                     const response = res.data;
                     const challenges = response.challenges;
@@ -282,11 +270,7 @@ export default {
                     this.challengeLoading = false;
                   })
                   .then(() => {
-                    axios
-                      .get(
-                        "https://hangman-webapp.herokuapp.com/api/fetch/challenges/sent/by/" +
-                          localStorage["user"]
-                      )
+                    this.challengeSent(localStorage["user"])
                       .then(res => {
                         const response = res.data;
                         const challenges = response.challenges;
@@ -303,11 +287,7 @@ export default {
                         this.challengesSent = list;
                       })
                       .then(() => {
-                        axios
-                          .get(
-                            "https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" +
-                              localStorage["user"]
-                          )
+                        this.completeChallenges(localStorage["user"])
                           .then(res => {
                             const response = res.data;
                             const results = response.results;
@@ -355,6 +335,58 @@ export default {
     };
   },
   methods: {
+    async fetchChallenges(user){
+      const config = {
+        method: "get",
+        url: "https://hangman-webapp.herokuapp.com/api/fetch/challenges/for/" + user,
+        headers: {auth: localStorage['token']}
+      };
+      return await axios(config);
+    },
+    async challengeSent(user){
+      const config = {
+        method: "get",
+        url:"https://hangman-webapp.herokuapp.com/api/fetch/challenges/sent/by/" + user,
+        headers: {auth: localStorage['token']}
+      };
+      return await axios(config);
+    },
+    async completeChallenges(user) {
+      const config = {
+        method: "get",
+        url:"https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" + user,
+        headers: {auth: localStorage['token']}
+      };
+      return await axios(config);
+    },
+    async findUser(user) {
+      const token = localStorage["token"];
+      const config = {
+        method: "get",
+        url:
+          "https://hangman-webapp.herokuapp.com/api/find/user/" + user ,
+        headers: { auth: token }
+      };
+      return await axios(config);
+    },
+    async friendsList(user) {
+      const config = {
+        method: "get",
+        url: "https://hangman-webapp.herokuapp.com/api/friend/list/" + user,
+        headers: {auth: localStorage['token']}
+      };
+      return await axios(config);
+    },
+    async friendRequestsFor(user) {
+      const config = {
+        method: "get",
+        url:
+          "https://hangman-webapp.herokuapp.com/api/friend/requests/for/" +
+          user,
+        headers: { auth: localStorage["token"] }
+      };
+      return await axios(config);
+    },
     async allUsers() {
       const config = {
         method: "get",
@@ -366,11 +398,7 @@ export default {
     updateChallenges() {
       this.play = false;
       this.completeChallengesLoad = true;
-      axios
-        .get(
-          "https://hangman-webapp.herokuapp.com/api/fetch/challenges/for/" +
-            localStorage["user"]
-        )
+      this.fetchChallenges(localStorage["user"])
         .then(res => {
           const response = res.data;
           const challenges = response.challenges;
@@ -378,11 +406,7 @@ export default {
           this.completeChallengesLoad = false;
         })
         .then(() => {
-          axios
-            .get(
-              "https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" +
-                localStorage["user"]
-            )
+          this.completeChallenges(localStorage["user"])
             .then(res => {
               const response = res.data;
               const results = response.results;
@@ -411,11 +435,7 @@ export default {
           word
         })
         .then(res => {
-          axios
-            .get(
-              "https://hangman-webapp.herokuapp.com/api/fetch/challenges/for/" +
-                localStorage["user"]
-            )
+          this.fetchChallenges(localStorage["user"])
             .then(res => {
               const response = res.data;
               const challenges = response.challenges;
@@ -457,11 +477,7 @@ export default {
             const status = response.status;
           })
           .then(() => {
-            axios
-              .get(
-                "https://hangman-webapp.herokuapp.com/api/fetch/challenges/sent/by/" +
-                  localStorage["user"]
-              )
+            this.challengeSent(localStorage["user"])
               .then(res => {
                 const response = res.data;
                 const challenges = response.challenges;
@@ -490,10 +506,7 @@ export default {
       this.error = false;
       const search = this.search;
       if (search != "") {
-        axios
-          .get(
-            "https://hangman-webapp.herokuapp.com/api/find/user/" + this.search
-          )
+        this.findUser(this.search)
           .then(res => {
             let found = false;
             const list = [];
@@ -525,37 +538,36 @@ export default {
             this.results = list;
           });
       } else {
-        this.allUsers()
-          .then(res => {
-            let found = false;
-            const list = [];
-            const response = res.data;
-            const user = response.words;
-            for (let x = 0; x < user.length; x++) {
-              if (user[x].username === localStorage["user"]) {
-                found = true;
-              } else {
-                for (const friend of this.friendList) {
-                  if (user[x].username === friend) {
-                    found = true;
-                  }
+        this.allUsers().then(res => {
+          let found = false;
+          const list = [];
+          const response = res.data;
+          const user = response.words;
+          for (let x = 0; x < user.length; x++) {
+            if (user[x].username === localStorage["user"]) {
+              found = true;
+            } else {
+              for (const friend of this.friendList) {
+                if (user[x].username === friend) {
+                  found = true;
                 }
               }
-              if (!found) {
-                let item = {
-                  username: user[x].username,
-                  points: user[x].points
-                };
-                list.push(item);
-              } else {
-                found = false;
-              }
             }
-            if (list.length === 0) {
-              this.error = true;
+            if (!found) {
+              let item = {
+                username: user[x].username,
+                points: user[x].points
+              };
+              list.push(item);
+            } else {
+              found = false;
             }
-            this.results = list;
-          });
+          }
+          if (list.length === 0) {
+            this.error = true;
+          }
+          this.results = list;
+        });
       }
     },
     sendRequest(receiver) {
@@ -583,48 +595,43 @@ export default {
           this.requests.splice(index, 1);
         })
         .then(() => {
-          axios
-            .get(
-              "https://hangman-webapp.herokuapp.com/api/friend/list/" +
-                localStorage["user"]
-            )
+          this.friendsList(localStorage["user"])
             .then(res => {
               const response = res.data;
               const list = response.list;
               this.friendList = list;
             })
             .then(() => {
-              this.allUsers()
-                .then(res => {
-                  const list = [];
-                  let item = {};
-                  const response = res.data;
-                  const users = response.words;
-                  for (let x = 0; x < users.length; x++) {
-                    if (users[x].username === localStorage["user"]) {
-                      item = {
-                        Rank: x + 1,
-                        Username: users[x].username,
-                        Points: users[x].points,
-                        Ratio: users[x].win_rate
-                      };
-                      list.push(item);
-                    } else {
-                      for (const friend of this.friendList) {
-                        if (users[x].username === friend) {
-                          item = {
-                            Rank: x + 1,
-                            Username: users[x].username,
-                            Points: users[x].points,
-                            Ratio: users[x].win_rate
-                          };
-                          list.push(item);
-                        }
+              this.allUsers().then(res => {
+                const list = [];
+                let item = {};
+                const response = res.data;
+                const users = response.words;
+                for (let x = 0; x < users.length; x++) {
+                  if (users[x].username === localStorage["user"]) {
+                    item = {
+                      Rank: x + 1,
+                      Username: users[x].username,
+                      Points: users[x].points,
+                      Ratio: users[x].win_rate
+                    };
+                    list.push(item);
+                  } else {
+                    for (const friend of this.friendList) {
+                      if (users[x].username === friend) {
+                        item = {
+                          Rank: x + 1,
+                          Username: users[x].username,
+                          Points: users[x].points,
+                          Ratio: users[x].win_rate
+                        };
+                        list.push(item);
                       }
                     }
                   }
-                  this.items = list;
-                });
+                }
+                this.items = list;
+              });
             });
         });
     },
@@ -645,48 +652,43 @@ export default {
           friend
         })
         .then(res => {
-          axios
-            .get(
-              "https://hangman-webapp.herokuapp.com/api/friend/list/" +
-                localStorage["user"]
-            )
+          this.friendsList(localStorage["user"])
             .then(res => {
               const response = res.data;
               const list = response.list;
               this.friendList = list;
             })
             .then(() => {
-              this.allUsers()
-                .then(res => {
-                  const list = [];
-                  let item = {};
-                  const response = res.data;
-                  const users = response.words;
-                  for (let x = 0; x < users.length; x++) {
-                    if (users[x].username === localStorage["user"]) {
-                      item = {
-                        Rank: x + 1,
-                        Username: users[x].username,
-                        Points: users[x].points,
-                        Ratio: users[x].win_rate
-                      };
-                      list.push(item);
-                    } else {
-                      for (const friend of this.friendList) {
-                        if (users[x].username === friend) {
-                          item = {
-                            Rank: x + 1,
-                            Username: users[x].username,
-                            Points: users[x].points,
-                            Ratio: users[x].win_rate
-                          };
-                          list.push(item);
-                        }
+              this.allUsers().then(res => {
+                const list = [];
+                let item = {};
+                const response = res.data;
+                const users = response.words;
+                for (let x = 0; x < users.length; x++) {
+                  if (users[x].username === localStorage["user"]) {
+                    item = {
+                      Rank: x + 1,
+                      Username: users[x].username,
+                      Points: users[x].points,
+                      Ratio: users[x].win_rate
+                    };
+                    list.push(item);
+                  } else {
+                    for (const friend of this.friendList) {
+                      if (users[x].username === friend) {
+                        item = {
+                          Rank: x + 1,
+                          Username: users[x].username,
+                          Points: users[x].points,
+                          Ratio: users[x].win_rate
+                        };
+                        list.push(item);
                       }
                     }
                   }
-                  this.items = list;
-                });
+                }
+                this.items = list;
+              });
             });
         });
     }
@@ -704,14 +706,14 @@ html {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgb(114, 100, 100); 
+  background: rgb(114, 100, 100);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #353030; 
+  background: #353030;
 }
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey; 
+  box-shadow: inset 0 0 5px grey;
   border-radius: 10px;
 }
 </style>

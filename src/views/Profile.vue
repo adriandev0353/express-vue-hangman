@@ -69,11 +69,7 @@ export default {
     this.loading = true;
     this.history = true;
     this.points = 0;
-    axios
-      .get(
-        "https://hangman-webapp.herokuapp.com/api/get/user/data/" +
-          localStorage["user"]
-      )
+    this.userData(localStorage['user'])
       .then(res => {
         let response = res.data;
         let data = response.data;
@@ -100,18 +96,17 @@ export default {
         this.loading = false;
         this.items = list;
         this.history = false;
-        this.allUsers()
-          .then(res => {
-            let response = res.data;
-            let users = response.words;
+        this.allUsers().then(res => {
+          let response = res.data;
+          let users = response.words;
 
-            for (let i = 0; i < users.length; i++) {
-              if (users[i].username === localStorage["user"]) {
-                this.ranking = i + 1;
-                this.statLoading = false;
-              }
+          for (let i = 0; i < users.length; i++) {
+            if (users[i].username === localStorage["user"]) {
+              this.ranking = i + 1;
+              this.statLoading = false;
             }
-          });
+          }
+        });
       })
       .then(() => {
         this.findUser().then(res => {
@@ -141,6 +136,36 @@ export default {
     };
   },
   methods: {
+    async userData(user) {
+      const config = {
+        method: "get",
+        url: "https://hangman-webapp.herokuapp.com/api/get/user/data/" + user,
+        headers: {auth: localStorage['token']}
+      };
+      return await axios(config);
+    },
+    async userDataChoice(user, choice) {
+      const config = {
+        method: "get",
+        url:
+          "https://hangman-webapp.herokuapp.com/api/get/user/data/user/" +
+          user +
+          "/choice/" +
+          choice,
+        headers: { auth: localStorage["token"] }
+      };
+      return await axios(config);
+    },
+    async completeChallenges(user) {
+      const config = {
+        method: "get",
+        url:
+          "https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" +
+          user,
+        headers: { auth: localStorage["token"] }
+      };
+      return await axios(config);
+    },
     async allUsers() {
       const config = {
         method: "get",
@@ -175,60 +200,44 @@ export default {
       if (this.selected) {
         if (this.selected !== "challenges") {
           this.challengesChosen = false;
-          axios
-            .get(
-              "https://hangman-webapp.herokuapp.com/api/get/user/data/user/" +
-                localStorage["user"] +
-                "/choice/" +
-                this.selected
-            )
-            .then(res => {
-              let response = res.data;
-              let data = response.data;
-              let list = [];
+          this.userDataChoice(localStorage["user"], this.selected).then(res => {
+            let response = res.data;
+            let data = response.data;
+            let list = [];
 
-              for (let i = 0; i < data.length; i++) {
-                this.totalPoints += data[i].points;
-                let item = {
-                  Word: data[i].word,
-                  Result: data[i].complete_state,
-                  Pts: data[i].points
-                };
-                list.push(item);
-              }
-              this.items = list;
-              this.$forceUpdate();
-              this.history = false;
-            });
+            for (let i = 0; i < data.length; i++) {
+              this.totalPoints += data[i].points;
+              let item = {
+                Word: data[i].word,
+                Result: data[i].complete_state,
+                Pts: data[i].points
+              };
+              list.push(item);
+            }
+            this.items = list;
+            this.$forceUpdate();
+            this.history = false;
+          });
         } else {
           this.challengesChosen = true;
-          axios
-            .get(
-              "https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" +
-                localStorage["user"]
-            )
-            .then(res => {
-              const response = res.data;
-              const results = response.results;
-              const list = [];
-              for (const i of results) {
-                const item = {
-                  Challenger: i.challenger,
-                  Word: i.word,
-                  Result: i.status
-                };
-                list.push(item);
-              }
-              this.challengesCompleted = list;
-              this.history = false;
-            });
+          this.completeChallenges(localStorage["user"]).then(res => {
+            const response = res.data;
+            const results = response.results;
+            const list = [];
+            for (const i of results) {
+              const item = {
+                Challenger: i.challenger,
+                Word: i.word,
+                Result: i.status
+              };
+              list.push(item);
+            }
+            this.challengesCompleted = list;
+            this.history = false;
+          });
         }
       } else {
-        axios
-          .get(
-            "https://hangman-webapp.herokuapp.com/api/get/user/data/" +
-              localStorage["user"]
-          )
+        this.userData(localStorage['user'])
           .then(res => {
             let response = res.data;
             let data = response.data;

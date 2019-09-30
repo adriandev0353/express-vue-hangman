@@ -150,13 +150,18 @@ export default {
     };
   },
   methods: {
+    async listSize(size){
+      const config = {
+        method: "get",
+        url: "https://hangman-webapp.herokuapp.com/api/list/size/" + size,
+        headers: {auth: localStorage['token']}
+      };
+      return await axios(config);
+    },
     activatePlay() {
       this.loading = true;
       this.wordGuessed = [];
-      axios
-        .get(
-          "https://hangman-webapp.herokuapp.com/api/list/size/" + this.length
-        )
+      this.listSize(this.length)
         .then(results => {
           let response = results.data;
           let wordList = response.words;

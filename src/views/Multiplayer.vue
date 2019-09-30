@@ -294,11 +294,7 @@ export default {
             one: this.wordGuessedOne,
             two: this.wordGuessedTwo
           });
-          axios
-            .get(
-              "https://hangman-webapp.herokuapp.com/api/list/size/" +
-                this.wordLength
-            )
+          this.listSize(this.wordLength)
             .then(res => {
               const response = res.data;
               const words = response.words;
@@ -366,6 +362,14 @@ export default {
     this.socket.close();
   },
   methods: {
+    async listSize(size){
+      const config = {
+        method: "get",
+        url: "https://hangman-webapp.herokuapp.com/api/list/size/" + size,
+        headers: {auth: localStorage['token']}
+      };
+      return await axios(config);
+    },
     search() {
       this.searchForOpponent = true;
       EventBus.$emit("search");
