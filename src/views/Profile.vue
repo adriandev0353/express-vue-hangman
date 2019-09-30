@@ -65,7 +65,7 @@
 <script>
 import axios from "axios";
 export default {
-  beforeCreate() {
+  mounted() {
     this.loading = true;
     this.history = true;
     this.points = 0;

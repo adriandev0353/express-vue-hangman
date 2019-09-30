@@ -214,7 +214,7 @@ export default {
   components: {
     Game
   },
-  beforeCreate() {
+  mounted() {
     axios
       .get(
         "https://hangman-webapp.herokuapp.com/api/friend/requests/for/" +
@@ -238,8 +238,7 @@ export default {
             this.friendList = list;
           })
           .then(() => {
-            axios
-              .get("https://hangman-webapp.herokuapp.com/api/all/users")
+            this.allUsers()
               .then(res => {
                 const list = [];
                 let item = {};

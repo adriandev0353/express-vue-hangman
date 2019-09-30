@@ -29,7 +29,7 @@
 import axios from "axios";
 
 export default {
-  beforeCreate() {
+  mounted() {
     this.loading = true;
     this.statLoading= true;
     this.allUsers()

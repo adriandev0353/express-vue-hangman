@@ -364,7 +364,6 @@ export default {
   beforeDestroy() {
     this.socket.emit("quit", localStorage["user"]);
     this.socket.close();
-    console.log("destoryed!");
   },
   methods: {
     search() {
