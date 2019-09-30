@@ -356,6 +356,14 @@ export default {
     };
   },
   methods: {
+    async allUsers() {
+      const config = {
+        method: "get",
+        url: "https://hangman-webapp.herokuapp.com/api/all/users",
+        headers: { auth: localStorage["token"] }
+      };
+      return await axios(config);
+    },
     updateChallenges() {
       this.play = false;
       this.completeChallengesLoad = true;
@@ -518,8 +526,7 @@ export default {
             this.results = list;
           });
       } else {
-        axios
-          .get("https://hangman-webapp.herokuapp.com/api/all/users")
+        this.allUsers()
           .then(res => {
             let found = false;
             const list = [];
@@ -588,8 +595,7 @@ export default {
               this.friendList = list;
             })
             .then(() => {
-              axios
-                .get("https://hangman-webapp.herokuapp.com/api/all/users")
+              this.allUsers()
                 .then(res => {
                   const list = [];
                   let item = {};
@@ -651,8 +657,7 @@ export default {
               this.friendList = list;
             })
             .then(() => {
-              axios
-                .get("https://hangman-webapp.herokuapp.com/api/all/users")
+              this.allUsers()
                 .then(res => {
                   const list = [];
                   let item = {};

@@ -165,17 +165,13 @@ export default {
       }
       if (wordSoFar === word) {
         this.win = true;
-        this.setStatus("won").then(res => {
-          console.log(res);
-        });
+        this.setStatus("won").then(res => {});
       }
       if (!isCorrect) {
         this.guessesLeft--;
         if (this.guessesLeft === 0) {
           this.lost = true;
-          this.setStatus("lost").then(res => {
-          console.log(res);
-        });
+          this.setStatus("lost").then(res => {});
         }
       }
     }

@@ -17,7 +17,7 @@ const checkToken = (req, res, next) => {
     } else {
         return res.json({
             success: false,
-            message: 'No auth token generated'
+            message: 'Not authorized to do that'
         });
     }
 };
