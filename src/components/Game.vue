@@ -129,14 +129,13 @@ export default {
         url: "https://hangman-webapp.herokuapp.com/api/set/challenge/status",
         headers: {
           auth: token
-        },
-        body: {
-          opponent: localStorage["user"],
-          status: status,
-          word: this.word
         }
       };
-      return await axios(config);
+      return await axios(config, {
+        opponent: localStorage["user"],
+        status: status,
+        word: this.word
+      });
     },
     isDisabled(index) {
       return this.alphabet[index].disable;
@@ -174,8 +173,8 @@ export default {
         if (this.guessesLeft === 0) {
           this.lost = true;
           this.setStatus("lost").then(res => {
-          console.log(res);
-        });
+            console.log(res);
+          });
         }
       }
     }
