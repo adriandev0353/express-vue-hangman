@@ -83,25 +83,24 @@ export default {
         }
       })
       .then(() => {
-        this.allNewWords()
-          .then(res => {
-            const response = res.data;
-            const words = response.words;
-            const list = [];
-            this.newWords = 0;
-            for (let item of words) {
-              if (item.status === "pending") {
-                let wordData = {
-                  username: item.username,
-                  word: item.word
-                };
-                list.push(wordData);
-                this.newWords++;
-                this.$forceUpdate();
-              }
+        this.allNewWords().then(res => {
+          const response = res.data;
+          const words = response.words;
+          const list = [];
+          this.newWords = 0;
+          for (let item of words) {
+            if (item.status === "pending") {
+              let wordData = {
+                username: item.username,
+                word: item.word
+              };
+              list.push(wordData);
+              this.newWords++;
+              this.$forceUpdate();
             }
-            this.words = list;
-          });
+          }
+          this.words = list;
+        });
       });
   },
   data() {
@@ -123,13 +122,38 @@ export default {
     };
   },
   methods: {
+    async deleteUserAccount(username) {
+      const config = {
+        method: "post",
+        url: "https://hangman-webapp.herokuapp.com/api/delete/user",
+        headers: { auth: localStorage["token"] },
+        data: { username }
+      };
+      return await axios(config);
+    },
+    async addWordFrom(word, user) {
+      const config = {
+        method: "post",
+        url: "https://hangman-webapp.herokuapp.com/api/add/word/from/user/",
+        headers: { auth: localStorage["token"] },
+        data: { word, user }
+      };
+      return await axios(config);
+    },
+    async setNewWordStatus(word, status) {
+      const config = {
+        method: "post",
+        url: "https://hangman-webapp.herokuapp.com/api/set/new/word/status",
+        headers: { auth: localStorage["token"] },
+        data: { word, status }
+      };
+      return await axios(config);
+    },
     async findUser(user) {
       const token = localStorage["token"];
       const config = {
         method: "get",
-        url:
-          "https://hangman-webapp.herokuapp.com/api/find/user/" +
-          user,
+        url: "https://hangman-webapp.herokuapp.com/api/find/user/" + user,
         headers: { auth: token }
       };
       return await axios(config);
@@ -153,16 +177,15 @@ export default {
     searchUser() {
       let user = this.search;
       if (user != "") {
-        this.findUser(user)
-          .then(res => {
-            let response = res.data;
-            let user = response.user;
-            let item = {
-              Username: user.username,
-              Points: user.points
-            };
-            this.items = [item];
-          });
+        this.findUser(user).then(res => {
+          let response = res.data;
+          let user = response.user;
+          let item = {
+            Username: user.username,
+            Points: user.points
+          };
+          this.items = [item];
+        });
       } else {
         this.allUsers().then(res => {
           let list = [];
@@ -182,86 +205,65 @@ export default {
     deleteUser(username) {
       if (confirm("Are you sure you want to delete this users' account?")) {
         let list = [];
-        axios
-          .post("https://hangman-webapp.herokuapp.com/api/delete/user", {
-            username
-          })
-          .then(res => {
-            let response = res.data;
-            let users = response.users;
-            for (let x = 0; x < users.length; x++) {
-              let item = {
-                Username: users[x].username,
-                Points: users[x].points
-              };
-              list.push(item);
-              this.items = list;
-            }
-          });
+        this.deleteUserAccount(username).then(res => {
+          let response = res.data;
+          let users = response.users;
+          for (let x = 0; x < users.length; x++) {
+            let item = {
+              Username: users[x].username,
+              Points: users[x].points
+            };
+            list.push(item);
+            this.items = list;
+          }
+        });
       }
     },
     confirmWord(word, user) {
-      axios
-        .post("https://hangman-webapp.herokuapp.com/api/add/word/from/user/", {
-          word: word,
-          user: user
-        })
-        .then(res => {
-          axios
-            .post(
-              "https://hangman-webapp.herokuapp.com/api/set/new/word/status",
-              { word: word, status: "confirmed" }
-            )
-            .then(res => {
-              this.allNewWords()
-                .then(res => {
-                  const response = res.data;
-                  const words = response.words;
-                  this.newWords = 0;
-                  const list = [];
-                  for (let item of words) {
-                    if (item.status === "pending") {
-                      let wordData = {
-                        username: item.username,
-                        word: item.word
-                      };
-                      list.push(wordData);
-                      this.newWords++;
-                      this.$forceUpdate();
-                    }
-                  }
-                  this.words = list;
-                });
-            });
+      this.addWordFrom(word, user).then(res => {
+        this.setNewWordStatus(word, "confirmed").then(res => {
+          this.allNewWords().then(res => {
+            const response = res.data;
+            const words = response.words;
+            this.newWords = 0;
+            const list = [];
+            for (let item of words) {
+              if (item.status === "pending") {
+                let wordData = {
+                  username: item.username,
+                  word: item.word
+                };
+                list.push(wordData);
+                this.newWords++;
+                this.$forceUpdate();
+              }
+            }
+            this.words = list;
+          });
         });
+      });
     },
     denyWord(word) {
-      axios
-        .post("https://hangman-webapp.herokuapp.com/api/set/new/word/status", {
-          word: word,
-          status: "denied"
-        })
-        .then(res => {
-          this.allNewWords()
-            .then(res => {
-              const response = res.data;
-              const words = response.words;
-              this.newWords = 0;
-              const list = [];
-              for (let item of words) {
-                if (item.status === "pending") {
-                  let wordData = {
-                    username: item.username,
-                    word: item.word
-                  };
-                  list.push(wordData);
-                  this.newWords++;
-                  this.$forceUpdate();
-                }
-              }
-              this.words = list;
-            });
+      this.setNewWordStatus(word, "denied").then(res => {
+        this.allNewWords().then(res => {
+          const response = res.data;
+          const words = response.words;
+          this.newWords = 0;
+          const list = [];
+          for (let item of words) {
+            if (item.status === "pending") {
+              let wordData = {
+                username: item.username,
+                word: item.word
+              };
+              list.push(wordData);
+              this.newWords++;
+              this.$forceUpdate();
+            }
+          }
+          this.words = list;
         });
+      });
     }
   }
 };

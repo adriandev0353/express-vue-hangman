@@ -18,18 +18,18 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/fetch/challenges/for/:user', middleware.checkToken, hangmanAPI.fetchChallengesFor);
     app.get('/api/fetch/challenges/sent/by/:user', middleware.checkToken, hangmanAPI.fetchChallengesSentBy);
     app.get('/api/fetch/complete/challenges/by/:user', middleware.checkToken, hangmanAPI.fetchCompleteChallenges);
-    app.post('/api/add/points/to', hangmanAPI.addPointsTo);
+    app.post('/api/add/points/to', middleware.checkToken, hangmanAPI.addPointsTo);
     app.post('/api/set/challenge/status', middleware.checkToken, hangmanAPI.setChallengeStatus);
-    app.post('/api/remove/challenge', hangmanAPI.removeChallenge);
-    app.post('/api/send/challenge', hangmanAPI.sendChallenge);
-    app.post('/api/remove/friend', hangmanAPI.deleteFriend);
-    app.post('/api/add/friends', hangmanAPI.addFriends);
-    app.post('/api/confirm/friend/request', hangmanAPI.confirmRequest);
-    app.post('/api/deny/friend/request', hangmanAPI.denyRequest);
-    app.post('/api/check/word/played', hangmanAPI.checkWordsGuessed);
-    app.post('/api/set/new/word/status', hangmanAPI.setNewWordStatus);
-    app.post('/api/store/new/word', hangmanAPI.storeNewWord);
-    app.post('/api/delete/user', hangmanAPI.delUser);
+    app.post('/api/remove/challenge', middleware.checkToken, hangmanAPI.removeChallenge);
+    app.post('/api/send/challenge', middleware.checkToken, hangmanAPI.sendChallenge);
+    app.post('/api/remove/friend', middleware.checkToken, hangmanAPI.deleteFriend);
+    app.post('/api/add/friends', middleware.checkToken, hangmanAPI.addFriends);
+    app.post('/api/confirm/friend/request', middleware.checkToken, hangmanAPI.confirmRequest);
+    app.post('/api/deny/friend/request', middleware.checkToken, hangmanAPI.denyRequest);
+    app.post('/api/check/word/played', middleware.checkToken, hangmanAPI.checkWordsGuessed);
+    app.post('/api/set/new/word/status', middleware.checkToken, hangmanAPI.setNewWordStatus);
+    app.post('/api/store/new/word', middleware.checkToken, hangmanAPI.storeNewWord);
+    app.post('/api/delete/user', middleware.checkToken, hangmanAPI.delUser);
     app.post('/api/token/check', middleware.checkToken, (req, res) => {
         res.json({
             success: true,
@@ -38,7 +38,7 @@ module.exports = (app, hangmanAPI) => {
         });
     });
     app.post('/api/login/check', hangmanAPI.loginCheck);
-    app.post('/api/add/word/from/user', hangmanAPI.addNewWord);
+    app.post('/api/add/word/from/user', middleware.checkToken, hangmanAPI.addNewWord);
     app.post('/api/add/user', hangmanAPI.addUser);
-    app.post('/api/add/to/user', hangmanAPI.addWordTo);
+    app.post('/api/add/to/user', middleware.checkToken, hangmanAPI.addWordTo);
 };

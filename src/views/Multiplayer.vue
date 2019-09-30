@@ -237,18 +237,9 @@ export default {
           this.winner = this.playerTwo;
           loser = this.playerOne;
         }
-        axios
-          .post("https://hangman-webapp.herokuapp.com/api/add/points/to", {
-            user: this.winner,
-            points: 5
-          })
-          .then(res => {})
-          .then(() => {
-            axios
-              .post("https://hangman-webapp.herokuapp.com/api/add/points/to", {
-                user: loser,
-                points: -5
-              })
+        this.addPointsTo(this.winner, 5)
+          .then(res => {
+            this.addPointsTo(loser, -5)
               .then(res => {
                 this.wordGuessedOne = [];
                 for (const letter of this.playerOneWord) {
@@ -362,6 +353,15 @@ export default {
     this.socket.close();
   },
   methods: {
+    async addPointsTo(user, points){
+      const config = {
+        method: "post",
+        url: "https://hangman-webapp.herokuapp.com/api/add/points/to",
+        headers: {auth: localStorage['token']},
+        data: {user, points}
+      };
+      return await axios(config);
+    },
     async listSize(size){
       const config = {
         method: "get",

@@ -38,6 +38,15 @@ export default {
     };
   },
   methods: {
+    async storeNewWord(word, user){
+      const config = {
+        method: 'post',
+        url: 'https://hangman-webapp.herokuapp.com/api/store/new/word',
+        headers: {auth: localStorage['token']},
+        data: {word, user}
+      }
+      return await axios(config);
+    },
     async checkWord(word){
       const config = {
         method: "get",
@@ -58,11 +67,7 @@ export default {
             this.success = true;
             this.error = false;
             this.message ='Your word has been sent in to be verified';
-            axios
-              .post("https://hangman-webapp.herokuapp.com/api/store/new/word", {
-                word: this.word,
-                user: localStorage["user"]
-              })
+            this.storeNewWord(this.word, localStorage['user'])
               .then(res => {
                 let response = res.data;
               });

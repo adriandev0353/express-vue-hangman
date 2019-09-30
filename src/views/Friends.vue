@@ -287,8 +287,8 @@ export default {
                         this.challengesSent = list;
                       })
                       .then(() => {
-                        this.completeChallenges(localStorage["user"])
-                          .then(res => {
+                        this.completeChallenges(localStorage["user"]).then(
+                          res => {
                             const response = res.data;
                             const results = response.results;
                             const list = [];
@@ -302,7 +302,8 @@ export default {
                             }
                             this.challengesCompleted = list;
                             this.completeChallengesLoad = false;
-                          });
+                          }
+                        );
                       });
                   });
               });
@@ -335,27 +336,87 @@ export default {
     };
   },
   methods: {
-    async fetchChallenges(user){
+    async denyFriendRequest(requester, receiver) {
       const config = {
-        method: "get",
-        url: "https://hangman-webapp.herokuapp.com/api/fetch/challenges/for/" + user,
-        headers: {auth: localStorage['token']}
+        method: "post",
+        url: "https://hangman-webapp.herokuapp.com/api/deny/friend/request",
+        headers: { auth: localStorage["token"] },
+        data: { requester, receiver }
       };
       return await axios(config);
     },
-    async challengeSent(user){
+    async confirmFriendRequest(requester, receiver) {
+      const config = {
+        method: "post",
+        url: "https://hangman-webapp.herokuapp.com/api/confirm/friend/request",
+        headers: { auth: localStorage["token"] },
+        data: { requester, receiver }
+      };
+      return await axios(config);
+    },
+    async addFriend(requester, receiver) {
+      const config = {
+        method: "post",
+        url: "https://hangman-webapp.herokuapp.com/api/add/friends",
+        headers: { auth: localStorage["token"] },
+        data: { requester, receiver }
+      };
+      return await axios(config);
+    },
+    async removeFriend(user, friend) {
+      const config = {
+        method: "post",
+        url: "https://hangman-webapp.herokuapp.com/api/remove/friend",
+        headers: { auth: localStorage["token"] },
+        data: { user, friend }
+      };
+      return await axios(config);
+    },
+    async sendChallenge(challenger, opponent, word, hint) {
+      const config = {
+        method: "post",
+        url: "https://hangman-webapp.herokuapp.com/api/send/challenge",
+        headers: { auth: localStorage["token"] },
+        data: { challenger, opponent, word, hint }
+      };
+      return await axios(config);
+    },
+    async removeChallenge(opponent, word) {
+      const config = {
+        method: "post",
+        url: "https://hangman-webapp.herokuapp.com/api/remove/challenge",
+        headers: { auth: localStorage["token"] },
+        data: { opponent, word }
+      };
+      return await axios(config);
+    },
+    async fetchChallenges(user) {
       const config = {
         method: "get",
-        url:"https://hangman-webapp.herokuapp.com/api/fetch/challenges/sent/by/" + user,
-        headers: {auth: localStorage['token']}
+        url:
+          "https://hangman-webapp.herokuapp.com/api/fetch/challenges/for/" +
+          user,
+        headers: { auth: localStorage["token"] }
+      };
+      return await axios(config);
+    },
+    async challengeSent(user) {
+      const config = {
+        method: "get",
+        url:
+          "https://hangman-webapp.herokuapp.com/api/fetch/challenges/sent/by/" +
+          user,
+        headers: { auth: localStorage["token"] }
       };
       return await axios(config);
     },
     async completeChallenges(user) {
       const config = {
         method: "get",
-        url:"https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" + user,
-        headers: {auth: localStorage['token']}
+        url:
+          "https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" +
+          user,
+        headers: { auth: localStorage["token"] }
       };
       return await axios(config);
     },
@@ -363,8 +424,7 @@ export default {
       const token = localStorage["token"];
       const config = {
         method: "get",
-        url:
-          "https://hangman-webapp.herokuapp.com/api/find/user/" + user ,
+        url: "https://hangman-webapp.herokuapp.com/api/find/user/" + user,
         headers: { auth: token }
       };
       return await axios(config);
@@ -373,7 +433,7 @@ export default {
       const config = {
         method: "get",
         url: "https://hangman-webapp.herokuapp.com/api/friend/list/" + user,
-        headers: {auth: localStorage['token']}
+        headers: { auth: localStorage["token"] }
       };
       return await axios(config);
     },
@@ -406,21 +466,20 @@ export default {
           this.completeChallengesLoad = false;
         })
         .then(() => {
-          this.completeChallenges(localStorage["user"])
-            .then(res => {
-              const response = res.data;
-              const results = response.results;
-              const list = [];
-              for (const i of results) {
-                const item = {
-                  Challenger: i.challenger,
-                  Word: i.word,
-                  Status: i.status
-                };
-                list.push(item);
-              }
-              this.challengesCompleted = list;
-            });
+          this.completeChallenges(localStorage["user"]).then(res => {
+            const response = res.data;
+            const results = response.results;
+            const list = [];
+            for (const i of results) {
+              const item = {
+                Challenger: i.challenger,
+                Word: i.word,
+                Status: i.status
+              };
+              list.push(item);
+            }
+            this.challengesCompleted = list;
+          });
         });
     },
     acceptChallenge(word, hint) {
@@ -429,20 +488,14 @@ export default {
       this.play = true;
     },
     rejectChallenge(word) {
-      axios
-        .post("https://hangman-webapp.herokuapp.com/api/remove/challenge", {
-          opponent: localStorage["user"],
-          word
-        })
-        .then(res => {
-          this.fetchChallenges(localStorage["user"])
-            .then(res => {
-              const response = res.data;
-              const challenges = response.challenges;
-              this.challenges = challenges;
-              this.$forceUpdate();
-            });
+      this.removeChallenge(localStorage["user"], word).then(res => {
+        this.fetchChallenges(localStorage["user"]).then(res => {
+          const response = res.data;
+          const challenges = response.challenges;
+          this.challenges = challenges;
+          this.$forceUpdate();
         });
+      });
     },
     rowClass(item, type) {
       if (!item) return;
@@ -465,34 +518,32 @@ export default {
         this.wordState = false;
       } else {
         this.sentChallengesLoading = true;
-        axios
-          .post("https://hangman-webapp.herokuapp.com/api/send/challenge", {
-            challenger: localStorage["user"],
-            opponent: this.friend,
-            word: this.word,
-            hint: this.hint
-          })
+        this.sendChallenge(
+          localStorage["user"],
+          this.friend,
+          this.word,
+          this.hint
+        )
           .then(res => {
             const response = res.data;
             const status = response.status;
           })
           .then(() => {
-            this.challengeSent(localStorage["user"])
-              .then(res => {
-                const response = res.data;
-                const challenges = response.challenges;
-                const list = [];
-                for (const challenge of challenges) {
-                  const item = {
-                    Opponent: challenge.opponent,
-                    Word: challenge.word,
-                    Status: challenge.status
-                  };
-                  list.push(item);
-                }
-                this.challengesSent = list;
-                this.sentChallengesLoading = false;
-              });
+            this.challengeSent(localStorage["user"]).then(res => {
+              const response = res.data;
+              const challenges = response.challenges;
+              const list = [];
+              for (const challenge of challenges) {
+                const item = {
+                  Opponent: challenge.opponent,
+                  Word: challenge.word,
+                  Status: challenge.status
+                };
+                list.push(item);
+              }
+              this.challengesSent = list;
+              this.sentChallengesLoading = false;
+            });
           });
         this.modalShow = false;
       }
@@ -506,37 +557,36 @@ export default {
       this.error = false;
       const search = this.search;
       if (search != "") {
-        this.findUser(this.search)
-          .then(res => {
-            let found = false;
-            const list = [];
-            const response = res.data;
-            const user = response.user;
-            for (let x = 0; x < user.length; x++) {
-              if (user[x].username === localStorage["user"]) {
-                found = true;
-              } else {
-                for (const friend of this.friendList) {
-                  if (user[x].username === friend) {
-                    found = true;
-                  }
+        this.findUser(this.search).then(res => {
+          let found = false;
+          const list = [];
+          const response = res.data;
+          const user = response.user;
+          for (let x = 0; x < user.length; x++) {
+            if (user[x].username === localStorage["user"]) {
+              found = true;
+            } else {
+              for (const friend of this.friendList) {
+                if (user[x].username === friend) {
+                  found = true;
                 }
               }
-              if (!found) {
-                let item = {
-                  username: user[x].username,
-                  points: user[x].points
-                };
-                list.push(item);
-              } else {
-                found = false;
-              }
             }
-            if (list.length === 0) {
-              this.error = true;
+            if (!found) {
+              let item = {
+                username: user[x].username,
+                points: user[x].points
+              };
+              list.push(item);
+            } else {
+              found = false;
             }
-            this.results = list;
-          });
+          }
+          if (list.length === 0) {
+            this.error = true;
+          }
+          this.results = list;
+        });
       } else {
         this.allUsers().then(res => {
           let found = false;
@@ -571,26 +621,14 @@ export default {
       }
     },
     sendRequest(receiver) {
-      axios
-        .post("https://hangman-webapp.herokuapp.com/api/add/friends", {
-          requester: localStorage["user"],
-          receiver
-        })
-        .then(res => {
-          const response = res.data;
-          const status = response.status;
-          this.results = [];
-        });
+      this.addFriend(localStorage["user"], receiver).then(res => {
+        const response = res.data;
+        const status = response.status;
+        this.results = [];
+      });
     },
     confirmRequest(requester, index) {
-      axios
-        .post(
-          "https://hangman-webapp.herokuapp.com/api/confirm/friend/request",
-          {
-            requester,
-            receiver: localStorage["user"]
-          }
-        )
+      this.confirmFriendRequest(requester, receiver)
         .then(res => {
           this.requests.splice(index, 1);
         })
@@ -636,61 +674,51 @@ export default {
         });
     },
     denyRequest(requester, index) {
-      axios
-        .post("https://hangman-webapp.herokuapp.com/api/deny/friend/request", {
-          requester,
-          receiver: localStorage["user"]
-        })
-        .then(res => {
-          this.requests.splice(index, 1);
-        });
+      this.denyFriendRequest(requester, localStorage["user"]).then(res => {
+        this.requests.splice(index, 1);
+      });
     },
     deleteFriend(friend) {
-      axios
-        .post("https://hangman-webapp.herokuapp.com/api/remove/friend", {
-          user: localStorage["user"],
-          friend
-        })
-        .then(res => {
-          this.friendsList(localStorage["user"])
-            .then(res => {
+      this.removeFriend(localStorage["user"], friend).then(res => {
+        this.friendsList(localStorage["user"])
+          .then(res => {
+            const response = res.data;
+            const list = response.list;
+            this.friendList = list;
+          })
+          .then(() => {
+            this.allUsers().then(res => {
+              const list = [];
+              let item = {};
               const response = res.data;
-              const list = response.list;
-              this.friendList = list;
-            })
-            .then(() => {
-              this.allUsers().then(res => {
-                const list = [];
-                let item = {};
-                const response = res.data;
-                const users = response.words;
-                for (let x = 0; x < users.length; x++) {
-                  if (users[x].username === localStorage["user"]) {
-                    item = {
-                      Rank: x + 1,
-                      Username: users[x].username,
-                      Points: users[x].points,
-                      Ratio: users[x].win_rate
-                    };
-                    list.push(item);
-                  } else {
-                    for (const friend of this.friendList) {
-                      if (users[x].username === friend) {
-                        item = {
-                          Rank: x + 1,
-                          Username: users[x].username,
-                          Points: users[x].points,
-                          Ratio: users[x].win_rate
-                        };
-                        list.push(item);
-                      }
+              const users = response.words;
+              for (let x = 0; x < users.length; x++) {
+                if (users[x].username === localStorage["user"]) {
+                  item = {
+                    Rank: x + 1,
+                    Username: users[x].username,
+                    Points: users[x].points,
+                    Ratio: users[x].win_rate
+                  };
+                  list.push(item);
+                } else {
+                  for (const friend of this.friendList) {
+                    if (users[x].username === friend) {
+                      item = {
+                        Rank: x + 1,
+                        Username: users[x].username,
+                        Points: users[x].points,
+                        Ratio: users[x].win_rate
+                      };
+                      list.push(item);
                     }
                   }
                 }
-                this.items = list;
-              });
+              }
+              this.items = list;
             });
-        });
+          });
+      });
     }
   }
 };

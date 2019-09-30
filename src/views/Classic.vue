@@ -150,67 +150,84 @@ export default {
     };
   },
   methods: {
-    async listSize(size){
+    async checkWordPlayed(user, word){
+      const config = {
+        method: "post",
+        url: "https://hangman-webapp.herokuapp.com/api/check/word/played",
+        headers: {auth: localStorage['token']},
+        data: {user, word}
+      };
+      return await axios(config);
+    },
+    async addToUser(username, word, state) {
+      const config = {
+        method: "post",
+        url: "https://hangman-webapp.herokuapp.com/api/add/to/user",
+        headers: { auth: localStorage["token"] },
+        data: {
+          username,
+          word,
+          state
+        }
+      };
+      return await axios(config);
+    },
+    async listSize(size) {
       const config = {
         method: "get",
         url: "https://hangman-webapp.herokuapp.com/api/list/size/" + size,
-        headers: {auth: localStorage['token']}
+        headers: { auth: localStorage["token"] }
       };
       return await axios(config);
     },
     activatePlay() {
       this.loading = true;
       this.wordGuessed = [];
-      this.listSize(this.length)
-        .then(results => {
-          let response = results.data;
-          let wordList = response.words;
-          if (wordList.length > 0) {
-            let listLength = wordList.length;
-            let index = Math.ceil(Math.random() * listLength) - 1;
-            this.word = wordList[index];
-            this.$forceUpdate();
-            let word = this.word.word;
-            axios
-              .post(
-                "https://hangman-webapp.herokuapp.com/api/check/word/played",
-                { user: localStorage["user"], word: word }
-              )
-              .then(res => {
-                const response = res.data;
-                const result = response.result;
-                if (result === "found") {
-                  this.error = true;
-                  this.play = false;
-                  for (let item of this.alphabet) {
-                    item.disable = false;
-                  }
-                  this.guessesLeft = 6;
-                  this.length = 0;
-                  this.wordGuessed = [];
-                  this.win = false;
-                  this.word = {};
-                  this.lettersGuessed = [];
-                  this.hintGiven = false;
-                  return;
+      this.listSize(this.length).then(results => {
+        let response = results.data;
+        let wordList = response.words;
+        if (wordList.length > 0) {
+          let listLength = wordList.length;
+          let index = Math.ceil(Math.random() * listLength) - 1;
+          this.word = wordList[index];
+          this.$forceUpdate();
+          let word = this.word.word;
+          this.checkWordPlayed(localStorage['user'], word)
+            .then(res => {
+              const response = res.data;
+              const result = response.result;
+              if (result === "found") {
+                this.error = true;
+                this.play = false;
+                for (let item of this.alphabet) {
+                  item.disable = false;
                 }
-              })
-              .then(() => {
-                this.loading = false;
-                for (let i = 0; i < word.length; i++) {
-                  if (word[i] === "-") {
-                    this.wordGuessed.push("-");
-                  } else {
-                    this.wordGuessed.push("_");
-                  }
+                this.guessesLeft = 6;
+                this.length = 0;
+                this.wordGuessed = [];
+                this.win = false;
+                this.word = {};
+                this.lettersGuessed = [];
+                this.hintGiven = false;
+                return;
+              }
+            })
+            .then(() => {
+              this.loading = false;
+              for (let i = 0; i < word.length; i++) {
+                if (word[i] === "-") {
+                  this.wordGuessed.push("-");
+                } else {
+                  this.wordGuessed.push("_");
                 }
-              });
-          } else {
-            this.error = true;
-            this.loading = false;
-            this.$forceUpdate();
-          }
-        });
+              }
+            });
+        } else {
+          this.error = true;
+          this.loading = false;
+          this.$forceUpdate();
+        }
+      });
 
       this.play = true;
     },
@@ -238,29 +255,21 @@ export default {
       }
       if (wordSoFar === word) {
         this.win = true;
-        axios
-          .post("https://hangman-webapp.herokuapp.com/api/add/to/user", {
-            username: localStorage["user"],
-            word: this.word.word,
-            state: "won"
-          })
-          .then(res => {
+        this.addToUser(localStorage["user"], this.word.word, "won").then(
+          res => {
             EventBus.$emit("userData", localStorage["user"]);
-          });
+          }
+        );
       }
       if (!isCorrect) {
         this.guessesLeft--;
         if (this.guessesLeft === 0) {
           this.lost = Math.ceil(this.length / 2);
-          axios
-            .post("https://hangman-webapp.herokuapp.com/api/add/to/user", {
-              username: localStorage["user"],
-              word: this.word.word,
-              state: "lost"
-            })
-            .then(res => {
+          this.addToUser(localStorage["user"], this.word.word, "lost").then(
+            res => {
               EventBus.$emit("userData", localStorage["user"]);
-            });
+            }
+          );
         }
       }
     },
@@ -305,17 +314,11 @@ export default {
     }
   },
   beforeDestroy() {
-    if(this.play){
-    axios
-      .post("https://hangman-webapp.herokuapp.com/api/add/to/user", {
-        username: localStorage["user"],
-        word: this.word.word,
-        state: "lost"
-      })
-      .then(res => {
+    if (this.play) {
+      this.addToUser(localStorage["user"], this.word.word, "lost").then(res => {
         EventBus.$emit("userData", localStorage["user"]);
       });
-    };
+    }
   }
 };
 </script>
