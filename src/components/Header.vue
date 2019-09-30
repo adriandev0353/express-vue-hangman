@@ -63,7 +63,6 @@ export default {
         });
       });
       this.findUser().then(res => {
-        console.log(res);
         const response = res.data;
         const user = response.user;
         this.points = user[0].points;

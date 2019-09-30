@@ -50,6 +50,7 @@ app.use(bodyParser.json());
 if (process.env.RELOAD_DATA) {
     console.log('About to reload data');
     hangmanService.reloadData(wordList);
+    console.log('Data reloaded');
 } else {
     console.log('Data not reloaded');
 };

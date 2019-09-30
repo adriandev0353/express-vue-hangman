@@ -19,7 +19,7 @@ module.exports = (app, hangmanAPI) => {
     app.get('/api/fetch/challenges/sent/by/:user', hangmanAPI.fetchChallengesSentBy);
     app.get('/api/fetch/complete/challenges/by/:user', hangmanAPI.fetchCompleteChallenges);
     app.post('/api/add/points/to', hangmanAPI.addPointsTo);
-    app.post('/api/set/challenge/status', hangmanAPI.setChallengeStatus);
+    app.post('/api/set/challenge/status', middleware.checkToken, hangmanAPI.setChallengeStatus);
     app.post('/api/remove/challenge', hangmanAPI.removeChallenge);
     app.post('/api/send/challenge', hangmanAPI.sendChallenge);
     app.post('/api/remove/friend', hangmanAPI.deleteFriend);
