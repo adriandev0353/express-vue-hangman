@@ -314,7 +314,7 @@ export default {
     }
   },
   beforeDestroy() {
-    if (this.play) {
+    if (this.play && !this.win && this.lost === 0 ) {
       this.addToUser(localStorage["user"], this.word.word, "lost").then(res => {
         EventBus.$emit("userData", localStorage["user"]);
       });
