@@ -93,57 +93,57 @@ const router = new Router({
     ]
 });
 
-router.beforeEach(async (to, from, next) => {
-    const token = localStorage['token'];
+router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
         // this route requires auth, check if logged in
         // if not, redirect to login page.
-        const config = {
-            method: 'post',
-            url: 'https://hangman-webapp.herokuapp.com/api/token/check',
-            headers: { auth: token },
-            data: { user: localStorage['user'] }
-        };
-        const results = await axios(config);
-        const response = results.data;
-        const auth = response.success;
+        tokenCheck().then(results => {
+            const response = results.data;
+            const auth = response.success;
 
-        if (!auth) {
-            next({
-                path: '/',
-                query: { redirect: to.fullPath }
-            });
-        } else {
-            next();
-        }
+            if (!auth) {
+                next({
+                    path: '/',
+                    query: { redirect: to.fullPath }
+                });
+            } else {
+                next();
+            }
+        });
     } else if (to.matched.some(record => record.meta.adminAuth)) {
-        const token = localStorage['token'];
-        const config = {
-            method: 'post',
-            url: 'https://hangman-webapp.herokuapp.com/api/token/check',
-            headers: { auth: token },
-            data: { user: localStorage['user'] }
-        };
-        const results = await axios(config);
-        const response = results.data;
-        const auth = response.success;
-        const user = response.user;
+        tokenCheck().then(results => {
+            const response = results.data;
+            const auth = response.success;
+            const user = response.user;
 
-        if (!auth) {
-            next({
-                path: '/',
-                query: { redirect: to.fullPath }
-            });
-        } else if (user === 'admin') {
-            next();
-        } else {
-            next({
-                path: '/',
-                query: { redirect: to.fullPath }
-            });
-        }
+            if (!auth) {
+                next({
+                    path: '/',
+                    query: { redirect: to.fullPath }
+                });
+            } else if (user === 'admin') {
+                next();
+            } else {
+                next({
+                    path: '/',
+                    query: { redirect: to.fullPath }
+                });
+            }
+        });
     } else {
         next();
     };
 });
+
+const tokenCheck = async () => {
+    const token = localStorage['token'];
+    const config = {
+        method: 'post',
+        url: 'https://hangman-webapp.herokuapp.com/api/token/check',
+        headers: { auth: token },
+        data: { user: localStorage['user'] }
+    };
+    // eslint-disable-next-line no-return-await
+    return await axios(config);
+};
 export default router;
