@@ -49,20 +49,24 @@ export default {
       points: 0
     };
   },
-  async mounted() {
+  mounted() {
     if (localStorage["user"]) {
       this.user = localStorage["user"];
-      // Listen for the 'clicked-event' and its payload.
-      EventBus.$on("userData", async name => {
-        this.user = name;
-        this.findUser().then(res => {
+    }
+    // Listen for the 'clicked-event' and its payload.
+    EventBus.$on("userData", name => {
+      this.user = name;
+      if (name !== "admin") {
+        this.findUser(name).then(res => {
           const response = res.data;
           const user = response.user;
           this.points = user[0].points;
           this.$forceUpdate();
         });
-      });
-      this.findUser().then(res => {
+      }
+    });
+    if (localStorage["user"] !== "admin" && localStorage["user"]) {
+      this.findUser(localStorage['user']).then(res => {
         const response = res.data;
         const user = response.user;
         this.points = user[0].points;
@@ -71,13 +75,11 @@ export default {
     }
   },
   methods: {
-    async findUser() {
+    async findUser(user) {
       const token = localStorage["token"];
       const config = {
         method: "get",
-        url:
-          "https://hangman-webapp.herokuapp.com/api/find/user/" +
-          localStorage["user"],
+        url: "https://hangman-webapp.herokuapp.com/api/find/user/" + user,
         headers: { auth: token }
       };
       return await axios(config);
