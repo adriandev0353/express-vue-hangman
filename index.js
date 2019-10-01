@@ -6,6 +6,7 @@ const wordList = require('./word.json');
 const HangmanAPI = require('./hangman-api');
 const HangmanService = require('./hangman-service');
 const AppRouting = require('./app-routing');
+const tokenCheck = require('./token-check');
 const cors = require('cors');
 
 const app = express();
@@ -50,12 +51,11 @@ app.use(bodyParser.json());
 if (process.env.RELOAD_DATA) {
     console.log('About to reload data');
     hangmanService.reloadData(wordList);
-    console.log('Data reloaded');
-} else {
+    console.log('Data reloaded successfullly');
     console.log('Data not reloaded');
 };
 
-AppRouting(app, hangmanAPI);
+AppRouting(app, hangmanAPI, tokenCheck);
 
 let players = 0;
 let playerOneReady = false;

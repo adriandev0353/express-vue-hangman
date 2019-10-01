@@ -1,8 +1,9 @@
-const middleware = require('./middleware');
-module.exports = (app, hangmanAPI) => {
+const Middleware = require('./middleware');
+module.exports = (app, hangmanAPI, tokenCheck) => {
     app.get('/', (req, res) => {
         res.send('This is the API server for my hangman game. welcome?');
     });
+    const middleware = Middleware(tokenCheck);
     app.get('/api/all/words', hangmanAPI.allWords);
     app.get('/api/all/new/words', middleware.checkToken, hangmanAPI.newWordList);
     app.get('/api/all/users', middleware.checkToken, hangmanAPI.allUsers);

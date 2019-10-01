@@ -6,6 +6,7 @@ const HangmanMockApi = require('../hangman-api');
 const HangmanService = require('./hangman-mock-service');
 const AppRouting = require('../app-routing');
 const bodyParser = require('body-parser');
+const tokenCheck = require('./token-check-test');
 
 var expect = chai.expect;
 describe('API Tests', () => {
@@ -14,7 +15,7 @@ describe('API Tests', () => {
 
     const hangmanService = HangmanService();
     const hangmanMockApi = HangmanMockApi(hangmanService);
-    AppRouting(app, hangmanMockApi);
+    AppRouting(app, hangmanMockApi, tokenCheck);
 
     describe('Testing fetching APIs that return lists from the database', () => {
         it('Should return a list of all words in the database', (done) => {
