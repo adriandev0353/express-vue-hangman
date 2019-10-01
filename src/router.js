@@ -101,7 +101,8 @@ router.beforeEach(async (to, from, next) => {
         const config = {
             method: 'post',
             url: 'https://hangman-webapp.herokuapp.com/api/token/check',
-            headers: { auth: token }
+            headers: { auth: token },
+            data: { user: localStorage['user'] }
         };
         const results = await axios(config);
         const response = results.data;
@@ -120,7 +121,8 @@ router.beforeEach(async (to, from, next) => {
         const config = {
             method: 'post',
             url: 'https://hangman-webapp.herokuapp.com/api/token/check',
-            headers: { auth: token }
+            headers: { auth: token },
+            data: { user: localStorage['user'] }
         };
         const results = await axios(config);
         const response = results.data;

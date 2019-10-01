@@ -3,11 +3,20 @@ const config = require('./config.js');
 
 const checkToken = (req, res, next) => {
     const token = req.headers.auth;
+    const user = req.body.user;
     if (token) {
         try {
             var decoded = jwt.verify(token, config.secret);
+            console.log(user, decoded.user);
             req.decoded = decoded;
-            next();
+            if (user === decoded.user) {
+                next();
+            } else {
+                return res.json({
+                    success: false,
+                    message: "User doesn't match token"
+                });
+            }
         } catch (err) {
             return res.json({
                 success: false,

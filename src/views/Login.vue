@@ -61,9 +61,13 @@ export default {
               let token = response.token;
               localStorage["token"] = token;
               localStorage["user"] = username;
-              console.log(username)
+              console.log(username);
               EventBus.$emit("userData", this.user);
-              this.$router.push({ name: "Play" });
+              if (username !== "admin") {
+                this.$router.push({ name: "Play" });
+              } else {
+                this.$router.push({ name: "admin" });
+              }
             } else {
               this.error = true;
               this.message = response.message;
