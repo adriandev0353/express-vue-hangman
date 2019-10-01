@@ -25,7 +25,7 @@
             </b-nav-text>
 
             <b-nav-item-dropdown text="Other" right>
-              <b-dropdown-item to="/profile">{{user}}</b-dropdown-item>
+              <b-dropdown-item v-if="user !== 'admin'" to="/profile">Profile</b-dropdown-item>
               <b-dropdown-item to="/friends">Friends</b-dropdown-item>
               <b-dropdown-item v-if="user === 'admin'" to="/admin">Admin Page</b-dropdown-item>
               <b-dropdown-divider></b-dropdown-divider>
