@@ -23,10 +23,7 @@ const checkToken = (req, res, next) => {
             });
         };
     } else {
-        return res.json({
-            success: false,
-            message: 'Not authorized to do that'
-        });
+        return res.sendStatus(401);
     }
 };
 
