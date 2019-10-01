@@ -97,7 +97,7 @@ export default {
       const config = {
         method: "get",
         url: "https://hangman-webapp.herokuapp.com/api/link/data",
-        headers: {auth: localStorage['token']}
+        headers: {auth: localStorage['token'], user: localStorage['user']}
       };
       return await axios(config);
     },
@@ -105,7 +105,7 @@ export default {
       const config = {
         method: "get",
         url: "https://hangman-webapp.herokuapp.com/api/all/users",
-        headers: { auth: localStorage["token"] }
+        headers: { auth: localStorage["token"], user: localStorage['user'] }
       };
       return await axios(config);
     },

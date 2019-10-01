@@ -140,7 +140,7 @@ export default {
       const config = {
         method: "get",
         url: "https://hangman-webapp.herokuapp.com/api/get/user/data/" + user,
-        headers: {auth: localStorage['token']}
+        headers: {auth: localStorage['token'], user: localStorage['user']}
       };
       return await axios(config);
     },
@@ -152,7 +152,7 @@ export default {
           user +
           "/choice/" +
           choice,
-        headers: { auth: localStorage["token"] }
+        headers: { auth: localStorage["token"], user: localStorage['user'] }
       };
       return await axios(config);
     },
@@ -162,7 +162,7 @@ export default {
         url:
           "https://hangman-webapp.herokuapp.com/api/fetch/complete/challenges/by/" +
           user,
-        headers: { auth: localStorage["token"] }
+        headers: { auth: localStorage["token"], user: localStorage['user'] }
       };
       return await axios(config);
     },
@@ -170,7 +170,7 @@ export default {
       const config = {
         method: "get",
         url: "https://hangman-webapp.herokuapp.com/api/all/users",
-        headers: { auth: localStorage["token"] }
+        headers: { auth: localStorage["token"], user: localStorage['user'] }
       };
       return await axios(config);
     },
@@ -181,7 +181,7 @@ export default {
         url:
           "https://hangman-webapp.herokuapp.com/api/find/user/" +
           localStorage["user"],
-        headers: { auth: token }
+        headers: { auth: token, user: localStorage['user'] }
       };
       return await axios(config);
     },

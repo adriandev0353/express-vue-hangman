@@ -126,7 +126,7 @@ export default {
       const config = {
         method: "post",
         url: "https://hangman-webapp.herokuapp.com/api/delete/user",
-        headers: { auth: localStorage["token"] },
+        headers: { auth: localStorage["token"], user: localStorage['user'] },
         data: { username }
       };
       return await axios(config);
@@ -135,7 +135,7 @@ export default {
       const config = {
         method: "post",
         url: "https://hangman-webapp.herokuapp.com/api/add/word/from/user/",
-        headers: { auth: localStorage["token"] },
+        headers: { auth: localStorage["token"], user: localStorage['user'] },
         data: { word, user }
       };
       return await axios(config);
@@ -144,7 +144,7 @@ export default {
       const config = {
         method: "post",
         url: "https://hangman-webapp.herokuapp.com/api/set/new/word/status",
-        headers: { auth: localStorage["token"] },
+        headers: { auth: localStorage["token"], user: localStorage['user'] },
         data: { word, status }
       };
       return await axios(config);
@@ -154,7 +154,7 @@ export default {
       const config = {
         method: "get",
         url: "https://hangman-webapp.herokuapp.com/api/find/user/" + user,
-        headers: { auth: token }
+        headers: { auth: token, user: localStorage['user'] }
       };
       return await axios(config);
     },
@@ -162,7 +162,7 @@ export default {
       const config = {
         method: "get",
         url: "https://hangman-webapp.herokuapp.com/api/all/new/words",
-        headers: { auth: localStorage["token"] }
+        headers: { auth: localStorage["token"], user: localStorage['user'] }
       };
       return await axios(config);
     },
@@ -170,7 +170,7 @@ export default {
       const config = {
         method: "get",
         url: "https://hangman-webapp.herokuapp.com/api/all/users",
-        headers: { auth: localStorage["token"] }
+        headers: { auth: localStorage["token"], user: localStorage['user'] }
       };
       return await axios(config);
     },

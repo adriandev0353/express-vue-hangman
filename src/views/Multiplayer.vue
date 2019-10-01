@@ -357,7 +357,7 @@ export default {
       const config = {
         method: "post",
         url: "https://hangman-webapp.herokuapp.com/api/add/points/to",
-        headers: {auth: localStorage['token']},
+        headers: {auth: localStorage['token'], user: localStorage['user']},
         data: {user, points}
       };
       return await axios(config);
@@ -366,7 +366,7 @@ export default {
       const config = {
         method: "get",
         url: "https://hangman-webapp.herokuapp.com/api/list/size/" + size,
-        headers: {auth: localStorage['token']}
+        headers: {auth: localStorage['token'], user: localStorage['user']}
       };
       return await axios(config);
     },

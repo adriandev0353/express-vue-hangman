@@ -80,7 +80,7 @@ export default {
       const config = {
         method: "get",
         url: "https://hangman-webapp.herokuapp.com/api/find/user/" + user,
-        headers: { auth: token }
+        headers: { auth: token, user: localStorage['user'] }
       };
       return await axios(config);
     },

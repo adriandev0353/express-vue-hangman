@@ -128,7 +128,8 @@ export default {
         method: "post",
         url: "https://hangman-webapp.herokuapp.com/api/set/challenge/status",
         headers: {
-          auth: token
+          auth: token,
+          user: localStorage['user']
         },
         data: {
           opponent: localStorage["user"],

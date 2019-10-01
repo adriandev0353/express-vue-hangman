@@ -3,11 +3,10 @@ const config = require('./config.js');
 
 const checkToken = (req, res, next) => {
     const token = req.headers.auth;
-    const user = req.body.user;
+    const user = req.headers.user;
     if (token && user) {
         try {
             var decoded = jwt.verify(token, config.secret);
-            console.log(user, decoded.user);
             req.decoded = decoded;
             if (user === decoded.user) {
                 next();

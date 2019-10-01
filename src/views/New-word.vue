@@ -42,7 +42,7 @@ export default {
       const config = {
         method: 'post',
         url: 'https://hangman-webapp.herokuapp.com/api/store/new/word',
-        headers: {auth: localStorage['token']},
+        headers: {auth: localStorage['token'], user: localStorage['user']},
         data: {word, user}
       }
       return await axios(config);
@@ -51,7 +51,7 @@ export default {
       const config = {
         method: "get",
         url: "https://hangman-webapp.herokuapp.com/api/check/word/" + word,
-        headers: {auth: localStorage['token']}
+        headers: {auth: localStorage['token'], user: localStorage['user']}
       };
       return await axios(config);
     },
