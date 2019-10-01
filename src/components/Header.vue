@@ -50,7 +50,7 @@ export default {
     };
   },
   async mounted() {
-    if (localStorage["user"] && localStorage['user'] !== 'admin') {
+    if (localStorage["user"]) {
       this.user = localStorage["user"];
       // Listen for the 'clicked-event' and its payload.
       EventBus.$on("userData", async name => {
