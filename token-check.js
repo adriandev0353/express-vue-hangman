@@ -4,7 +4,7 @@ const config = require('./config.js');
 const checkToken = (req, res, next) => {
     const token = req.headers.auth;
     const user = req.body.user;
-    if (token) {
+    if (token && user) {
         try {
             var decoded = jwt.verify(token, config.secret);
             console.log(user, decoded.user);
