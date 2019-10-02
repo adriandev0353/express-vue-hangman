@@ -126,20 +126,29 @@ router.beforeEach(async (to, from, next) => {
         const response = results.data;
         const auth = response.success;
         const user = response.user;
+        const message = response.message;
 
-        if (!auth) {
-            next({
-                path: '/',
-                query: { redirect: to.fullPath }
-            });
-        } else if (user === 'admin') {
-            next();
+        if (message !== "User doesn't match token") {
+            if (!auth) {
+                next({
+                    path: '/',
+                    query: { redirect: to.fullPath }
+                });
+            } else if (user === 'admin') {
+                next();
+            } else {
+                next({
+                    path: '/',
+                    query: { redirect: to.fullPath }
+                });
+            }
         } else {
+            localStorage.clear();
             next({
                 path: '/',
                 query: { redirect: to.fullPath }
             });
-        }
+        };
     } else {
         next();
     };
