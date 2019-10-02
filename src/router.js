@@ -124,6 +124,7 @@ router.beforeEach(async (to, from, next) => {
         };
         const results = await axios(config);
         const response = results.data;
+        console.log(response);
         const auth = response.success;
         const user = response.user;
         const message = response.message;
