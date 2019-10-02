@@ -105,16 +105,26 @@ router.beforeEach(async (to, from, next) => {
         };
         const results = await axios(config);
         const response = results.data;
+        console.log(response);
         const auth = response.success;
+        const message = response.message;
 
-        if (!auth) {
+        if (message !== "User doesn't match token") {
+            if (!auth) {
+                next({
+                    path: '/',
+                    query: { redirect: to.fullPath }
+                });
+            } else {
+                next();
+            }
+        } else {
+            localStorage.clear();
             next({
                 path: '/',
                 query: { redirect: to.fullPath }
             });
-        } else {
-            next();
-        }
+        };
     } else if (to.matched.some(record => record.meta.adminAuth)) {
         const token = localStorage['token'];
         const config = {
